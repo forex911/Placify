@@ -1,0 +1,25 @@
+# Ignore compiled Java/Kotlin classes and build directories
+**/target/
+**/build/
+*.class
+*.jar
+*.war
+*.ear
+
+# IDE files
+*.iml
+.idea/
+*.classpath
+*.project
+*.settings/
+
+# Frontend / Node modules
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.env
+.env.local
+.env.*.local
+.DS_Store
+
