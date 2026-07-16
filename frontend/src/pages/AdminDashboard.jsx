@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react'
-import { getAdminStats, getAdminUsers, getAdminAnalytics, getAdminReports, enableUser, disableUser, deleteUser } from '../api/adminApi'
+import { getAdminStats, getAdminUsers, getAdminAnalytics, getAdminHackathons, enableUser, disableUser, deleteUser } from '../api/adminApi'
 import { getAdminSubjects } from '../api/subjectApi'
 import Loader from '../components/Loader'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import toast from 'react-hot-toast'
+import { Settings, Users, CheckCircle, ClipboardList, FileText, Terminal, Puzzle, BarChart3, Book, CheckCircle2, XCircle } from 'lucide-react'
 
 const PIE_COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4']
-const TABS = ['Overview', 'Users', 'Reports', 'Subjects']
+const TABS = ['Overview', 'Users', 'Hackathons', 'Subjects']
 
 function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('Overview')
   const [stats, setStats] = useState(null)
   const [users, setUsers] = useState([])
   const [analytics, setAnalytics] = useState(null)
-  const [reports, setReports] = useState([])
+  const [hackathons, setHackathons] = useState([])
   const [subjects, setSubjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [userSearch, setUserSearch] = useState('')
@@ -23,9 +24,9 @@ function AdminDashboard() {
       setLoading(true)
       const [s, u, a, r, sub] = await Promise.all([
         getAdminStats(), getAdminUsers(), getAdminAnalytics(),
-        getAdminReports(), getAdminSubjects()
+        getAdminHackathons(), getAdminSubjects()
       ])
-      setStats(s); setUsers(u); setAnalytics(a); setReports(r); setSubjects(sub)
+      setStats(s); setUsers(u); setAnalytics(a); setHackathons(r); setSubjects(sub)
     } catch (e) { toast.error(e.message) }
     finally { setLoading(false) }
   }
@@ -56,7 +57,7 @@ function AdminDashboard() {
 
   const activityData = analytics?.userActivity?.slice(0, 8).map(u => ({
     name: u.username,
-    Reports: u.reportCount || 0,
+    Hackathons: u.hackathonCount || 0,
     DSA: u.dsaTopics || 0,
     Apps: u.applications || 0,
   })) || []
@@ -72,7 +73,7 @@ function AdminDashboard() {
     <div className="page-container">
       <div className="page-header">
         <div>
-          <h1 className="page-title">⚙️ Admin Dashboard</h1>
+          <h1 className="page-title"><Settings size={22} style={{ marginRight: 8, verticalAlign: 'middle' }} />Admin Dashboard</h1>
           <p className="page-subtitle">System overview and user management</p>
         </div>
       </div>
@@ -90,15 +91,15 @@ function AdminDashboard() {
           {/* Stat Cards */}
           <div className="stats-grid">
             {[
-              { icon: '👥', label: 'Total Users',       value: stats.totalUsers,           grad: 'linear-gradient(90deg,#6366f1,#8b5cf6)' },
-              { icon: '✅', label: 'Active Users',       value: stats.activeUsers,           grad: 'linear-gradient(90deg,#10b981,#34d399)' },
-              { icon: '📋', label: 'Total Applications', value: stats.totalApplications,     grad: 'linear-gradient(90deg,#f59e0b,#fbbf24)' },
-              { icon: '📝', label: 'Daily Reports',      value: stats.totalDailyReports,     grad: 'linear-gradient(90deg,#06b6d4,#6366f1)' },
-              { icon: '💻', label: 'Avg DSA Progress',   value: `${stats.averageDsaProgress}%`, grad: 'linear-gradient(90deg,#8b5cf6,#a78bfa)' },
-              { icon: '🧩', label: 'Questions Solved',   value: stats.totalDsaQuestionsSolved, grad: 'linear-gradient(90deg,#ec4899,#f43f5e)' },
+              { icon: <Users size={40} color="#6366f1" />, label: 'Total Users',       value: stats.totalUsers,           grad: 'linear-gradient(90deg,#6366f1,#8b5cf6)' },
+              { icon: <CheckCircle size={40} color="#10b981" />, label: 'Active Users',       value: stats.activeUsers,           grad: 'linear-gradient(90deg,#10b981,#34d399)' },
+              { icon: <ClipboardList size={40} color="#f59e0b" />, label: 'Total Applications', value: stats.totalApplications,     grad: 'linear-gradient(90deg,#f59e0b,#fbbf24)' },
+              { icon: <Trophy size={40} color="#06b6d4" />, label: 'Hackathons',      value: stats.totalHackathons,     grad: 'linear-gradient(90deg,#06b6d4,#6366f1)' },
+              { icon: <Terminal size={40} color="#8b5cf6" />, label: 'Avg DSA Progress',   value: `${stats.averageDsaProgress}%`, grad: 'linear-gradient(90deg,#8b5cf6,#a78bfa)' },
+              { icon: <Puzzle size={40} color="#ec4899" />, label: 'Questions Solved',   value: stats.totalDsaQuestionsSolved, grad: 'linear-gradient(90deg,#ec4899,#f43f5e)' },
             ].map(c => (
               <div key={c.label} className="card" style={{ textAlign: 'center', padding: '20px 12px' }}>
-                <div style={{ fontSize: '2rem' }}>{c.icon}</div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>{c.icon}</div>
                 <div style={{ fontSize: '1.8rem', fontWeight: 800, background: c.grad, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: '8px 0' }}>{c.value}</div>
                 <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{c.label}</div>
               </div>
@@ -108,7 +109,7 @@ function AdminDashboard() {
           {/* Charts */}
           <div className="dashboard-grid" style={{ marginTop: 24 }}>
             <div className="card">
-              <div className="card-header"><h2 className="card-title">👥 User Status</h2></div>
+              <div className="card-header"><h2 className="card-title"><Users size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />User Status</h2></div>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                   <Pie data={userStatusPie} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={4} dataKey="value"
@@ -121,7 +122,7 @@ function AdminDashboard() {
               </ResponsiveContainer>
             </div>
             <div className="card">
-              <div className="card-header"><h2 className="card-title">📊 User Activity (Top 8)</h2></div>
+              <div className="card-header"><h2 className="card-title"><BarChart3 size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />User Activity (Top 8)</h2></div>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={activityData} margin={{ left: -25, right: 5, top: 5, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -129,7 +130,7 @@ function AdminDashboard() {
                   <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 9 }} />
                   <Tooltip contentStyle={{ background: 'var(--card-bg)', border: '1px solid var(--border)', borderRadius: 8 }} />
                   <Legend />
-                  <Bar dataKey="Reports" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Hackathons" fill="#6366f1" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="DSA" fill="#10b981" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="Apps" fill="#f59e0b" radius={[4, 4, 0, 0]} />
                 </BarChart>
@@ -143,7 +144,7 @@ function AdminDashboard() {
       {activeTab === 'Users' && (
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">👥 All Users ({users.length})</h2>
+            <h2 className="card-title"><Users size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />All Users ({users.length})</h2>
             <input className="form-input" style={{ width: 220, padding: '6px 12px' }}
                    placeholder="Search users..." value={userSearch}
                    onChange={e => setUserSearch(e.target.value)} />
@@ -152,7 +153,7 @@ function AdminDashboard() {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr>
-                  {['User', 'Email', 'Role', 'Status', 'Last Login', 'Apps', 'DSA', 'Reports', 'Actions'].map(h => (
+                  {['User', 'Email', 'Role', 'Status', 'Last Login', 'Apps', 'DSA', 'Hackathons', 'Actions'].map(h => (
                     <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: '0.75rem', color: 'var(--text-muted)', borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
                 </tr>
@@ -175,8 +176,8 @@ function AdminDashboard() {
                       <span className={`dsa-status-badge ${u.role === 'ADMIN' ? 'completed' : 'in-progress'}`}>{u.role}</span>
                     </td>
                     <td style={{ padding: '10px 12px' }}>
-                      <span style={{ color: u.enabled ? '#10b981' : '#ef4444', fontWeight: 600, fontSize: '0.82rem' }}>
-                        {u.enabled ? '🟢 Active' : '🔴 Disabled'}
+                      <span style={{ color: u.enabled ? '#10b981' : '#ef4444', fontWeight: 600, fontSize: '0.82rem', display: 'flex', alignItems: 'center' }}>
+                        {u.enabled ? <><CheckCircle2 size={14} style={{ marginRight: 4 }} /> Active</> : <><XCircle size={14} style={{ marginRight: 4 }} /> Disabled</>}
                       </span>
                     </td>
                     <td style={{ padding: '10px 12px', color: 'var(--text-muted)', fontSize: '0.78rem' }}>
@@ -184,7 +185,7 @@ function AdminDashboard() {
                     </td>
                     <td style={{ padding: '10px 12px', textAlign: 'center' }}>{u.applicationCount}</td>
                     <td style={{ padding: '10px 12px', textAlign: 'center' }}>{u.dsaTopicCount}</td>
-                    <td style={{ padding: '10px 12px', textAlign: 'center' }}>{u.reportCount}</td>
+                    <td style={{ padding: '10px 12px', textAlign: 'center' }}>{u.hackathonCount}</td>
                     <td style={{ padding: '10px 12px' }}>
                       <div style={{ display: 'flex', gap: 6 }}>
                         {u.role !== 'ADMIN' && (u.enabled ? (
@@ -208,36 +209,35 @@ function AdminDashboard() {
         </div>
       )}
 
-      {/* ── REPORTS TAB ───────────────────────────────────────────────────────── */}
-      {activeTab === 'Reports' && (
+      {/* ── HACKATHONS TAB ────────────────────────────────────────────────────── */}
+      {activeTab === 'Hackathons' && (
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">📝 All Daily Reports ({reports.length})</h2>
+            <h2 className="card-title"><Trophy size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />All Hackathons ({hackathons.length})</h2>
           </div>
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr>
-                  {['User', 'Date', 'Hours', 'DSA', 'Aptitude', 'Verbal', 'Rating', 'Topics'].map(h => (
+                  {['User', 'Hackathon Name', 'Project', 'Status', 'Date', 'Team', 'Tech Stack'].map(h => (
                     <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: '0.75rem', color: 'var(--text-muted)', borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {reports.map(r => (
-                  <tr key={r.id} style={{ borderBottom: '1px solid var(--border)' }}
+                {hackathons.map(h => (
+                  <tr key={h.id} style={{ borderBottom: '1px solid var(--border)' }}
                       onMouseEnter={e => e.currentTarget.style.background = 'var(--hover)'}
                       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                    <td style={{ padding: '10px 12px', fontWeight: 600 }}>{r.username || `User ${r.userId}`}</td>
-                    <td style={{ padding: '10px 12px', color: 'var(--primary)', fontWeight: 600 }}>{r.reportDate}</td>
-                    <td style={{ padding: '10px 12px' }}>{r.hoursStudied}h</td>
-                    <td style={{ padding: '10px 12px' }}>{r.dsaQuestionsSolved}</td>
-                    <td style={{ padding: '10px 12px' }}>{r.aptitudeQuestionsSolved}</td>
-                    <td style={{ padding: '10px 12px' }}>{r.verbalPracticeDone ? '✅' : '❌'}</td>
+                    <td style={{ padding: '10px 12px', fontWeight: 600 }}>{h.username || `User ${h.userId}`}</td>
+                    <td style={{ padding: '10px 12px', color: 'var(--primary)', fontWeight: 600 }}>{h.hackathonName}</td>
+                    <td style={{ padding: '10px 12px' }}>{h.projectTitle || '—'}</td>
                     <td style={{ padding: '10px 12px' }}>
-                      <span style={{ color: r.productivityRating >= 8 ? '#10b981' : r.productivityRating >= 5 ? '#f59e0b' : '#ef4444', fontWeight: 700 }}>{r.productivityRating}/10</span>
+                      <span className={`status-badge status-${(h.status || '').toLowerCase()}`}>{h.status}</span>
                     </td>
-                    <td style={{ padding: '10px 12px', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{r.topicsLearned || '—'}</td>
+                    <td style={{ padding: '10px 12px', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{h.date ? new Date(h.date).toLocaleDateString('en-IN') : '—'}</td>
+                    <td style={{ padding: '10px 12px' }}>{h.teamSize || '—'}</td>
+                    <td style={{ padding: '10px 12px', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{h.techStack || '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -250,7 +250,7 @@ function AdminDashboard() {
       {activeTab === 'Subjects' && (
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">📚 All Subject Progress</h2>
+            <h2 className="card-title"><Book size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />All Subject Progress</h2>
           </div>
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>

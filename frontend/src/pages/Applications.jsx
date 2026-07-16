@@ -7,16 +7,17 @@ import {
 } from '../api/applicationsApi'
 import Modal from '../components/Modal'
 import Loader from '../components/Loader'
+import { FileText, AlertTriangle, Inbox, Pencil, Trash2, Plus, ExternalLink } from 'lucide-react'
 
 const STATUS_OPTIONS = ['Applied', 'OA_Cleared', 'Interview_Scheduled', 'HR_Round', 'Selected', 'Rejected']
 
 const STATUS_LABELS = {
-  Applied:             '📩 Applied',
-  OA_Cleared:          '✅ OA Cleared',
-  Interview_Scheduled: '🎤 Interview',
-  HR_Round:            '🤝 HR Round',
-  Selected:            '🎉 Selected',
-  Rejected:            '❌ Rejected',
+  Applied:             'Applied',
+  OA_Cleared:          'OA Cleared',
+  Interview_Scheduled: 'Interview',
+  HR_Round:            'HR Round',
+  Selected:            'Selected',
+  Rejected:            'Rejected',
 }
 
 const STATUS_BADGE_CLASS = {
@@ -35,6 +36,7 @@ const EMPTY_FORM = {
   deadline: '',
   status: 'Applied',
   location: '',
+  companyLink: '',
 }
 
 function Applications() {
@@ -79,6 +81,7 @@ function Applications() {
       deadline: app.deadline || '',
       status: app.status,
       location: app.location || '',
+      companyLink: app.companyLink || '',
     })
     setFormError(null)
     setModalOpen(true)
@@ -123,11 +126,11 @@ function Applications() {
     <div className="page-container">
       <div className="page-header">
         <div>
-          <h1 className="page-title">Applications 📋</h1>
+          <h1 className="page-title"><FileText size={22} style={{ marginRight: 8, verticalAlign: 'middle' }} />Applications</h1>
           <p className="page-subtitle">Track your job and internship applications</p>
         </div>
         <button id="add-application-btn" className="btn btn-primary" onClick={openCreate}>
-          + Add Application
+          <Plus size={16} style={{ marginRight: 4, verticalAlign: 'middle' }} /> Add Application
         </button>
       </div>
 
@@ -148,13 +151,13 @@ function Applications() {
         ))}
       </div>
 
-      {error && <div className="alert alert-error">⚠️ {error}</div>}
+      {error && <div className="alert alert-error"><AlertTriangle size={16} /> {error}</div>}
 
       {loading ? (
         <Loader message="Loading applications..." />
       ) : applications.length === 0 ? (
         <div className="empty-state" style={{ marginTop: '48px' }}>
-          <div className="empty-state-icon">📭</div>
+          <div className="empty-state-icon"><Inbox size={32} /></div>
           <div className="empty-state-text">No applications found.<br />Click "Add Application" to get started!</div>
         </div>
       ) : (
@@ -176,7 +179,14 @@ function Applications() {
               {applications.map((app, idx) => (
                 <tr key={app.id}>
                   <td style={{ color: 'var(--text-muted)' }}>{idx + 1}</td>
-                  <td style={{ fontWeight: 600 }}>{app.companyName}</td>
+                  <td style={{ fontWeight: 600 }}>
+                    {app.companyLink ? (
+                      <a href={app.companyLink} target="_blank" rel="noopener noreferrer"
+                         style={{ color: 'var(--primary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        {app.companyName} <ExternalLink size={12} />
+                      </a>
+                    ) : app.companyName}
+                  </td>
                   <td>{app.role}</td>
                   <td>{formatDate(app.appliedDate)}</td>
                   <td style={{ color: app.deadline && new Date(app.deadline) < new Date() ? 'var(--accent-rose)' : 'inherit' }}>
@@ -195,13 +205,13 @@ function Applications() {
                         onClick={() => openEdit(app)}
                         title="Edit"
                         aria-label={`Edit ${app.companyName}`}
-                      >✏️</button>
+                      ><Pencil size={14} /></button>
                       <button
                         className="btn-icon danger"
                         onClick={() => handleDelete(app.id)}
                         title="Delete"
                         aria-label={`Delete ${app.companyName}`}
-                      >🗑️</button>
+                      ><Trash2 size={14} /></button>
                     </div>
                   </td>
                 </tr>
@@ -218,7 +228,7 @@ function Applications() {
         title={editingApp ? 'Edit Application' : 'Add Application'}
       >
         <form onSubmit={handleSubmit} id="application-form">
-          {formError && <div className="alert alert-error">⚠️ {formError}</div>}
+          {formError && <div className="alert alert-error"><AlertTriangle size={16} /> {formError}</div>}
 
           <div className="form-row">
             <div className="form-group">
@@ -297,6 +307,18 @@ function Applications() {
                 onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
               />
             </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="companyLink">Company / Job Link</label>
+            <input
+              id="companyLink"
+              className="form-input"
+              type="url"
+              placeholder="e.g. https://careers.google.com/jobs/..."
+              value={form.companyLink}
+              onChange={e => setForm(f => ({ ...f, companyLink: e.target.value }))}
+            />
           </div>
 
           <div className="form-actions">

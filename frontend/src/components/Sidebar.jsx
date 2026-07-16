@@ -1,18 +1,22 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import NotificationBell from './NotificationBell'
-import DarkModeToggle from './DarkModeToggle'
+
 import { useState } from 'react'
+import { 
+  Sparkles, LayoutDashboard, FileText, Zap, BookOpen, 
+  CheckSquare, LineChart, Code2, PenTool, Settings, 
+  Shield, User, LogOut, X, Menu, Trophy
+} from 'lucide-react'
 
 const navItems = [
-  { to: '/dashboard',  icon: 'ðŸ ', label: 'Dashboard' },
-  { to: '/applications', icon: 'ðŸ“‹', label: 'Applications' },
-  { to: '/dsa',        icon: 'ðŸ’»', label: 'DSA Tracker' },
-  { to: '/subjects',   icon: 'ðŸ“š', label: 'Core Subjects' },
-  { to: '/tasks',      icon: 'âœ…', label: 'Study Tasks' },
-  { to: '/reports',    icon: 'ðŸ“', label: 'Daily Reports' },
-  { to: '/leetcode',   icon: 'ðŸ’¡', label: 'LeetCode' },
-  { to: '/notes',      icon: 'ðŸ—’ï¸', label: 'Notes' },
+  { to: '/dashboard',  icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
+  { to: '/applications', icon: <FileText size={18} />, label: 'Applications' },
+  { to: '/dsa',        icon: <Zap size={18} />, label: 'DSA Tracker' },
+  { to: '/subjects',   icon: <BookOpen size={18} />, label: 'Core Subjects' },
+  { to: '/tasks',      icon: <CheckSquare size={18} />, label: 'Study Tasks' },
+  { to: '/hackathons', icon: <Trophy size={18} />, label: 'Hackathons' },
+  { to: '/leetcode',   icon: <Code2 size={18} />, label: 'LeetCode' },
+  { to: '/notes',      icon: <PenTool size={18} />, label: 'Notes' },
 ]
 
 function Sidebar() {
@@ -30,18 +34,14 @@ function Sidebar() {
   const SidebarContent = () => (
     <aside className="sidebar" style={mobileOpen ? { transform: 'translateX(0)' } : {}}>
       <div className="sidebar-logo">
-        <div className="sidebar-logo-icon">ðŸš€</div>
+        <div className="sidebar-logo-icon"><Sparkles size={28} /></div>
         <div>
           <div className="sidebar-logo-text">Placify</div>
           <div className="sidebar-logo-sub">Placement Management</div>
         </div>
       </div>
 
-      {/* Top actions */}
-      <div style={{ display: 'flex', gap: 8, padding: '0 12px 12px', justifyContent: 'flex-end' }}>
-        <NotificationBell />
-        <DarkModeToggle />
-      </div>
+
 
       <nav className="sidebar-nav">
         <div className="sidebar-section-label">Navigation</div>
@@ -62,7 +62,7 @@ function Sidebar() {
             <div className="sidebar-section-label" style={{ marginTop: 16 }}>Admin</div>
             <NavLink to="/admin" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
                      onClick={() => setMobileOpen(false)}>
-              <span className="nav-icon">âš™ï¸</span>
+              <span className="nav-icon"><Settings size={18} /></span>
               <span className="nav-label">Admin Dashboard</span>
             </NavLink>
           </>
@@ -76,11 +76,11 @@ function Sidebar() {
             <div className="sidebar-user-details">
               <div className="sidebar-username">{user.username}</div>
               <div className={`sidebar-role-badge ${user.role === 'ADMIN' ? 'admin' : 'user'}`}>
-                {user.role === 'ADMIN' ? 'ðŸ”´ Admin' : 'ðŸ”µ User'}
+                {user.role === 'ADMIN' ? <><Shield size={12} style={{marginRight: 4}}/> Admin</> : <><User size={12} style={{marginRight: 4}}/> User</>}
               </div>
             </div>
           </NavLink>
-          <button id="logout-btn" className="sidebar-logout-btn" onClick={handleLogout} title="Logout">ðŸšª</button>
+          <button id="logout-btn" className="sidebar-logout-btn" onClick={handleLogout} title="Logout"><LogOut size={18} /></button>
         </div>
       )}
 
@@ -103,7 +103,7 @@ function Sidebar() {
           borderRadius: 8, padding: '8px 10px', cursor: 'pointer', fontSize: '1.2rem',
         }}
       >
-        {mobileOpen ? 'âœ•' : 'â˜°'}
+        {mobileOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
       {/* Overlay for mobile */}

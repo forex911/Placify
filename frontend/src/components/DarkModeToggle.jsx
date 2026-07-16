@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Sun, Moon } from 'lucide-react'
 
 function DarkModeToggle() {
   const [dark, setDark] = useState(() => {
@@ -37,9 +38,10 @@ function DarkModeToggle() {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         cursor: 'pointer', fontSize: '1.1rem',
         transition: 'all 0.2s',
+        color: 'var(--text-primary)',
       }}
     >
-      {dark ? 'â˜€ï¸' : 'ðŸŒ™'}
+      {dark ? <Sun size={18} /> : <Moon size={18} />}
     </button>
   )
 }

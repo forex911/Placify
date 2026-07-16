@@ -1,10 +1,10 @@
 package com.placify.controller;
 
-import com.placify.dto.DailyReportDTO;
+import com.placify.dto.HackathonDTO;
 import com.placify.dto.SubjectProgressDTO;
 import com.placify.entity.User;
 import com.placify.repository.*;
-import com.placify.service.DailyReportService;
+import com.placify.service.HackathonService;
 import com.placify.service.SubjectProgressService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,8 +24,8 @@ public class AdminController {
     private final DsaTrackerRepository dsaTrackerRepository;
     private final StudyTaskRepository studyTaskRepository;
     private final NoteRepository noteRepository;
-    private final DailyReportRepository dailyReportRepository;
-    private final DailyReportService dailyReportService;
+    private final HackathonRepository hackathonRepository;
+    private final HackathonService hackathonService;
     private final SubjectProgressService subjectProgressService;
 
     public AdminController(UserRepository userRepository,
@@ -33,16 +33,16 @@ public class AdminController {
             DsaTrackerRepository dsaTrackerRepository,
             StudyTaskRepository studyTaskRepository,
             NoteRepository noteRepository,
-            DailyReportRepository dailyReportRepository,
-            DailyReportService dailyReportService,
+            HackathonRepository hackathonRepository,
+            HackathonService hackathonService,
             SubjectProgressService subjectProgressService) {
         this.userRepository = userRepository;
         this.applicationRepository = applicationRepository;
         this.dsaTrackerRepository = dsaTrackerRepository;
         this.studyTaskRepository = studyTaskRepository;
         this.noteRepository = noteRepository;
-        this.dailyReportRepository = dailyReportRepository;
-        this.dailyReportService = dailyReportService;
+        this.hackathonRepository = hackathonRepository;
+        this.hackathonService = hackathonService;
         this.subjectProgressService = subjectProgressService;
     }
 
@@ -55,7 +55,7 @@ public class AdminController {
             long dsaCount = dsaTrackerRepository.countByUserId(user.getId());
             long taskCount = studyTaskRepository.countByUserId(user.getId());
             long noteCount = noteRepository.countByUserId(user.getId());
-            long reportCount = dailyReportRepository.countByUserId(user.getId());
+            long hackathonCount = hackathonRepository.countByUserId(user.getId());
 
             Map<String, Object> m = new HashMap<>();
             m.put("id", user.getId());
@@ -68,9 +68,9 @@ public class AdminController {
             m.put("createdAt", user.getCreatedAt() != null ? user.getCreatedAt().toString() : "");
             m.put("applicationCount", appCount);
             m.put("dsaTopicCount", dsaCount);
-            m.put("taskCount", taskCount);
-            m.put("noteCount", noteCount);
-            m.put("reportCount", reportCount);
+            m.put("dsaTopics", dsaCount);
+            m.put("studyTasks", taskCount);
+            m.put("hackathons", hackathonCount);
             return m;
         }).collect(Collectors.toList());
         return ResponseEntity.ok(result);
@@ -85,7 +85,7 @@ public class AdminController {
         long totalDsaTopics = dsaTrackerRepository.count();
         long totalTasks = studyTaskRepository.count();
         long totalNotes = noteRepository.count();
-        long totalReports = dailyReportRepository.count();
+        long totalHackathons = hackathonRepository.count();
 
         Double avgDsaProgress = dsaTrackerRepository.findAverageProgress();
         Long totalSolvedQuestions = dsaTrackerRepository.sumAllSolvedQuestions();
@@ -98,7 +98,7 @@ public class AdminController {
         stats.put("totalDsaTopics", totalDsaTopics);
         stats.put("totalTasks", totalTasks);
         stats.put("totalNotes", totalNotes);
-        stats.put("totalDailyReports", totalReports);
+        stats.put("totalHackathons", totalHackathons);
         stats.put("averageDsaProgress", avgDsaProgress != null ? Math.round(avgDsaProgress * 10.0) / 10.0 : 0.0);
         stats.put("totalDsaQuestionsSolved", totalSolvedQuestions != null ? totalSolvedQuestions : 0);
         return ResponseEntity.ok(stats);
@@ -112,7 +112,7 @@ public class AdminController {
             Map<String, Object> m = new HashMap<>();
             m.put("userId", u.getId());
             m.put("username", u.getUsername());
-            m.put("reportCount", dailyReportRepository.countByUserId(u.getId()));
+            m.put("hackathonCount", hackathonRepository.countByUserId(u.getId()));
             m.put("dsaTopics", dsaTrackerRepository.countByUserId(u.getId()));
             m.put("applications", applicationRepository.countByUserId(u.getId()));
             m.put("lastLogin", u.getLastLogin() != null ? u.getLastLogin().toString() : null);
@@ -120,9 +120,9 @@ public class AdminController {
             return m;
         }).collect(Collectors.toList());
 
-        // Sort by report count descending (most active first)
+        // Sort by hackathon count descending (most active first)
         userActivity.sort((a, b) -> Long.compare(
-                (Long) b.get("reportCount"), (Long) a.get("reportCount")));
+                (Long) b.get("hackathonCount"), (Long) a.get("hackathonCount")));
 
         Map<String, Object> analytics = new HashMap<>();
         analytics.put("userActivity", userActivity);
@@ -132,11 +132,10 @@ public class AdminController {
         return ResponseEntity.ok(analytics);
     }
 
-    /** GET /api/admin/reports â€” all daily reports */
-    @GetMapping("/reports")
-    public ResponseEntity<List<DailyReportDTO>> getAllReports(
-            @RequestParam(required = false) Long userId) {
-        return ResponseEntity.ok(dailyReportService.getAllForAdmin(userId, null, null));
+    /** GET /api/admin/hackathons â€” all hackathons */
+    @GetMapping("/hackathons")
+    public ResponseEntity<List<HackathonDTO>> getAllHackathons() {
+        return ResponseEntity.ok(hackathonService.getAllForAdmin());
     }
 
     /** GET /api/admin/subjects â€” all users' subject progress */

@@ -14,7 +14,7 @@ public class DashboardStatsDTO {
     private long interviewApplications;
 
     // New
-    private long totalDailyReports;
+    private long totalHackathons;
     private double totalStudyHoursThisWeek;
     private int studyStreak; // consecutive days with a report
     private int dsaTopicsSolved; // topics at 100%
@@ -61,8 +61,8 @@ public class DashboardStatsDTO {
     public long getInterviewApplications() { return interviewApplications; }
     public void setInterviewApplications(long interviewApplications) { this.interviewApplications = interviewApplications; }
 
-    public long getTotalDailyReports() { return totalDailyReports; }
-    public void setTotalDailyReports(long totalDailyReports) { this.totalDailyReports = totalDailyReports; }
+    public long getTotalHackathons() { return totalHackathons; }
+    public void setTotalHackathons(long totalHackathons) { this.totalHackathons = totalHackathons; }
 
     public double getTotalStudyHoursThisWeek() { return totalStudyHoursThisWeek; }
     public void setTotalStudyHoursThisWeek(double totalStudyHoursThisWeek) { this.totalStudyHoursThisWeek = totalStudyHoursThisWeek; }

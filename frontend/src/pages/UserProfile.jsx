@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 import Loader from '../components/Loader'
+import { User, AlertTriangle, Shield, Calendar, LogOut, BarChart3, FileText, Monitor, CheckSquare, PenTool, Code2 } from 'lucide-react'
 
 function UserProfile() {
   const { user, logout } = useAuth()
@@ -41,7 +42,7 @@ function UserProfile() {
 
   if (error) return (
     <div className="page-container">
-      <div className="alert alert-error">⚠️ {error}</div>
+      <div className="alert alert-error"><AlertTriangle size={16} /> {error}</div>
     </div>
   )
 
@@ -51,7 +52,7 @@ function UserProfile() {
     <div className="page-container">
       <div className="page-header">
         <div>
-          <h1 className="page-title">My Profile 👤</h1>
+          <h1 className="page-title"><User size={22} style={{ marginRight: 8, verticalAlign: 'middle' }} />My Profile</h1>
           <p className="page-subtitle">Your account details and personal stats</p>
         </div>
       </div>
@@ -65,10 +66,10 @@ function UserProfile() {
           <div className="profile-name">{profile?.username}</div>
           <div className="profile-email">{profile?.email}</div>
           <div className={`sidebar-role-badge ${profile?.role === 'ADMIN' ? 'admin' : 'user'}`} style={{ marginTop: '12px', display: 'inline-block' }}>
-            {profile?.role === 'ADMIN' ? '🔴 Admin' : '🔵 User'}
+            {profile?.role === 'ADMIN' ? <><Shield size={12} style={{marginRight: 4}} /> Admin</> : <><User size={12} style={{marginRight: 4}} /> User</>}
           </div>
           <div className="profile-joined">
-            📅 Joined {formatDate(profile?.createdAt)}
+            <Calendar size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />Joined {formatDate(profile?.createdAt)}
           </div>
 
           <button
@@ -77,7 +78,7 @@ function UserProfile() {
             onClick={handleLogout}
             style={{ marginTop: '24px', width: '100%' }}
           >
-            🚪 Logout
+            <LogOut size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} /> Logout
           </button>
         </div>
 
@@ -85,20 +86,20 @@ function UserProfile() {
         <div className="profile-stats-panel">
           <div className="card" style={{ marginBottom: '24px' }}>
             <div className="card-header">
-              <h2 className="card-title">📊 Your Stats</h2>
+              <h2 className="card-title"><BarChart3 size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />Your Stats</h2>
             </div>
             <div className="profile-stats-grid">
               {[
-                { icon: '📋', value: stats.applicationCount ?? 0, label: 'Applications', color: '#6366f1' },
-                { icon: '💻', value: stats.dsaTopicCount ?? 0, label: 'DSA Topics', color: '#10b981' },
-                { icon: `${stats.averageDsaProgress ?? 0}%`, value: null, label: 'Avg DSA Progress', color: '#f59e0b', isText: true },
-                { icon: '✅', value: stats.taskCount ?? 0, label: 'Study Tasks', color: '#06b6d4' },
-                { icon: '📝', value: stats.noteCount ?? 0, label: 'Notes', color: '#8b5cf6' },
+                { icon: <FileText size={20} />, value: stats.applicationCount ?? 0, label: 'Applications', color: '#6366f1' },
+                { icon: <Monitor size={20} />, value: stats.dsaTopicCount ?? 0, label: 'DSA Topics', color: '#10b981' },
+                { icon: <Code2 size={20} />, value: `${stats.averageDsaProgress ?? 0}%`, label: 'Avg DSA Progress', color: '#f59e0b', isText: true },
+                { icon: <CheckSquare size={20} />, value: stats.taskCount ?? 0, label: 'Study Tasks', color: '#06b6d4' },
+                { icon: <PenTool size={20} />, value: stats.noteCount ?? 0, label: 'Notes', color: '#8b5cf6' },
               ].map((s, i) => (
                 <div key={i} className="profile-stat-item" style={{ '--stat-color': s.color }}>
                   <div className="profile-stat-icon">{s.icon}</div>
                   <div className="profile-stat-value">
-                    {s.isText ? s.icon : s.value}
+                    {s.isText ? s.value : s.value}
                   </div>
                   <div className="profile-stat-label">{s.label}</div>
                 </div>
@@ -109,7 +110,7 @@ function UserProfile() {
           {/* DSA Progress breakdown */}
           <div className="card">
             <div className="card-header">
-              <h2 className="card-title">💻 DSA Progress</h2>
+              <h2 className="card-title"><Code2 size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />DSA Progress</h2>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                 Avg: {stats.averageDsaProgress ?? 0}%
               </span>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { Sparkles, AlertCircle, Mail, Lock, ArrowRight } from 'lucide-react'
 
 function Login() {
   const { login } = useAuth()
@@ -34,7 +35,7 @@ function Login() {
       <div className="auth-container">
         {/* Logo */}
         <div className="auth-logo">
-          <div className="auth-logo-icon">ðŸš€</div>
+          <div className="auth-logo-icon"><Sparkles size={28} /></div>
           <div className="auth-logo-text">Placify</div>
           <div className="auth-logo-sub">Placement Tracker</div>
         </div>
@@ -48,7 +49,7 @@ function Login() {
 
           {error && (
             <div className="alert alert-error" style={{ marginBottom: '20px' }}>
-              âš ï¸ {error}
+              <AlertCircle size={18} style={{ marginRight: '8px' }} /> {error}
             </div>
           )}
 
@@ -56,7 +57,7 @@ function Login() {
             <div className="form-group">
               <label className="form-label" htmlFor="login-email">Email</label>
               <div className="auth-input-wrap">
-                <span className="auth-input-icon">ðŸ“§</span>
+                <span className="auth-input-icon"><Mail size={18} /></span>
                 <input
                   id="login-email"
                   className="form-input auth-input"
@@ -73,7 +74,7 @@ function Login() {
             <div className="form-group">
               <label className="form-label" htmlFor="login-password">Password</label>
               <div className="auth-input-wrap">
-                <span className="auth-input-icon">ðŸ”‘</span>
+                <span className="auth-input-icon"><Lock size={18} /></span>
                 <input
                   id="login-password"
                   className="form-input auth-input"
@@ -99,7 +100,7 @@ function Login() {
                   Signing in...
                 </span>
               ) : (
-                'âœ¨ Sign In'
+                <><ArrowRight size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Sign In</>
               )}
             </button>
           </form>

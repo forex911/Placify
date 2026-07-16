@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getDsaTopics, createDsaTopic, updateDsaTopic, deleteDsaTopic, getDsaStats } from '../api/dsaApi'
+import { getLeetCodeProfile } from '../api/leetcodeApi'
 import Modal from '../components/Modal'
 import Loader from '../components/Loader'
 import {
@@ -7,21 +8,27 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts'
 import toast from 'react-hot-toast'
+import {
+  Terminal, CheckCircle, Trophy, FileText, PieChart as PieChartIcon,
+  BarChart3, Brain, Pencil, Trash2, Clock, RefreshCw, Plus, Check,
+  Hash, Folder, Link, Book, Search, TreePine, Pickaxe, CircleDot, Coins, Zap, Leaf,
+  Lightbulb, ExternalLink
+} from 'lucide-react'
 
 const DSA_STANDARD_TOPICS = [
-  { name: 'Arrays',                          emoji: '🔢', difficulty: 'EASY',   total: 100 },
-  { name: 'Strings',                         emoji: '📝', difficulty: 'EASY',   total: 80 },
-  { name: 'Hashing',                         emoji: '🗂️', difficulty: 'MEDIUM', total: 60 },
-  { name: 'Linked Lists',                    emoji: '🔗', difficulty: 'MEDIUM', total: 70 },
-  { name: 'Stack & Queue',                   emoji: '📚', difficulty: 'MEDIUM', total: 60 },
-  { name: 'Binary Search',                   emoji: '🔍', difficulty: 'MEDIUM', total: 60 },
-  { name: 'Trees & BST',                     emoji: '🌳', difficulty: 'MEDIUM', total: 80 },
-  { name: 'Heaps',                           emoji: '⛏️', difficulty: 'HARD',   total: 50 },
-  { name: 'Graphs',                          emoji: '🔮', difficulty: 'HARD',   total: 100 },
-  { name: 'Greedy',                          emoji: '💰', difficulty: 'MEDIUM', total: 60 },
-  { name: 'Dynamic Programming',             emoji: '⚡', difficulty: 'HARD',   total: 100 },
-  { name: 'Tries',                           emoji: '🌿', difficulty: 'HARD',   total: 40 },
-  { name: 'Segment Trees & Advanced Topics', emoji: '📊', difficulty: 'HARD',   total: 30 },
+  { name: 'Arrays',                          icon: <Hash size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'EASY',   total: 100 },
+  { name: 'Strings',                         icon: <FileText size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'EASY',   total: 80 },
+  { name: 'Hashing',                         icon: <Folder size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'MEDIUM', total: 60 },
+  { name: 'Linked Lists',                    icon: <Link size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'MEDIUM', total: 70 },
+  { name: 'Stack & Queue',                   icon: <Book size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'MEDIUM', total: 60 },
+  { name: 'Binary Search',                   icon: <Search size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'MEDIUM', total: 60 },
+  { name: 'Trees & BST',                     icon: <TreePine size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'MEDIUM', total: 80 },
+  { name: 'Heaps',                           icon: <Pickaxe size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'HARD',   total: 50 },
+  { name: 'Graphs',                          icon: <CircleDot size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'HARD',   total: 100 },
+  { name: 'Greedy',                          icon: <Coins size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'MEDIUM', total: 60 },
+  { name: 'Dynamic Programming',             icon: <Zap size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'HARD',   total: 100 },
+  { name: 'Tries',                           icon: <Leaf size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'HARD',   total: 40 },
+  { name: 'Segment Trees & Advanced Topics', icon: <BarChart3 size={16} style={{ marginRight: 6, verticalAlign: 'middle' }} />, difficulty: 'HARD',   total: 30 },
 ]
 
 const DIFFICULTY_COLORS = { EASY: '#10b981', MEDIUM: '#f59e0b', HARD: '#ef4444', MIXED: '#6366f1' }
@@ -46,6 +53,25 @@ function DsaTracker() {
   const [saving, setSaving] = useState(false)
   const [filter, setFilter] = useState('All')
   const [sortBy, setSortBy] = useState('name')
+  const [leetcode, setLeetcode] = useState(null)
+  const [syncing, setSyncing] = useState(false)
+
+  // Map LeetCode tag names to our DSA tracker topic names
+  const TAG_TO_TOPIC = {
+    'Array': 'Arrays', 'Matrix': 'Arrays', 'Prefix Sum': 'Arrays',
+    'String': 'Strings', 'String Matching': 'Strings',
+    'Hash Table': 'Hashing', 'Hash Function': 'Hashing',
+    'Linked List': 'Linked Lists', 'Doubly-Linked List': 'Linked Lists',
+    'Stack': 'Stack & Queue', 'Queue': 'Stack & Queue', 'Monotonic Stack': 'Stack & Queue', 'Monotonic Queue': 'Stack & Queue',
+    'Binary Search': 'Binary Search', 'Binary Search Tree': 'Binary Search',
+    'Tree': 'Trees & BST', 'Binary Tree': 'Trees & BST', 'Depth-First Search': 'Trees & BST', 'Breadth-First Search': 'Trees & BST',
+    'Heap (Priority Queue)': 'Heaps',
+    'Graph': 'Graphs', 'Shortest Path': 'Graphs', 'Topological Sort': 'Graphs', 'Minimum Spanning Tree': 'Graphs', 'Union Find': 'Graphs',
+    'Greedy': 'Greedy',
+    'Dynamic Programming': 'Dynamic Programming', 'Memoization': 'Dynamic Programming',
+    'Trie': 'Tries',
+    'Segment Tree': 'Segment Trees & Advanced Topics', 'Binary Indexed Tree': 'Segment Trees & Advanced Topics',
+  }
 
   const fetchAll = async () => {
     try {
@@ -53,6 +79,10 @@ function DsaTracker() {
       const [data, s] = await Promise.all([getDsaTopics(), getDsaStats()])
       setTopics(data)
       setStats(s)
+      try {
+        const lc = await getLeetCodeProfile()
+        if (lc && lc.exists !== false && lc.username) setLeetcode(lc)
+      } catch (_) {}
     } catch (err) { toast.error(err.message) }
     finally { setLoading(false) }
   }
@@ -98,6 +128,51 @@ function DsaTracker() {
     finally { setSaving(false) }
   }
 
+  const handleSyncFromLeetCode = async () => {
+    if (!leetcode?.username) return toast.error('Connect your LeetCode profile first (go to LeetCode page)')
+    setSyncing(true)
+    try {
+      const token = localStorage.getItem('placify_token')
+      const res = await fetch(`/api/leetcode/fetch/${leetcode.username}/skills`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      const text = await res.text()
+      if (!res.ok) throw new Error(`Server error (${res.status})`)
+      const data = JSON.parse(text)
+      if (data.error) throw new Error(data.message)
+
+      // Aggregate LeetCode tags into our topic buckets
+      const topicSolved = {}
+      for (const skill of data.skills || []) {
+        const mapped = TAG_TO_TOPIC[skill.tagName]
+        if (mapped) {
+          topicSolved[mapped] = (topicSolved[mapped] || 0) + skill.problemsSolved
+        }
+      }
+
+      // Update each matching DSA topic
+      let updated = 0
+      for (const topic of topics) {
+        const lcSolved = topicSolved[topic.topicName]
+        if (lcSolved && lcSolved > (topic.solvedQuestions || 0)) {
+          await updateDsaTopic(topic.id, {
+            ...topic,
+            solvedQuestions: Math.min(lcSolved, topic.totalQuestions),
+            lastUpdatedDate: new Date().toISOString().split('T')[0],
+          })
+          updated++
+        }
+      }
+
+      await fetchAll()
+      toast.success(`Synced! ${updated} topic${updated !== 1 ? 's' : ''} updated from LeetCode`)
+    } catch (err) {
+      toast.error(err.message || 'Failed to sync from LeetCode')
+    } finally {
+      setSyncing(false)
+    }
+  }
+
   const getProgressColor = (pct) => {
     if (pct >= 80) return 'linear-gradient(90deg,#10b981,#34d399)'
     if (pct >= 50) return 'linear-gradient(90deg,#6366f1,#8b5cf6)'
@@ -134,23 +209,31 @@ function DsaTracker() {
     <div className="page-container">
       <div className="page-header">
         <div>
-          <h1 className="page-title">DSA Tracker 💻</h1>
+          <h1 className="page-title"><Terminal size={22} style={{ marginRight: 8, verticalAlign: 'middle' }} />DSA Tracker</h1>
           <p className="page-subtitle">
             Data Structures & Algorithms progress
             {topics.length > 0 && <span style={{ marginLeft: 12, color: 'var(--primary-light)', fontWeight: 600 }}>· Overall: {avgProgress}%</span>}
           </p>
         </div>
-        <button id="add-dsa-btn" className="btn btn-primary" onClick={openCreate}>+ Add Topic</button>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginRight: 90 }}>
+          <button id="add-dsa-btn" className="btn btn-primary" onClick={openCreate}><Plus size={16} style={{ marginRight: 4, verticalAlign: 'middle' }} /> Add Topic</button>
+          {leetcode && (
+            <button className="btn btn-secondary" onClick={handleSyncFromLeetCode} disabled={syncing}>
+              <RefreshCw size={16} style={{ marginRight: 4, verticalAlign: 'middle', animation: syncing ? 'spin 1s linear infinite' : 'none' }} />
+              {syncing ? 'Syncing...' : 'Sync from LeetCode'}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Stats row */}
       {stats && (
         <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', marginBottom: 24 }}>
           {[
-            { icon: '💻', label: 'Avg Progress', value: `${stats.averageProgress || avgProgress}%`, grad: 'linear-gradient(90deg,#6366f1,#8b5cf6)' },
-            { icon: '✅', label: 'Questions Solved', value: stats.totalQuestionsSolved ?? topics.reduce((a, t) => a + (t.solvedQuestions || 0), 0), grad: 'linear-gradient(90deg,#10b981,#34d399)' },
-            { icon: '🏆', label: 'Topics Done', value: stats.completedTopics ?? topics.filter(t => t.progressPercentage === 100).length, grad: 'linear-gradient(90deg,#f59e0b,#fbbf24)' },
-            { icon: '📋', label: 'Total Topics', value: topics.length, grad: 'linear-gradient(90deg,#06b6d4,#6366f1)' },
+            { icon: <Terminal size={28} />, label: 'Avg Progress', value: `${stats.averageProgress || avgProgress}%`, grad: 'linear-gradient(90deg,#6366f1,#8b5cf6)' },
+            { icon: <CheckCircle size={28} />, label: 'Questions Solved', value: stats.totalQuestionsSolved ?? topics.reduce((a, t) => a + (t.solvedQuestions || 0), 0), grad: 'linear-gradient(90deg,#10b981,#34d399)' },
+            { icon: <Trophy size={28} />, label: 'Topics Done', value: stats.completedTopics ?? topics.filter(t => t.progressPercentage === 100).length, grad: 'linear-gradient(90deg,#f59e0b,#fbbf24)' },
+            { icon: <FileText size={28} />, label: 'Total Topics', value: topics.length, grad: 'linear-gradient(90deg,#06b6d4,#6366f1)' },
           ].map(c => (
             <div key={c.label} className="card" style={{ textAlign: 'center', padding: '16px 12px' }}>
               <div style={{ fontSize: '1.8rem' }}>{c.icon}</div>
@@ -161,11 +244,61 @@ function DsaTracker() {
         </div>
       )}
 
+      {/* LeetCode Stats Banner */}
+      {leetcode && (
+        <div className="card" style={{ marginBottom: 24, background: 'linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(245,158,11,0.08) 50%, rgba(239,68,68,0.08) 100%)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #f59e0b, #ef4444)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Lightbulb size={18} color="#fff" />
+              </div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>LeetCode — {leetcode.username}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                  {leetcode.ranking ? `Rank #${leetcode.ranking.toLocaleString()}` : 'Competitive Programming'}
+                </div>
+              </div>
+            </div>
+            <a href={`https://leetcode.com/u/${leetcode.username}`} target="_blank" rel="noopener noreferrer"
+               style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--primary)', fontSize: '0.8rem', textDecoration: 'none' }}>
+              View Profile <ExternalLink size={12} />
+            </a>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
+            {[
+              { label: 'Total Solved', value: leetcode.totalSolved || 0, color: '#6366f1' },
+              { label: 'Easy', value: leetcode.easySolved || 0, color: '#10b981' },
+              { label: 'Medium', value: leetcode.mediumSolved || 0, color: '#f59e0b' },
+              { label: 'Hard', value: leetcode.hardSolved || 0, color: '#ef4444' },
+            ].map(s => (
+              <div key={s.label} style={{ textAlign: 'center', padding: '10px 8px', background: 'var(--card-bg)', borderRadius: 10, border: '1px solid var(--border)' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: s.color }}>{s.value}</div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: 2 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+          {leetcode.totalSolved > 0 && (
+            <div style={{ marginTop: 14 }}>
+              <div style={{ display: 'flex', height: 8, borderRadius: 6, overflow: 'hidden', background: 'var(--surface)' }}>
+                <div style={{ width: `${((leetcode.easySolved || 0) / leetcode.totalSolved * 100)}%`, background: '#10b981', transition: 'width 0.6s ease' }} />
+                <div style={{ width: `${((leetcode.mediumSolved || 0) / leetcode.totalSolved * 100)}%`, background: '#f59e0b', transition: 'width 0.6s ease' }} />
+                <div style={{ width: `${((leetcode.hardSolved || 0) / leetcode.totalSolved * 100)}%`, background: '#ef4444', transition: 'width 0.6s ease' }} />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                <span><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 2, background: '#10b981', marginRight: 4 }} />Easy {((leetcode.easySolved || 0) / leetcode.totalSolved * 100).toFixed(0)}%</span>
+                <span><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 2, background: '#f59e0b', marginRight: 4 }} />Medium {((leetcode.mediumSolved || 0) / leetcode.totalSolved * 100).toFixed(0)}%</span>
+                <span><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 2, background: '#ef4444', marginRight: 4 }} />Hard {((leetcode.hardSolved || 0) / leetcode.totalSolved * 100).toFixed(0)}%</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Charts */}
       {topics.length > 0 && (
         <div className="dashboard-grid" style={{ marginBottom: 24 }}>
           <div className="card">
-            <div className="card-header"><h2 className="card-title">🥧 Status Distribution</h2></div>
+            <div className="card-header"><h2 className="card-title"><PieChartIcon size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />Status Distribution</h2></div>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value"
@@ -178,7 +311,7 @@ function DsaTracker() {
             </ResponsiveContainer>
           </div>
           <div className="card">
-            <div className="card-header"><h2 className="card-title">📊 Top Topics — Solved</h2></div>
+            <div className="card-header"><h2 className="card-title"><BarChart3 size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />Top Topics — Solved</h2></div>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={barData} margin={{ left: -20, right: 10, top: 5, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -212,7 +345,7 @@ function DsaTracker() {
 
       {loading ? <Loader message="Loading topics..." /> : filteredSorted.length === 0 ? (
         <div className="empty-state" style={{ marginTop: 48 }}>
-          <div className="empty-state-icon">🧠</div>
+          <div className="empty-state-icon"><Brain size={32} /></div>
           <div className="empty-state-text">{filter !== 'All' ? `No "${filter}" topics.` : 'No topics yet. Click "+ Add Topic" to get started!'}</div>
         </div>
       ) : (
@@ -233,8 +366,8 @@ function DsaTracker() {
                     </div>
                   </div>
                   <div className="dsa-card-actions">
-                    <button className="btn-icon edit" onClick={() => openEdit(topic)} title="Edit" aria-label={`Edit ${topic.topicName}`}>✏️</button>
-                    <button className="btn-icon danger" onClick={() => handleDelete(topic.id)} title="Delete" aria-label={`Delete ${topic.topicName}`}>🗑️</button>
+                    <button className="btn-icon edit" onClick={() => openEdit(topic)} title="Edit" aria-label={`Edit ${topic.topicName}`}><Pencil size={14} /></button>
+                    <button className="btn-icon danger" onClick={() => handleDelete(topic.id)} title="Delete" aria-label={`Delete ${topic.topicName}`}><Trash2 size={14} /></button>
                   </div>
                 </div>
 
@@ -265,13 +398,13 @@ function DsaTracker() {
 
                 <div style={{ marginTop: 10, display: 'flex', gap: 6 }}>
                   <span className={`dsa-status-badge ${statusLabel.toLowerCase().replace(' ', '-')}`}>
-                    {statusLabel === 'Completed' ? '✅' : statusLabel === 'In Progress' ? '🔄' : '⏳'} {statusLabel}
+                    {statusLabel === 'Completed' ? <CheckCircle size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} /> : statusLabel === 'In Progress' ? <RefreshCw size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} /> : <Clock size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} />} {statusLabel}
                   </span>
                 </div>
 
                 {topic.notes && (
                   <div style={{ marginTop: 8, fontSize: '0.75rem', color: 'var(--text-muted)', fontStyle: 'italic', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
-                    📝 {topic.notes}
+                    <FileText size={12} style={{ marginRight: 4, verticalAlign: 'middle' }} /> {topic.notes}
                   </div>
                 )}
               </div>
@@ -298,8 +431,8 @@ function DsaTracker() {
                       onClick={() => !isExisting && setForm(f => ({
                         ...f, topicName: t.name, totalQuestions: t.total, difficultyLevel: t.difficulty
                       }))}>
-                      <span>{t.emoji}</span><span>{t.name}</span>
-                      {isExisting && <span className="chip-done">✓</span>}
+                      <span>{t.icon}</span><span>{t.name}</span>
+                      {isExisting && <span className="chip-done"><Check size={12} /></span>}
                     </button>
                   )
                 })}
@@ -330,10 +463,10 @@ function DsaTracker() {
             <label className="form-label">Difficulty Level</label>
             <select className="form-input" value={form.difficultyLevel}
                     onChange={e => setForm(f => ({ ...f, difficultyLevel: e.target.value }))}>
-              <option value="EASY">🟢 Easy</option>
-              <option value="MEDIUM">🟡 Medium</option>
-              <option value="HARD">🔴 Hard</option>
-              <option value="MIXED">🔵 Mixed</option>
+              <option value="EASY">Easy</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HARD">Hard</option>
+              <option value="MIXED">Mixed</option>
             </select>
           </div>
 

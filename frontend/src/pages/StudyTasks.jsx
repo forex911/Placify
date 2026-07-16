@@ -7,6 +7,7 @@ import {
 } from '../api/tasksApi'
 import Modal from '../components/Modal'
 import Loader from '../components/Loader'
+import { CheckSquare, AlertTriangle, Clock, RefreshCw, CircleCheck, PenTool, Pencil, Trash2, Plus, Calendar, Check } from 'lucide-react'
 
 const STATUS_OPTIONS = ['Pending', 'In_Progress', 'Completed']
 
@@ -135,20 +136,20 @@ function StudyTasks() {
     <div className="page-container">
       <div className="page-header">
         <div>
-          <h1 className="page-title">Study Tasks ✅</h1>
+          <h1 className="page-title"><CheckSquare size={22} style={{ marginRight: 8, verticalAlign: 'middle' }} />Study Tasks</h1>
           <p className="page-subtitle">Manage your preparation to-do list</p>
         </div>
         <button id="add-task-btn" className="btn btn-primary" onClick={openCreate}>
-          + Add Task
+          <Plus size={16} style={{ marginRight: 4, verticalAlign: 'middle' }} /> Add Task
         </button>
       </div>
 
       {/* Summary mini-cards */}
       <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
         {[
-          { key: 'Pending', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', icon: '⏳' },
-          { key: 'In_Progress', color: '#818cf8', bg: 'rgba(99,102,241,0.1)', icon: '🔄' },
-          { key: 'Completed', color: '#34d399', bg: 'rgba(16,185,129,0.1)', icon: '✅' },
+          { key: 'Pending', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', icon: <Clock size={16} /> },
+          { key: 'In_Progress', color: '#818cf8', bg: 'rgba(99,102,241,0.1)', icon: <RefreshCw size={16} /> },
+          { key: 'Completed', color: '#34d399', bg: 'rgba(16,185,129,0.1)', icon: <CircleCheck size={16} /> },
         ].map(({ key, color, bg, icon }) => (
           <div
             key={key}
@@ -183,13 +184,13 @@ function StudyTasks() {
         ))}
       </div>
 
-      {error && <div className="alert alert-error">⚠️ {error}</div>}
+      {error && <div className="alert alert-error"><AlertTriangle size={16} /> {error}</div>}
 
       {loading ? (
         <Loader message="Loading tasks..." />
       ) : filteredTasks.length === 0 ? (
         <div className="empty-state" style={{ marginTop: '48px' }}>
-          <div className="empty-state-icon">📝</div>
+          <div className="empty-state-icon"><PenTool size={32} /></div>
           <div className="empty-state-text">No tasks found.<br />Add your first study task!</div>
         </div>
       ) : (
@@ -220,7 +221,7 @@ function StudyTasks() {
                 title="Toggle complete"
                 aria-label="Toggle task completion"
               >
-                ✓
+                <Check size={12} />
               </button>
 
               <div style={{ flex: 1 }}>
@@ -230,7 +231,7 @@ function StudyTasks() {
                     className="task-due"
                     style={{ color: isOverdue(task) ? 'var(--accent-rose)' : 'var(--text-muted)' }}
                   >
-                    {isOverdue(task) ? '⚠️ Due: ' : '📅 Due: '}{formatDate(task.dueDate)}
+                    {isOverdue(task) ? <><AlertTriangle size={12} /> Due: </> : <><Calendar size={12} /> Due: </>}{formatDate(task.dueDate)}
                   </div>
                 )}
               </div>
@@ -245,13 +246,13 @@ function StudyTasks() {
                   onClick={() => openEdit(task)}
                   title="Edit"
                   aria-label={`Edit task ${task.taskName}`}
-                >✏️</button>
+                ><Pencil size={14} /></button>
                 <button
                   className="btn-icon danger"
                   onClick={() => handleDelete(task.id)}
                   title="Delete"
                   aria-label={`Delete task ${task.taskName}`}
-                >🗑️</button>
+                ><Trash2 size={14} /></button>
               </div>
             </div>
           ))}
@@ -265,7 +266,7 @@ function StudyTasks() {
         title={editingTask ? 'Edit Task' : 'Add Study Task'}
       >
         <form onSubmit={handleSubmit} id="task-form">
-          {formError && <div className="alert alert-error">⚠️ {formError}</div>}
+          {formError && <div className="alert alert-error"><AlertTriangle size={16} /> {formError}</div>}
 
           <div className="form-group">
             <label className="form-label" htmlFor="taskName">Task Name *</label>

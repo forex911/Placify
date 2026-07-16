@@ -5,6 +5,7 @@ import Modal from '../components/Modal'
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import toast from 'react-hot-toast'
 import { format } from 'date-fns'
+import { Lightbulb, RefreshCw, Plus, Terminal, Trophy, BarChart3, PieChart as PieChartIcon } from 'lucide-react'
 
 const DIFFICULTY_COLORS = { Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444' }
 
@@ -23,6 +24,7 @@ function LeetCode() {
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
+  const [fetching, setFetching] = useState(false)
 
   const load = async () => {
     try {
@@ -71,6 +73,44 @@ function LeetCode() {
     finally { setSaving(false) }
   }
 
+  const handleFetch = async () => {
+    let username = form.username;
+    if (!username) return toast.error('Please enter a username');
+    
+    // Handle URLs like https://leetcode.com/u/username or https://leetcode.com/username
+    username = username.replace(/.*leetcode\.com\/(u\/)?/, '').replace(/\/.*/, '').trim();
+    setForm(f => ({ ...f, username }));
+    
+    setFetching(true);
+    try {
+      const token = localStorage.getItem('placify_token');
+      const res = await fetch(`/api/leetcode/fetch/${username}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      const text = await res.text();
+      if (!res.ok) throw new Error(`Server error (${res.status})`);
+      if (!text) throw new Error('Empty response from server');
+      
+      const data = JSON.parse(text);
+      if (data.error) throw new Error(data.message || 'Failed to fetch');
+      
+      setForm(f => ({
+        ...f,
+        totalSolved: data.totalSolved || 0,
+        easySolved: data.easySolved || 0,
+        mediumSolved: data.mediumSolved || 0,
+        hardSolved: data.hardSolved || 0,
+        ranking: data.ranking || '',
+      }));
+      toast.success('Stats fetched from LeetCode!');
+    } catch (err) {
+      toast.error(err.message || 'Could not fetch data. Check username or try again.');
+    } finally {
+      setFetching(false);
+    }
+  }
+
   const pieData = profile ? [
     { name: 'Easy', value: profile.easySolved || 0 },
     { name: 'Medium', value: profile.mediumSolved || 0 },
@@ -81,17 +121,17 @@ function LeetCode() {
     <div className="page-container">
       <div className="page-header">
         <div>
-          <h1 className="page-title">LeetCode Profile 💡</h1>
+          <h1 className="page-title"><Lightbulb size={22} style={{ marginRight: 8, verticalAlign: 'middle' }} />LeetCode Profile</h1>
           <p className="page-subtitle">Track your competitive programming progress</p>
         </div>
         <button className="btn btn-primary" onClick={openEdit}>
-          {profile ? '🔄 Update / Sync' : '+ Connect Profile'}
+          {profile ? <><RefreshCw size={16} style={{ marginRight: 4, verticalAlign: 'middle' }} /> Update / Sync</> : <><Plus size={16} style={{ marginRight: 4, verticalAlign: 'middle' }} /> Connect Profile</>}
         </button>
       </div>
 
       {loading ? <Loader message="Loading profile..." /> : !profile ? (
         <div className="empty-state" style={{ marginTop: 60 }}>
-          <div className="empty-state-icon">💡</div>
+          <div className="empty-state-icon"><Lightbulb size={32} /></div>
           <div className="empty-state-text">No LeetCode profile connected yet.<br />Click "Connect Profile" to get started!</div>
           <button className="btn btn-primary" style={{ marginTop: 16 }} onClick={openEdit}>Connect Profile</button>
         </div>
@@ -101,7 +141,7 @@ function LeetCode() {
           <div className="card" style={{ marginBottom: 24, background: 'linear-gradient(135deg, var(--card-bg) 0%, var(--surface) 100%)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
               <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'linear-gradient(135deg, #f59e0b, #ef4444)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', flexShrink: 0 }}>
-                💻
+                <Terminal size={32} color="#fff" />
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>
@@ -109,7 +149,7 @@ function LeetCode() {
                 </div>
                 {profile.ranking && (
                   <div style={{ color: 'var(--text-secondary)', marginTop: 4 }}>
-                    🏆 Rank #{profile.ranking?.toLocaleString()}
+                    <Trophy size={14} style={{ marginRight: 4, verticalAlign: 'middle' }} /> Rank #{profile.ranking?.toLocaleString()}
                   </div>
                 )}
                 {profile.lastSyncTime && (
@@ -128,7 +168,7 @@ function LeetCode() {
           {/* Difficulty breakdown + Pie */}
           <div className="dashboard-grid">
             <div className="card">
-              <div className="card-header"><h2 className="card-title">📊 Difficulty Breakdown</h2></div>
+              <div className="card-header"><h2 className="card-title"><BarChart3 size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />Difficulty Breakdown</h2></div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 8 }}>
                 {[
                   { label: 'Easy', value: profile.easySolved, color: '#10b981' },
@@ -152,7 +192,7 @@ function LeetCode() {
             </div>
 
             <div className="card">
-              <div className="card-header"><h2 className="card-title">🥧 Distribution</h2></div>
+              <div className="card-header"><h2 className="card-title"><PieChartIcon size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />Distribution</h2></div>
               {profile.totalSolved > 0 ? (
                 <ResponsiveContainer width="100%" height={220}>
                   <PieChart>
@@ -179,9 +219,14 @@ function LeetCode() {
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="LeetCode Profile">
         <form onSubmit={handleSave}>
           <div className="form-group">
-            <label className="form-label">LeetCode Username *</label>
-            <input className="form-input" type="text" placeholder="your-leetcode-username"
-                   value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} required />
+            <label className="form-label">LeetCode Username or URL *</label>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input className="form-input" style={{ flex: 1 }} type="text" placeholder="e.g. SIVA911 or https://leetcode.com/SIVA911"
+                     value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} required />
+              <button type="button" className="btn btn-secondary" onClick={handleFetch} disabled={fetching}>
+                {fetching ? 'Fetching...' : 'Fetch Stats'}
+              </button>
+            </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div className="form-group">
@@ -212,7 +257,7 @@ function LeetCode() {
           </div>
           <div className="form-actions">
             <button type="button" className="btn btn-secondary" onClick={() => setModalOpen(false)}>Cancel</button>
-            <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Syncing...' : '🔄 Sync Profile'}</button>
+            <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Syncing...' : <><RefreshCw size={16} style={{ marginRight: 4, verticalAlign: 'middle' }} /> Sync Profile</>}</button>
           </div>
         </form>
       </Modal>

@@ -55,6 +55,7 @@ public class ApplicationService {
         existing.setDeadline(dto.getDeadline());
         existing.setStatus(dto.getStatus());
         existing.setLocation(dto.getLocation());
+        existing.setCompanyLink(dto.getCompanyLink());
         existing.setUpdatedBy(userId);
 
         return toDTO(applicationRepository.save(existing));
@@ -93,6 +94,7 @@ public class ApplicationService {
         dto.setDeadline(app.getDeadline());
         dto.setStatus(app.getStatus());
         dto.setLocation(app.getLocation());
+        dto.setCompanyLink(app.getCompanyLink());
         dto.setCreatedBy(app.getCreatedBy());
         dto.setUpdatedBy(app.getUpdatedBy());
         dto.setCreatedAt(app.getCreatedAt());
@@ -108,6 +110,7 @@ public class ApplicationService {
         app.setDeadline(dto.getDeadline());
         app.setStatus(dto.getStatus());
         app.setLocation(dto.getLocation());
+        app.setCompanyLink(dto.getCompanyLink());
         return app;
     }
 }

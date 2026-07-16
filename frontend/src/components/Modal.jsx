@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { X } from 'lucide-react'
 
 function Modal({ isOpen, onClose, title, children }) {
   // Close on Escape key
@@ -26,7 +27,7 @@ function Modal({ isOpen, onClose, title, children }) {
       <div className="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div className="modal-header">
           <h2 className="modal-title" id="modal-title">{title}</h2>
-          <button className="modal-close" onClick={onClose} aria-label="Close modal">✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Close modal"><X size={20} /></button>
         </div>
         {children}
       </div>

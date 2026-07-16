@@ -1,12 +1,13 @@
 import { useEffect, useState, useRef } from 'react'
 import { getNotifications, markAsRead, markAllAsRead } from '../api/notificationsApi'
 import { format } from 'date-fns'
+import { Clock, CheckCircle, FileText, Target, Bell, X } from 'lucide-react'
 
 const TYPE_ICONS = {
-  DEADLINE:     '⏰',
-  PENDING_TASK: '✅',
-  DAILY_REPORT: '📝',
-  STUDY_GOAL:   '🎯',
+  DEADLINE:     <Clock size={16} style={{ color: '#ef4444' }} />,
+  PENDING_TASK: <CheckCircle size={16} style={{ color: '#10b981' }} />,
+  DAILY_REPORT: <FileText size={16} style={{ color: '#f59e0b' }} />,
+  STUDY_GOAL:   <Target size={16} style={{ color: '#8b5cf6' }} />,
 }
 
 function NotificationBell() {
@@ -59,11 +60,12 @@ function NotificationBell() {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer', position: 'relative', fontSize: '1.1rem',
           transition: 'all 0.2s',
+          color: 'var(--text-primary)',
         }}
         title="Notifications"
         aria-label="Notifications"
       >
-        🔔
+        <Bell size={20} />
         {count > 0 && (
           <span style={{
             position: 'absolute', top: -4, right: -4,
@@ -86,7 +88,7 @@ function NotificationBell() {
           zIndex: 1000, overflow: 'hidden',
         }}>
           <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>🔔 Notifications</span>
+            <span style={{ fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center' }}><Bell size={16} style={{ marginRight: 6 }} /> Notifications</span>
             {count > 0 && (
               <button onClick={handleReadAll} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '0.78rem', cursor: 'pointer', fontWeight: 600 }}>
                 Mark all read
@@ -97,7 +99,7 @@ function NotificationBell() {
           <div style={{ maxHeight: 320, overflowY: 'auto' }}>
             {count === 0 ? (
               <div style={{ padding: '32px 16px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                <div style={{ fontSize: '2rem', marginBottom: 8 }}>✅</div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}><CheckCircle size={40} color="#10b981" /></div>
                 <div>You're all caught up!</div>
               </div>
             ) : (
@@ -111,7 +113,7 @@ function NotificationBell() {
                   onMouseEnter={e => e.currentTarget.style.background = 'var(--hover)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'var(--card-bg)'}
                 >
-                  <span style={{ fontSize: '1.1rem', flexShrink: 0, marginTop: 2 }}>{TYPE_ICONS[n.type] || '🔔'}</span>
+                  <span style={{ flexShrink: 0, marginTop: 2 }}>{TYPE_ICONS[n.type] || <Bell size={16} />}</span>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)', lineHeight: 1.4 }}>{n.message}</div>
                     {n.createdAt && (
@@ -120,7 +122,7 @@ function NotificationBell() {
                       </div>
                     )}
                   </div>
-                  <button onClick={() => handleRead(n.id)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.9rem', cursor: 'pointer', padding: '0 2px', flexShrink: 0 }} title="Dismiss">✕</button>
+                  <button onClick={() => handleRead(n.id)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0 2px', flexShrink: 0, display: 'flex' }} title="Dismiss"><X size={14} /></button>
                 </div>
               ))
             )}

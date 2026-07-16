@@ -18,6 +18,8 @@ public class ApplicationDTO {
 
     private String location;
 
+    private String companyLink;
+
     @NotNull(message = "Applied date is required")
     private LocalDate appliedDate;
 
@@ -44,6 +46,9 @@ public class ApplicationDTO {
 
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
+
+    public String getCompanyLink() { return companyLink; }
+    public void setCompanyLink(String companyLink) { this.companyLink = companyLink; }
 
     public LocalDate getAppliedDate() { return appliedDate; }
     public void setAppliedDate(LocalDate appliedDate) { this.appliedDate = appliedDate; }

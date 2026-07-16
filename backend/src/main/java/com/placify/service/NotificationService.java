@@ -4,7 +4,6 @@ import com.placify.dto.NotificationDTO;
 import com.placify.entity.Notification;
 import com.placify.entity.Notification.NotificationType;
 import com.placify.repository.ApplicationRepository;
-import com.placify.repository.DailyReportRepository;
 import com.placify.repository.NotificationRepository;
 import com.placify.repository.StudyTaskRepository;
 import org.springframework.stereotype.Service;
@@ -19,16 +18,13 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final ApplicationRepository applicationRepository;
-    private final DailyReportRepository dailyReportRepository;
     private final StudyTaskRepository studyTaskRepository;
 
     public NotificationService(NotificationRepository notificationRepository,
                                 ApplicationRepository applicationRepository,
-                                DailyReportRepository dailyReportRepository,
                                 StudyTaskRepository studyTaskRepository) {
         this.notificationRepository = notificationRepository;
         this.applicationRepository = applicationRepository;
-        this.dailyReportRepository = dailyReportRepository;
         this.studyTaskRepository = studyTaskRepository;
     }
 
@@ -71,30 +67,21 @@ public class NotificationService {
         var upcomingApps = applicationRepository.findByUserIdAndDeadlineBetween(
                 userId, LocalDate.now(), LocalDate.now().plusDays(3));
         for (var app : upcomingApps) {
-            String msg = "â° Deadline approaching for " + app.getCompanyName()
-                    + " (" + app.getRole() + ") â€” " + app.getDeadline();
+            String msg = "Deadline approaching for " + app.getCompanyName()
+                    + " (" + app.getRole() + ") - " + app.getDeadline();
             Notification n = new Notification(userId, msg, NotificationType.DEADLINE);
             notificationRepository.save(n);
             generated++;
         }
 
-        // 2. Daily report reminder (if no report today)
-        boolean reportedToday = dailyReportRepository
-                .findByUserIdAndReportDate(userId, LocalDate.now()).isPresent();
-        if (!reportedToday) {
-            Notification n = new Notification(userId,
-                    "ðŸ“ Don't forget to submit your daily study report for today!",
-                    NotificationType.DAILY_REPORT);
-            notificationRepository.save(n);
-            generated++;
-        }
+        // 2. Removed Daily Report Reminder
 
         // 3. Pending tasks reminder
         long pendingCount = studyTaskRepository.countByUserIdAndStatus(
                 userId, com.placify.entity.StudyTask.TaskStatus.Pending);
         if (pendingCount > 3) {
             Notification n = new Notification(userId,
-                    "âœ… You have " + pendingCount + " pending study tasks. Keep going!",
+                    "You have " + pendingCount + " pending study tasks. Keep going!",
                     NotificationType.PENDING_TASK);
             notificationRepository.save(n);
             generated++;

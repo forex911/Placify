@@ -24,6 +24,9 @@ public class Application {
     @Column(name = "location")
     private String location;
 
+    @Column(name = "company_link")
+    private String companyLink;
+
     @Column(name = "applied_date", nullable = false)
     private LocalDate appliedDate;
 
@@ -84,6 +87,9 @@ public class Application {
 
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
+
+    public String getCompanyLink() { return companyLink; }
+    public void setCompanyLink(String companyLink) { this.companyLink = companyLink; }
 
     public LocalDate getAppliedDate() { return appliedDate; }
     public void setAppliedDate(LocalDate appliedDate) { this.appliedDate = appliedDate; }

@@ -79,17 +79,14 @@ spring.datasource.password=YOUR_POSTGRES_PASSWORD
 # Navigate to backend directory
 cd backend
 
-# Build and run using the Maven wrapper
-./mvnw spring-boot:run
-```
+# Build the project (skipping tests for speed)
+./mvnw clean package -DskipTests
 
-Backend starts at: **http://localhost:8080**
-
-To build a JAR:
-```bash
-./mvnw clean package
+# Run the compiled JAR
 java -jar target/placify-backend-1.0.0.jar
 ```
+
+Backend starts at: **http://localhost:8081** (or the port specified in your environment variables).
 
 ---
 

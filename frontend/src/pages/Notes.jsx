@@ -7,6 +7,7 @@ import {
 } from '../api/notesApi'
 import Modal from '../components/Modal'
 import Loader from '../components/Loader'
+import { PenTool, AlertTriangle, BookOpen, Pencil, Trash2, Plus, Search, Clock } from 'lucide-react'
 
 const EMPTY_FORM = { title: '', content: '' }
 
@@ -112,11 +113,11 @@ function Notes() {
     <div className="page-container">
       <div className="page-header">
         <div>
-          <h1 className="page-title">Notes 📝</h1>
+          <h1 className="page-title"><PenTool size={22} style={{ marginRight: 8, verticalAlign: 'middle' }} />Notes</h1>
           <p className="page-subtitle">Capture your ideas, interview notes, and references</p>
         </div>
         <button id="add-note-btn" className="btn btn-primary" onClick={openCreate}>
-          + New Note
+          <Plus size={16} style={{ marginRight: 4, verticalAlign: 'middle' }} /> New Note
         </button>
       </div>
 
@@ -126,20 +127,20 @@ function Notes() {
           id="note-search"
           className="form-input"
           type="text"
-          placeholder="🔍 Search notes..."
+          placeholder="Search notes..."
           value={search}
           onChange={e => setSearch(e.target.value)}
           style={{ maxWidth: '400px' }}
         />
       </div>
 
-      {error && <div className="alert alert-error">⚠️ {error}</div>}
+      {error && <div className="alert alert-error"><AlertTriangle size={16} /> {error}</div>}
 
       {loading ? (
         <Loader message="Loading notes..." />
       ) : filteredNotes.length === 0 ? (
         <div className="empty-state" style={{ marginTop: '48px' }}>
-          <div className="empty-state-icon">📓</div>
+          <div className="empty-state-icon"><BookOpen size={32} /></div>
           <div className="empty-state-text">
             {search ? 'No notes match your search.' : 'No notes yet.\nCreate your first note!'}
           </div>
@@ -161,13 +162,13 @@ function Notes() {
                     onClick={(e) => { e.stopPropagation(); openEdit(note) }}
                     title="Edit"
                     aria-label={`Edit note ${note.title}`}
-                  >✏️</button>
+                  ><Pencil size={14} /></button>
                   <button
                     className="btn-icon danger"
                     onClick={(e) => { e.stopPropagation(); handleDelete(note.id) }}
                     title="Delete"
                     aria-label={`Delete note ${note.title}`}
-                  >🗑️</button>
+                  ><Trash2 size={14} /></button>
                 </div>
               </div>
 
@@ -176,7 +177,7 @@ function Notes() {
               )}
 
               <div className="note-card-date">
-                🕐 {formatDateTime(note.createdAt)}
+                <Clock size={12} style={{ marginRight: 4 }} /> {formatDateTime(note.createdAt)}
               </div>
             </div>
           ))}
@@ -201,7 +202,7 @@ function Notes() {
               className="btn btn-secondary btn-sm"
               onClick={() => { setViewingNote(null); openEdit(viewingNote) }}
             >
-              ✏️ Edit
+              <Pencil size={14} style={{ marginRight: 4 }} /> Edit
             </button>
             <button
               className="btn btn-secondary btn-sm"
@@ -220,7 +221,7 @@ function Notes() {
         title={editingNote ? 'Edit Note' : 'New Note'}
       >
         <form onSubmit={handleSubmit} id="note-form">
-          {formError && <div className="alert alert-error">⚠️ {formError}</div>}
+          {formError && <div className="alert alert-error"><AlertTriangle size={16} /> {formError}</div>}
 
           <div className="form-group">
             <label className="form-label" htmlFor="noteTitle">Title *</label>

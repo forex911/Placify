@@ -51,7 +51,7 @@ public class DataSeeder {
                     User admin = new User("admin", "admin@placify.com",
                             passwordEncoder.encode("Admin@1234"), Role.ADMIN);
                     userRepository.save(admin);
-                    System.out.println("âœ… Default admin user created: admin@placify.com / Admin@1234");
+                    System.out.println("Default admin user created: admin@placify.com / Admin@1234");
                 }
 
                 // 2. Seed DSA topics + Subject entries for every user
@@ -61,9 +61,9 @@ public class DataSeeder {
                     seedSubjectProgressForUser(user.getId(), subjectProgressRepository);
                 }
 
-                System.out.println("âœ… DataSeeder complete. Users seeded: " + allUsers.size());
+                System.out.println("DataSeeder complete. Users seeded: " + allUsers.size());
             } catch (Exception e) {
-                System.err.println("âš ï¸ DataSeeder encountered an error (non-fatal): " + e.getMessage());
+                System.err.println("DataSeeder encountered an error (non-fatal): " + e.getMessage());
                 e.printStackTrace();
             }
         };

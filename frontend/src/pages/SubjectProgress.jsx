@@ -5,14 +5,15 @@ import Loader from '../components/Loader'
 import Modal from '../components/Modal'
 import { RadialBarChart, RadialBar, Legend, Tooltip, ResponsiveContainer } from 'recharts'
 import toast from 'react-hot-toast'
+import { BookOpen, BarChart3, Monitor, Database, Globe, Package, Calculator, Book, Pencil, FileText, Circle } from 'lucide-react'
 
 const SUBJECT_META = {
-  OPERATING_SYSTEMS:  { label: 'Operating Systems', icon: '🖥️', color: '#6366f1' },
-  DBMS:              { label: 'DBMS',               icon: '🗄️', color: '#10b981' },
-  COMPUTER_NETWORKS: { label: 'Computer Networks',  icon: '🌐', color: '#f59e0b' },
-  OOP:               { label: 'OOP',                icon: '📦', color: '#8b5cf6' },
-  APTITUDE:          { label: 'Aptitude',            icon: '🧮', color: '#ec4899' },
-  VERBAL_ABILITY:    { label: 'Verbal Ability',      icon: '📖', color: '#06b6d4' },
+  OPERATING_SYSTEMS:  { label: 'Operating Systems', icon: <Monitor size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />, color: '#6366f1' },
+  DBMS:              { label: 'DBMS',               icon: <Database size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />, color: '#10b981' },
+  COMPUTER_NETWORKS: { label: 'Computer Networks',  icon: <Globe size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />, color: '#f59e0b' },
+  OOP:               { label: 'OOP',                icon: <Package size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />, color: '#8b5cf6' },
+  APTITUDE:          { label: 'Aptitude',            icon: <Calculator size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />, color: '#ec4899' },
+  VERBAL_ABILITY:    { label: 'Verbal Ability',      icon: <Book size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />, color: '#06b6d4' },
 }
 
 const LEVEL_COLORS = { BEGINNER: 'var(--success)', INTERMEDIATE: 'var(--warning)', ADVANCED: 'var(--primary)' }
@@ -80,7 +81,7 @@ function SubjectProgress() {
     <div className="page-container">
       <div className="page-header">
         <div>
-          <h1 className="page-title">Core Subjects 📚</h1>
+          <h1 className="page-title"><BookOpen size={22} style={{ marginRight: 8, verticalAlign: 'middle' }} />Core Subjects</h1>
           <p className="page-subtitle">
             Track your core CS subject knowledge
             {subjects.length > 0 && (
@@ -98,7 +99,7 @@ function SubjectProgress() {
           {subjects.length > 0 && (
             <div className="card" style={{ marginBottom: 24 }}>
               <div className="card-header">
-                <h2 className="card-title">📊 Subject Progress Overview</h2>
+                <h2 className="card-title"><BarChart3 size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />Subject Progress Overview</h2>
               </div>
               <ResponsiveContainer width="100%" height={280}>
                 <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="90%"
@@ -115,7 +116,7 @@ function SubjectProgress() {
           {/* Subject Cards */}
           <div className="dsa-grid">
             {subjects.map(subj => {
-              const meta = SUBJECT_META[subj.subject] || { label: subj.subject, icon: '📚', color: '#6366f1' }
+              const meta = SUBJECT_META[subj.subject] || { label: subj.subject, icon: <Book size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />, color: '#6366f1' }
               const pct = subj.progressPercentage || 0
               const remaining = (subj.totalTopics || 30) - (subj.topicsCompleted || 0)
               return (
@@ -127,7 +128,7 @@ function SubjectProgress() {
                         {subj.lastUpdatedDate ? `Updated: ${subj.lastUpdatedDate}` : 'Not started yet'}
                       </div>
                     </div>
-                    <button className="btn-icon edit" onClick={() => openEdit(subj)} title="Update">✏️</button>
+                    <button className="btn-icon edit" onClick={() => openEdit(subj)} title="Update"><Pencil size={14} /></button>
                   </div>
 
                   <div style={{ margin: '12px 0', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -151,7 +152,7 @@ function SubjectProgress() {
 
                   {subj.notes && (
                     <div style={{ marginTop: 10, fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
-                      📝 {subj.notes}
+                      <FileText size={12} style={{ marginRight: 4, verticalAlign: 'middle' }} /> {subj.notes}
                     </div>
                   )}
                 </div>
@@ -168,9 +169,9 @@ function SubjectProgress() {
           <div className="form-group">
             <label className="form-label">Current Level</label>
             <select className="form-input" value={form.level} onChange={e => setForm(f => ({ ...f, level: e.target.value }))}>
-              <option value="BEGINNER">🟢 Beginner</option>
-              <option value="INTERMEDIATE">🟡 Intermediate</option>
-              <option value="ADVANCED">🔴 Advanced</option>
+              <option value="BEGINNER">Beginner</option>
+              <option value="INTERMEDIATE">Intermediate</option>
+              <option value="ADVANCED">Advanced</option>
             </select>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>

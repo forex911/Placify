@@ -4,6 +4,8 @@ import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
 import Sidebar from './components/Sidebar'
+import NotificationBell from './components/NotificationBell'
+import DarkModeToggle from './components/DarkModeToggle'
 import Dashboard from './pages/Dashboard'
 import Applications from './pages/Applications'
 import DsaTracker from './pages/DsaTracker'
@@ -14,7 +16,7 @@ import Register from './pages/Register'
 import AdminDashboard from './pages/AdminDashboard'
 import UserProfile from './pages/UserProfile'
 import SubjectProgress from './pages/SubjectProgress'
-import DailyReport from './pages/DailyReport'
+import Hackathons from './pages/Hackathons'
 import LeetCode from './pages/LeetCode'
 
 function AppLayout({ children }) {
@@ -22,6 +24,10 @@ function AppLayout({ children }) {
     <div className="app-layout">
       <Sidebar />
       <main className="main-content">
+        <div style={{ position: 'absolute', top: 32, right: 32, display: 'flex', gap: 12, zIndex: 100 }}>
+          <NotificationBell />
+          <DarkModeToggle />
+        </div>
         {children}
       </main>
     </div>
@@ -56,7 +62,7 @@ function App() {
           <Route path="/dsa" element={<ProtectedRoute><AppLayout><DsaTracker /></AppLayout></ProtectedRoute>} />
           <Route path="/subjects" element={<ProtectedRoute><AppLayout><SubjectProgress /></AppLayout></ProtectedRoute>} />
           <Route path="/tasks" element={<ProtectedRoute><AppLayout><StudyTasks /></AppLayout></ProtectedRoute>} />
-          <Route path="/reports" element={<ProtectedRoute><AppLayout><DailyReport /></AppLayout></ProtectedRoute>} />
+          <Route path="/hackathons" element={<ProtectedRoute><AppLayout><Hackathons /></AppLayout></ProtectedRoute>} />
           <Route path="/leetcode" element={<ProtectedRoute><AppLayout><LeetCode /></AppLayout></ProtectedRoute>} />
           <Route path="/notes" element={<ProtectedRoute><AppLayout><Notes /></AppLayout></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><AppLayout><UserProfile /></AppLayout></ProtectedRoute>} />

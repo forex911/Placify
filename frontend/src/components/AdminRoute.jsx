@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Loader from './Loader'
+import { Ban } from 'lucide-react'
 
 function AdminRoute({ children }) {
   const { user, loading, isAdmin } = useAuth()
@@ -15,7 +16,7 @@ function AdminRoute({ children }) {
     return (
       <div className="page-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '16px' }}>🚫</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}><Ban size={64} color="#ef4444" /></div>
           <h2 style={{ color: 'var(--text-primary)', marginBottom: '8px' }}>Access Denied</h2>
           <p style={{ color: 'var(--text-secondary)' }}>You need admin privileges to access this page.</p>
         </div>

@@ -4,10 +4,9 @@ import com.placify.dto.DashboardStatsDTO;
 import com.placify.entity.Application.ApplicationStatus;
 import com.placify.entity.StudyTask.TaskStatus;
 import com.placify.repository.ApplicationRepository;
-import com.placify.repository.DailyReportRepository;
+import com.placify.repository.HackathonRepository;
 import com.placify.repository.NotificationRepository;
 import com.placify.repository.StudyTaskRepository;
-import com.placify.service.DailyReportService;
 import com.placify.service.DsaTrackerService;
 import com.placify.service.SubjectProgressService;
 import org.springframework.http.ResponseEntity;
@@ -25,25 +24,22 @@ public class DashboardController {
     private final ApplicationRepository applicationRepository;
     private final StudyTaskRepository studyTaskRepository;
     private final DsaTrackerService dsaTrackerService;
-    private final DailyReportService dailyReportService;
-    private final DailyReportRepository dailyReportRepository;
     private final SubjectProgressService subjectProgressService;
     private final NotificationRepository notificationRepository;
+    private final HackathonRepository hackathonRepository;
 
     public DashboardController(ApplicationRepository applicationRepository,
                                 StudyTaskRepository studyTaskRepository,
                                 DsaTrackerService dsaTrackerService,
-                                DailyReportService dailyReportService,
-                                DailyReportRepository dailyReportRepository,
                                 SubjectProgressService subjectProgressService,
-                                NotificationRepository notificationRepository) {
+                                NotificationRepository notificationRepository,
+                                HackathonRepository hackathonRepository) {
         this.applicationRepository = applicationRepository;
         this.studyTaskRepository = studyTaskRepository;
         this.dsaTrackerService = dsaTrackerService;
-        this.dailyReportService = dailyReportService;
-        this.dailyReportRepository = dailyReportRepository;
         this.subjectProgressService = subjectProgressService;
         this.notificationRepository = notificationRepository;
+        this.hackathonRepository = hackathonRepository;
     }
 
     @GetMapping("/stats")
@@ -58,9 +54,7 @@ public class DashboardController {
         long selectedApplications = applicationRepository.countByUserIdAndStatus(userId, ApplicationStatus.Selected);
         long rejectedApplications = applicationRepository.countByUserIdAndStatus(userId, ApplicationStatus.Rejected);
         long interviewApplications = applicationRepository.countByUserIdAndStatus(userId, ApplicationStatus.Interview_Scheduled);
-        long totalReports = dailyReportRepository.countByUserId(userId);
-        double weeklyHours = dailyReportService.getStudyHoursThisWeek(userId);
-        int streak = dailyReportService.getStudyStreak(userId);
+        long totalHackathons = hackathonRepository.countByUserId(userId);
         int completedTopics = (int) dsaTrackerService.getCompletedTopicsCountByUser(userId);
         long totalSolved = dsaTrackerService.getTotalSolvedByUser(userId);
         long unread = notificationRepository.countByUserIdAndIsReadFalse(userId);
@@ -69,9 +63,9 @@ public class DashboardController {
                 totalApplications, upcomingDeadlines, pendingStudyTasks,
                 avgDsaProgress, selectedApplications, rejectedApplications, interviewApplications);
 
-        stats.setTotalDailyReports(totalReports);
-        stats.setTotalStudyHoursThisWeek(weeklyHours);
-        stats.setStudyStreak(streak);
+        stats.setTotalHackathons(totalHackathons);
+        stats.setTotalStudyHoursThisWeek(0); // placeholder if needed later
+        stats.setStudyStreak(0);
         stats.setDsaTopicsSolved(completedTopics);
         stats.setTotalDsaQuestionsSolved(totalSolved);
         stats.setSubjectProgress(subjectProgressService.getAllForUser(userId));
