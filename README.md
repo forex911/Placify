@@ -127,6 +127,7 @@ Frontend starts at: **http://localhost:5173**
 | DELETE | `/api/applications/{id}` | Delete application |
 
 **Status values:** `Applied`, `OA_Cleared`, `Interview_Scheduled`, `Rejected`, `Selected`
+**Features:** Includes optional `companyLink` field to directly redirect to job postings.
 
 ### DSA Tracker
 | Method | Endpoint | Description |
@@ -157,23 +158,41 @@ Frontend starts at: **http://localhost:5173**
 | PUT | `/api/notes/{id}` | Update note |
 | DELETE | `/api/notes/{id}` | Delete note |
 
+### Hackathons
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/hackathons` | List all hackathons |
+| POST | `/api/hackathons` | Add a new hackathon |
+| PUT | `/api/hackathons/{id}` | Update hackathon |
+| DELETE | `/api/hackathons/{id}` | Delete hackathon |
+
+### LeetCode Integration
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/leetcode` | Get saved LeetCode profile linked to user |
+| PUT | `/api/leetcode` | Link/Update LeetCode profile |
+| GET | `/api/leetcode/fetch/{username}` | Fetch live stats via LeetCode GraphQL API |
+
 ---
 
 ## 🌟 Features
 
 | Module | Features |
 |--------|----------|
-| **Dashboard** | Stats cards, upcoming deadlines, pending tasks preview, DSA progress bars |
-| **Applications** | CRUD, filter by status, color-coded badges, deadline warnings |
+| **Dashboard** | Stats cards, upcoming deadlines, pending tasks, DSA progress bars, Live LeetCode stats widget |
+| **Applications** | CRUD, filter by status, color-coded badges, deadline warnings, company links |
 | **DSA Tracker** | Card grid, color-coded progress bars, range slider, completion status |
 | **Study Tasks** | CRUD, quick completion toggle, overdue highlighting, mini stats |
 | **Notes** | CRUD, search, card grid, full-view modal, color accent bars |
+| **Hackathons** | Track participated hackathons, project links, dates, and outcomes |
+| **LeetCode Sync** | Link your LeetCode handle to view live Total, Easy, Medium, and Hard solved counts |
 
 ---
 
 ## 🎨 UI Features
 
-- 🌑 Premium dark theme with `#0a0e1a` background
+- 🌓 **Dynamic Light/Dark Mode** switch with local storage persistence
+- 🌑 Minimalist Monochrome aesthetic (Pure Black & White with subtle grays)
 - ✨ Glassmorphism cards with gradient accent borders
 - 🌈 Animated sidebar with active state highlighting
 - 📊 Animated progress bars
