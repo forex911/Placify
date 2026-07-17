@@ -1,14 +1,14 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { 
   Sparkles, LayoutDashboard, FileText, Zap, BookOpen, 
   CheckSquare, LineChart, Code2, PenTool, Settings, 
   Shield, User, LogOut, X, Menu, Trophy
 } from 'lucide-react'
 
-const navItems = [
+const defaultNavItems = [
   { to: '/dashboard',  icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
   { to: '/applications', icon: <FileText size={18} />, label: 'Applications' },
   { to: '/dsa',        icon: <Zap size={18} />, label: 'DSA Tracker' },
@@ -23,6 +23,32 @@ function Sidebar() {
   const { user, logout, isAdmin } = useAuth()
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [items, setItems] = useState(() => {
+    const saved = localStorage.getItem('sidebar-order')
+    if (saved) {
+      const order = JSON.parse(saved)
+      return [...defaultNavItems].sort((a, b) => {
+        const idxA = order.indexOf(a.to)
+        const idxB = order.indexOf(b.to)
+        return (idxA !== -1 ? idxA : 999) - (idxB !== -1 ? idxB : 999)
+      })
+    }
+    return defaultNavItems
+  })
+
+  const dragItem = useRef(null)
+  const dragOverItem = useRef(null)
+
+  const handleSort = () => {
+    if (dragItem.current === null || dragOverItem.current === null) return
+    const _items = [...items]
+    const draggedItemContent = _items.splice(dragItem.current, 1)[0]
+    _items.splice(dragOverItem.current, 0, draggedItemContent)
+    dragItem.current = null
+    dragOverItem.current = null
+    setItems(_items)
+    localStorage.setItem('sidebar-order', JSON.stringify(_items.map(i => i.to)))
+  }
 
   const handleLogout = () => {
     logout()
@@ -45,12 +71,18 @@ function Sidebar() {
 
       <nav className="sidebar-nav">
         <div className="sidebar-section-label">Navigation</div>
-        {navItems.map((item) => (
+        {items.map((item, index) => (
           <NavLink
             key={item.to}
             to={item.to}
+            draggable
+            onDragStart={(e) => { dragItem.current = index; e.dataTransfer.effectAllowed = 'move' }}
+            onDragEnter={(e) => { dragOverItem.current = index }}
+            onDragOver={(e) => { e.preventDefault() }}
+            onDragEnd={handleSort}
             className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
             onClick={() => setMobileOpen(false)}
+            style={{ cursor: 'default' }}
           >
             <span className="nav-icon">{item.icon}</span>
             <span className="nav-label">{item.label}</span>

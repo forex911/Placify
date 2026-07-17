@@ -54,6 +54,7 @@ function Applications() {
     try {
       setLoading(true)
       const data = await getApplications(status)
+      data.sort((a, b) => new Date(b.appliedDate) - new Date(a.appliedDate))
       setApplications(data)
       setError(null)
     } catch (err) {
