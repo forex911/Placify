@@ -1,10 +1,10 @@
-# 🚀 Placify — Placement Tracking System
+# Placify — Placement Tracking System
 
-A **production-ready full-stack web application** for students to track placements, internships, DSA progress, study tasks, and notes.
+A production-ready full-stack web application for students to track placements, internships, DSA progress, study tasks, and notes.
 
 ---
 
-## 🏗️ Tech Stack
+## Technology Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -15,7 +15,7 @@ A **production-ready full-stack web application** for students to track placemen
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 Placify/
@@ -46,7 +46,7 @@ Placify/
 
 ---
 
-## ⚙️ Prerequisites
+## Prerequisites
 
 - **Java 17+** — [Download](https://adoptium.net/)
 - **Maven 3.6+** — [Download](https://maven.apache.org/)
@@ -55,9 +55,9 @@ Placify/
 
 ---
 
-## 🗄️ Database Setup
+## Database Setup
 
-1. Start PostgreSQL and connect via `psql` or pgAdmin
+1. Start PostgreSQL and connect via `psql` or pgAdmin.
 2. Create the database:
 ```sql
 CREATE DATABASE placify;
@@ -69,11 +69,11 @@ spring.datasource.username=YOUR_POSTGRES_USERNAME
 spring.datasource.password=YOUR_POSTGRES_PASSWORD
 ```
 
-> Tables are auto-created by Hibernate on first run (`ddl-auto=update`)
+> Tables are automatically created by Hibernate on the first run (`ddl-auto=update`).
 
 ---
 
-## 🖥️ Backend Setup
+## Backend Setup
 
 ```bash
 # Navigate to backend directory
@@ -86,11 +86,11 @@ cd backend
 java -jar target/placify-backend-1.0.0.jar
 ```
 
-Backend starts at: **http://localhost:8081** (or the port specified in your environment variables).
+The backend starts at: **http://localhost:8081** (or the port specified in your environment variables).
 
 ---
 
-## 🌐 Frontend Setup
+## Frontend Setup
 
 ```bash
 # Navigate to frontend directory
@@ -103,18 +103,18 @@ npm install
 npm run dev
 ```
 
-Frontend starts at: **http://localhost:5173**
+The frontend starts at: **http://localhost:5173**
 
 > The Vite dev server proxies `/api` requests to `http://localhost:8080` automatically.
 
 ---
 
-## 📡 API Documentation
+## API Documentation
 
 ### Dashboard
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/dashboard/stats` | Get dashboard summary stats |
+| GET | `/api/dashboard/stats` | Get dashboard summary statistics |
 
 ### Applications
 | Method | Endpoint | Description |
@@ -127,7 +127,7 @@ Frontend starts at: **http://localhost:5173**
 | DELETE | `/api/applications/{id}` | Delete application |
 
 **Status values:** `Applied`, `OA_Cleared`, `Interview_Scheduled`, `Rejected`, `Selected`
-**Features:** Includes optional `companyLink` field to directly redirect to job postings.
+**Features:** Includes an optional `companyLink` field to redirect users to job postings.
 
 ### DSA Tracker
 | Method | Endpoint | Description |
@@ -170,40 +170,40 @@ Frontend starts at: **http://localhost:5173**
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/leetcode` | Get saved LeetCode profile linked to user |
-| PUT | `/api/leetcode` | Link/Update LeetCode profile |
-| GET | `/api/leetcode/fetch/{username}` | Fetch live stats via LeetCode GraphQL API |
+| PUT | `/api/leetcode` | Link or update LeetCode profile |
+| GET | `/api/leetcode/fetch/{username}` | Fetch live statistics via LeetCode GraphQL API |
 
 ---
 
-## 🌟 Features
+## Features
 
 | Module | Features |
 |--------|----------|
-| **Dashboard** | Stats cards, upcoming deadlines, pending tasks, DSA progress bars, Live LeetCode stats widget |
-| **Applications** | CRUD, filter by status, color-coded badges, deadline warnings, company links |
+| **Dashboard** | Statistics cards, upcoming deadlines, pending tasks, DSA progress bars, Live LeetCode statistics widget |
+| **Applications** | CRUD operations, filter by status, color-coded badges, deadline warnings, company links |
 | **DSA Tracker** | Card grid, color-coded progress bars, range slider, completion status |
-| **Study Tasks** | CRUD, quick completion toggle, overdue highlighting, mini stats |
-| **Notes** | CRUD, search, card grid, full-view modal, color accent bars |
+| **Study Tasks** | CRUD operations, quick completion toggle, overdue highlighting, mini statistics |
+| **Notes** | CRUD operations, search functionality, card grid, full-view modal, color accent bars |
 | **Hackathons** | Track participated hackathons, project links, dates, and outcomes |
 | **LeetCode Sync** | Link your LeetCode handle to view live Total, Easy, Medium, and Hard solved counts |
 
 ---
 
-## 🎨 UI Features
+## User Interface
 
-- 🌓 **Dynamic Light/Dark Mode** switch with local storage persistence
-- 🌑 Minimalist Monochrome aesthetic (Pure Black & White with subtle grays)
-- ✨ Glassmorphism cards with gradient accent borders
-- 🌈 Animated sidebar with active state highlighting
-- 📊 Animated progress bars
-- 🔔 Status badges with appropriate colors
-- 📱 Responsive layout (mobile-friendly)
-- 🎭 Smooth micro-animations on hover
-- ♿ Accessible forms with ARIA labels
+- Dynamic Light/Dark Mode switch with local storage persistence
+- Minimalist Monochrome aesthetic (Pure Black & White with subtle grays)
+- Glassmorphism cards with gradient accent borders
+- Animated sidebar with active state highlighting
+- Animated progress bars
+- Status badges with appropriate colors
+- Responsive layout (mobile-friendly)
+- Smooth micro-animations on hover
+- Accessible forms with ARIA labels
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 | Setting | Default | File |
 |---------|---------|------|
@@ -215,6 +215,6 @@ Frontend starts at: **http://localhost:5173**
 
 ---
 
-## 🔗 Repository
+## Repository
 
 **Source Code**: [forex911/Placify](https://github.com/forex911/Placify)
