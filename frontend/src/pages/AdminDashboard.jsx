@@ -4,7 +4,7 @@ import { getAdminSubjects } from '../api/subjectApi'
 import Loader from '../components/Loader'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import toast from 'react-hot-toast'
-import { Settings, Users, CheckCircle, ClipboardList, FileText, Terminal, Puzzle, BarChart3, Book, CheckCircle2, XCircle } from 'lucide-react'
+import { Settings, Users, CheckCircle, ClipboardList, FileText, Terminal, Puzzle, BarChart3, Book, CheckCircle2, XCircle, Trophy } from 'lucide-react'
 
 const PIE_COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4']
 const TABS = ['Overview', 'Users', 'Hackathons', 'Subjects']
