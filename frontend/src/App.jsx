@@ -24,7 +24,7 @@ function AppLayout({ children }) {
     <div className="app-layout">
       <Sidebar />
       <main className="main-content">
-        <div style={{ position: 'absolute', top: 32, right: 32, display: 'flex', gap: 12, zIndex: 100 }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, padding: '16px 0 0 0', position: 'sticky', top: 0, zIndex: 100, background: 'var(--bg-primary)' }}>
           <NotificationBell />
           <DarkModeToggle />
         </div>
