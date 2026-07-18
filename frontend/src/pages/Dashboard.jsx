@@ -10,6 +10,7 @@ import {
   Home, FileText, Clock, Trophy,
   AlertTriangle, Sparkles, Briefcase, CheckSquare
 } from 'lucide-react'
+import OnboardingGuide from '../components/OnboardingGuide'
 
 function Dashboard() {
   const { user } = useAuth()
@@ -59,6 +60,7 @@ function Dashboard() {
 
   return (
     <div className="page-container">
+      <OnboardingGuide />
       <div className="page-header">
         <div>
           <h1 className="page-title"><Home size={22} style={{ marginRight: 8, verticalAlign: 'middle' }} />Dashboard</h1>
