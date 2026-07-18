@@ -221,7 +221,7 @@ function LeetCode() {
           <div className="form-group">
             <label className="form-label">LeetCode Username or URL *</label>
             <div style={{ display: 'flex', gap: 8 }}>
-              <input className="form-input" style={{ flex: 1 }} type="text" placeholder="e.g. SIVA911 or https://leetcode.com/SIVA911"
+              <input className="form-input" style={{ flex: 1 }} type="text" placeholder="Enter your LeetCode username"
                      value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} required />
               <button type="button" className="btn btn-secondary" onClick={handleFetch} disabled={fetching}>
                 {fetching ? 'Fetching...' : 'Fetch Stats'}

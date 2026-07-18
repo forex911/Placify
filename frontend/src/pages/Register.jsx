@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Sparkles, AlertCircle, User, Mail, Lock, CheckCircle, ArrowRight } from 'lucide-react'
+import { Sparkles, AlertCircle } from 'lucide-react'
 
 function Register() {
   const { register } = useAuth()
@@ -35,105 +35,79 @@ function Register() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-bg-orbs">
-        <div className="auth-orb auth-orb-1" />
-        <div className="auth-orb auth-orb-2" />
-        <div className="auth-orb auth-orb-3" />
-      </div>
-
-      <div className="auth-container">
-        {/* Logo */}
-        <div className="auth-logo">
-          <div className="auth-logo-icon"><Sparkles size={28} /></div>
-          <div className="auth-logo-text">Placify</div>
-          <div className="auth-logo-sub">Placement Tracker</div>
-        </div>
-
-        {/* Card */}
-        <div className="auth-card">
-          <div className="auth-card-header">
-            <h1 className="auth-title">Create Account</h1>
-            <p className="auth-subtitle">Start tracking your placement journey</p>
+    <div className="auth-split">
+      {/* Left — Form */}
+      <div className="auth-split-left">
+        <div className="auth-split-form">
+          <div className="auth-split-logo">
+            <div className="auth-split-logo-icon"><Sparkles size={22} /></div>
+            <span className="auth-split-logo-text">Placify</span>
           </div>
 
+          <h1 className="auth-split-title">Create Account</h1>
+          <p className="auth-split-subtitle">Start tracking your placement journey</p>
+
           {error && (
-            <div className="alert alert-error" style={{ marginBottom: '20px' }}>
-              <AlertCircle size={18} style={{ marginRight: '8px' }} /> {error}
+            <div className="alert alert-error" style={{ marginBottom: '20px', fontSize: '0.8rem' }}>
+              <AlertCircle size={16} style={{ marginRight: '8px' }} /> {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} id="register-form">
-            <div className="form-group">
-              <label className="form-label" htmlFor="reg-username">Username</label>
-              <div className="auth-input-wrap">
-                <span className="auth-input-icon"><User size={18} /></span>
-                <input
-                  id="reg-username"
-                  className="form-input auth-input"
-                  type="text"
-                  placeholder="johndoe"
-                  value={form.username}
-                  onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
-                  required
-                  minLength={3}
-                />
-              </div>
+            <div className="auth-split-field">
+              <label htmlFor="reg-username">Username</label>
+              <input
+                id="reg-username"
+                type="text"
+                placeholder="Enter your username"
+                value={form.username}
+                onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
+                required
+                minLength={3}
+              />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="reg-email">Email</label>
-              <div className="auth-input-wrap">
-                <span className="auth-input-icon"><Mail size={18} /></span>
-                <input
-                  id="reg-email"
-                  className="form-input auth-input"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={form.email}
-                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                  required
-                />
-              </div>
+            <div className="auth-split-field">
+              <label htmlFor="reg-email">Email</label>
+              <input
+                id="reg-email"
+                type="email"
+                placeholder="Enter your email"
+                value={form.email}
+                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                required
+              />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="reg-password">Password</label>
-              <div className="auth-input-wrap">
-                <span className="auth-input-icon"><Lock size={18} /></span>
-                <input
-                  id="reg-password"
-                  className="form-input auth-input"
-                  type="password"
-                  placeholder="Min. 6 characters"
-                  value={form.password}
-                  onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                  required
-                  minLength={6}
-                />
-              </div>
+            <div className="auth-split-field">
+              <label htmlFor="reg-password">Password</label>
+              <input
+                id="reg-password"
+                type="password"
+                placeholder="Min. 6 characters"
+                value={form.password}
+                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+                required
+                minLength={6}
+              />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="reg-confirm">Confirm Password</label>
-              <div className="auth-input-wrap">
-                <span className="auth-input-icon"><CheckCircle size={18} /></span>
-                <input
-                  id="reg-confirm"
-                  className="form-input auth-input"
-                  type="password"
-                  placeholder="Repeat your password"
-                  value={form.confirm}
-                  onChange={e => setForm(f => ({ ...f, confirm: e.target.value }))}
-                  required
-                />
-              </div>
+            <div className="auth-split-field">
+              <label htmlFor="reg-confirm">Confirm Password</label>
+              <input
+                id="reg-confirm"
+                type="password"
+                placeholder="Repeat your password"
+                value={form.confirm}
+                onChange={e => setForm(f => ({ ...f, confirm: e.target.value }))}
+                required
+              />
             </div>
 
             <button
               id="register-submit-btn"
               type="submit"
-              className="btn btn-primary btn-full"
+              className="auth-split-btn"
               disabled={loading}
             >
               {loading ? (
@@ -142,16 +116,33 @@ function Register() {
                   Creating account...
                 </span>
               ) : (
-                <><ArrowRight size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Create Account</>
+                'Create Account'
               )}
             </button>
           </form>
 
-          <div className="auth-footer">
-            <p>
-              Already have an account?{' '}
-              <Link to="/login" className="auth-link">Sign in</Link>
+          <p className="auth-split-footer">
+            Already have an account?{' '}
+            <Link to="/login" className="auth-split-link">Sign in</Link>
+          </p>
+        </div>
+      </div>
+
+      {/* Right — Hero */}
+      <div className="auth-split-right">
+        <div className="auth-split-hero">
+          <img src="/signup.png" alt="Signup illustration" className="auth-hero-img" draggable="false" />
+          <div className="auth-hero-content">
+            <h2>Get started with</h2>
+            <h2>your <span className="auth-hero-underline">Placify</span></h2>
+            <h2>account today</h2>
+            <p className="auth-hero-desc">
+              Join thousands of students tracking their placements, hackathons, and career progress.
             </p>
+          </div>
+          <div className="auth-hero-badge">
+            <Sparkles size={14} />
+            <span>Placement Management Platform</span>
           </div>
         </div>
       </div>
@@ -160,3 +151,4 @@ function Register() {
 }
 
 export default Register
+

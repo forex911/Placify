@@ -1503,6 +1503,250 @@ body {
 }
 
 /* =============================================
+   Auth Split Layout (Login v2)
+   ============================================= */
+.auth-split {
+  display: flex;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.auth-split-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.auth-split-form {
+  width: 100%;
+  max-width: 380px;
+}
+
+.auth-split-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 48px;
+}
+
+.auth-split-logo-icon {
+  width: 40px;
+  height: 40px;
+  background: #000;
+  color: #fff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-split-logo-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: var(--font-brand);
+  color: #000;
+  letter-spacing: 1px;
+}
+
+.auth-split-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 6px;
+  font-family: var(--font-brand);
+}
+
+.auth-split-subtitle {
+  font-size: 0.875rem;
+  color: #888;
+  margin-bottom: 32px;
+  font-family: var(--font-body);
+}
+
+.auth-split-field {
+  margin-bottom: 20px;
+}
+
+.auth-split-field label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 6px;
+  font-family: var(--font-body);
+}
+
+.auth-split-field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #000;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: var(--font-body);
+  box-sizing: border-box;
+}
+
+.auth-split-field input::placeholder {
+  color: #bbb;
+}
+
+.auth-split-field input:focus {
+  border-color: #000;
+}
+
+.auth-split-btn {
+  width: 100%;
+  padding: 12px 20px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  margin-top: 8px;
+  font-family: var(--font-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-split-btn:hover {
+  background: #222;
+}
+
+.auth-split-btn:active {
+  transform: scale(0.98);
+}
+
+.auth-split-btn:disabled {
+  background: #666;
+  cursor: not-allowed;
+}
+
+.auth-split-footer {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 0.825rem;
+  color: #888;
+  font-family: var(--font-body);
+}
+
+.auth-split-link {
+  color: #000;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid #000;
+  padding-bottom: 1px;
+}
+
+.auth-split-link:hover {
+  opacity: 0.6;
+}
+
+/* Right hero panel */
+.auth-split-right {
+  flex: 1;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  margin: 16px;
+  border-radius: 20px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.auth-split-hero {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 48px 48px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  height: 100%;
+}
+
+.auth-hero-img {
+  width: 80%;
+  max-width: 420px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  opacity: 0.9;
+}
+
+.auth-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.auth-hero-content h2 {
+  font-size: 2rem;
+  font-weight: 300;
+  color: #fff;
+  line-height: 1.2;
+  margin: 0;
+  font-family: var(--font-brand);
+}
+
+.auth-hero-underline {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 2px;
+}
+
+.auth-hero-desc {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.85rem;
+  margin-top: 16px;
+  line-height: 1.6;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: var(--font-body);
+}
+
+.auth-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.75rem;
+  font-family: var(--font-body);
+}
+
+/* Mobile: stack vertically, hide hero */
+@media (max-width: 768px) {
+  .auth-split {
+    flex-direction: column;
+  }
+  .auth-split-right {
+    display: none;
+  }
+  .auth-split-left {
+    padding: 32px 24px;
+  }
+}
+
+/* =============================================
    Sidebar User Section
    ============================================= */
 .sidebar-user {

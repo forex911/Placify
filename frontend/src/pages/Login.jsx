@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Sparkles, AlertCircle, Mail, Lock, ArrowRight } from 'lucide-react'
+import { Sparkles, AlertCircle, ArrowRight } from 'lucide-react'
 
 function Login() {
   const { login } = useAuth()
@@ -25,73 +25,55 @@ function Login() {
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-bg-orbs">
-        <div className="auth-orb auth-orb-1" />
-        <div className="auth-orb auth-orb-2" />
-        <div className="auth-orb auth-orb-3" />
-      </div>
-
-      <div className="auth-container">
-        {/* Logo */}
-        <div className="auth-logo">
-          <div className="auth-logo-icon"><Sparkles size={28} /></div>
-          <div className="auth-logo-text">Placify</div>
-          <div className="auth-logo-sub">Placement Tracker</div>
-        </div>
-
-        {/* Card */}
-        <div className="auth-card">
-          <div className="auth-card-header">
-            <h1 className="auth-title">Welcome Back</h1>
-            <p className="auth-subtitle">Sign in to continue your journey</p>
+    <div className="auth-split">
+      {/* Left — Form */}
+      <div className="auth-split-left">
+        <div className="auth-split-form">
+          <div className="auth-split-logo">
+            <div className="auth-split-logo-icon"><Sparkles size={22} /></div>
+            <span className="auth-split-logo-text">Placify</span>
           </div>
 
+          <h1 className="auth-split-title">Sign In</h1>
+          <p className="auth-split-subtitle">Welcome back! Please enter your details</p>
+
           {error && (
-            <div className="alert alert-error" style={{ marginBottom: '20px' }}>
-              <AlertCircle size={18} style={{ marginRight: '8px' }} /> {error}
+            <div className="alert alert-error" style={{ marginBottom: '20px', fontSize: '0.8rem' }}>
+              <AlertCircle size={16} style={{ marginRight: '8px' }} /> {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} id="login-form">
-            <div className="form-group">
-              <label className="form-label" htmlFor="login-email">Email</label>
-              <div className="auth-input-wrap">
-                <span className="auth-input-icon"><Mail size={18} /></span>
-                <input
-                  id="login-email"
-                  className="form-input auth-input"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={form.email}
-                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                  required
-                  autoComplete="email"
-                />
-              </div>
+            <div className="auth-split-field">
+              <label htmlFor="login-email">Email</label>
+              <input
+                id="login-email"
+                type="email"
+                placeholder="Enter your email"
+                value={form.email}
+                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                required
+                autoComplete="email"
+              />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="login-password">Password</label>
-              <div className="auth-input-wrap">
-                <span className="auth-input-icon"><Lock size={18} /></span>
-                <input
-                  id="login-password"
-                  className="form-input auth-input"
-                  type="password"
-                  placeholder="Your password"
-                  value={form.password}
-                  onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                  required
-                  autoComplete="current-password"
-                />
-              </div>
+            <div className="auth-split-field">
+              <label htmlFor="login-password">Password</label>
+              <input
+                id="login-password"
+                type="password"
+                placeholder="••••••••"
+                value={form.password}
+                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+                required
+                autoComplete="current-password"
+              />
             </div>
 
             <button
               id="login-submit-btn"
               type="submit"
-              className="btn btn-primary btn-full"
+              className="auth-split-btn"
               disabled={loading}
             >
               {loading ? (
@@ -100,22 +82,33 @@ function Login() {
                   Signing in...
                 </span>
               ) : (
-                <><ArrowRight size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> Sign In</>
+                'Sign in'
               )}
             </button>
           </form>
 
-          <div className="auth-footer">
-            <p>
-              Don't have an account?{' '}
-              <Link to="/register" className="auth-link">Create one free</Link>
+          <p className="auth-split-footer">
+            Don't have an account?{' '}
+            <Link to="/register" className="auth-split-link">Sign up</Link>
+          </p>
+        </div>
+      </div>
+
+      {/* Right — Hero */}
+      <div className="auth-split-right">
+        <div className="auth-split-hero">
+          <img src="/login.png" alt="Login illustration" className="auth-hero-img" draggable="false" />
+          <div className="auth-hero-content">
+            <h2>Welcome back!</h2>
+            <h2>Please sign in to your</h2>
+            <h2><span className="auth-hero-underline">Placify</span> account</h2>
+            <p className="auth-hero-desc">
+              Track your placements, manage applications, and stay ahead in your career journey.
             </p>
           </div>
-
-          {/* Quick hint */}
-          <div className="auth-hint">
-            <span className="auth-hint-badge">Admin</span>
-            admin@placify.com / Admin@1234
+          <div className="auth-hero-badge">
+            <Sparkles size={14} />
+            <span>Placement Management Platform</span>
           </div>
         </div>
       </div>
@@ -124,3 +117,4 @@ function Login() {
 }
 
 export default Login
+
