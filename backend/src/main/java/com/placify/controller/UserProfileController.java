@@ -67,8 +67,32 @@ public class UserProfileController {
         profile.put("email", user.getEmail());
         profile.put("role", user.getRole().name());
         profile.put("createdAt", user.getCreatedAt() != null ? user.getCreatedAt().toString() : "");
+        profile.put("apiKey", user.getApiKey());
         profile.put("stats", stats);
 
         return ResponseEntity.ok(profile);
+    }
+
+    /**
+     * POST /api/profile/api-key/regenerate
+     * Regenerates the API key for the current user.
+     */
+    @PostMapping("/api-key/regenerate")
+    public ResponseEntity<?> regenerateApiKey(Authentication auth) {
+        Long userId = (Long) auth.getCredentials();
+
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        user.setApiKey(java.util.UUID.randomUUID().toString());
+        userRepository.save(user);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("apiKey", user.getApiKey());
+        response.put("message", "API Key regenerated successfully");
+
+        return ResponseEntity.ok(response);
     }
 }

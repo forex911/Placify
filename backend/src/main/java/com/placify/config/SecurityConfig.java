@@ -43,6 +43,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register").permitAll()
                 // Public health endpoint
                 .requestMatchers(HttpMethod.GET, "/api/health").permitAll()
+                // Extension API (Uses API Key verified in Controller)
+                .requestMatchers("/api/extension/**").permitAll()
                 // Admin-only endpoints
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 // All other API calls require authentication

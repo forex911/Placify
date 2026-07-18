@@ -72,6 +72,43 @@ function UserProfile() {
             <Calendar size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />Joined {formatDate(profile?.createdAt)}
           </div>
 
+          <div style={{ marginTop: '24px', padding: '16px', background: 'var(--bg-secondary)', borderRadius: '8px', textAlign: 'left' }}>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Extension API Key</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <input 
+                type="text" 
+                value={profile?.apiKey || ''} 
+                readOnly 
+                className="input" 
+                style={{ flex: 1, padding: '6px 8px', fontSize: '0.8rem', background: 'var(--card-bg)' }}
+              />
+              <button 
+                onClick={() => navigator.clipboard.writeText(profile?.apiKey || '')}
+                className="btn btn-secondary" 
+                style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                title="Copy to clipboard"
+              >
+                Copy
+              </button>
+            </div>
+            <button 
+              onClick={async () => {
+                if (window.confirm("Regenerate API Key? This will break any existing extensions using the old key.")) {
+                  try {
+                    const res = await api.post('/profile/api-key/regenerate');
+                    setProfile(prev => ({ ...prev, apiKey: res.data.apiKey }));
+                  } catch (e) {
+                    console.error("Failed to regenerate API Key", e);
+                  }
+                }
+              }}
+              className="btn btn-secondary" 
+              style={{ width: '100%', marginTop: '8px', padding: '6px', fontSize: '0.8rem', color: 'var(--accent-rose)', borderColor: 'var(--accent-rose)' }}
+            >
+              Regenerate Key
+            </button>
+          </div>
+
           <button
             id="profile-logout-btn"
             className="btn btn-secondary"

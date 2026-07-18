@@ -2,6 +2,7 @@ package com.placify.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -30,6 +31,9 @@ public class User {
     @Column(name = "enabled", nullable = false)
     private boolean enabled = true;
 
+    @Column(name = "api_key", unique = true, length = 100)
+    private String apiKey;
+
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
@@ -48,6 +52,7 @@ public class User {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         if (!this.enabled) this.enabled = true;
+        if (this.apiKey == null) this.apiKey = UUID.randomUUID().toString();
     }
 
     @PreUpdate
@@ -96,4 +101,7 @@ public class User {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public String getApiKey() { return apiKey; }
+    public void setApiKey(String apiKey) { this.apiKey = apiKey; }
 }

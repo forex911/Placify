@@ -95,7 +95,7 @@ function OnboardingGuide() {
         <div style={{ display: 'flex', gap: '12px' }}>
           <button 
             className="btn btn-secondary" 
-            style={{ flex: 1 }}
+            style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             onClick={handleClose}
           >
             Skip
