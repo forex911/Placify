@@ -50,8 +50,8 @@ function Sidebar() {
     localStorage.setItem('sidebar-order', JSON.stringify(_items.map(i => i.to)))
   }
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     navigate('/login')
   }
 

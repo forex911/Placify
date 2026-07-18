@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.placify.config.SanitizationUtil;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -53,9 +54,9 @@ public class ExtensionController {
         User user = userOpt.get();
 
         ApplicationDTO applicationDTO = new ApplicationDTO();
-        applicationDTO.setCompanyName(request.getCompanyName());
-        applicationDTO.setRole(request.getRole());
-        applicationDTO.setLocation(request.getLocation());
+        applicationDTO.setCompanyName(SanitizationUtil.stripHtml(request.getCompanyName()));
+        applicationDTO.setRole(SanitizationUtil.stripHtml(request.getRole()));
+        applicationDTO.setLocation(SanitizationUtil.stripHtml(request.getLocation()));
         applicationDTO.setCompanyLink(request.getCompanyLink());
         
         // Auto-fill required fields for fast saving
@@ -90,8 +91,8 @@ public class ExtensionController {
         User user = userOpt.get();
 
         HackathonDTO hackathonDTO = new HackathonDTO();
-        hackathonDTO.setHackathonName(request.getHackathonName());
-        hackathonDTO.setProjectTitle(request.getProjectTitle());
+        hackathonDTO.setHackathonName(SanitizationUtil.stripHtml(request.getHackathonName()));
+        hackathonDTO.setProjectTitle(SanitizationUtil.stripHtml(request.getProjectTitle()));
         hackathonDTO.setProjectLink(request.getProjectLink());
         
         // Auto-fill required fields for fast saving

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import api from '../api/axios'
 import { getLeetCodeProfile, upsertLeetCodeProfile } from '../api/leetcodeApi'
 import Loader from '../components/Loader'
 import Modal from '../components/Modal'
@@ -83,16 +84,8 @@ function LeetCode() {
     
     setFetching(true);
     try {
-      const token = localStorage.getItem('placify_token');
-      const res = await fetch(`/api/leetcode/fetch/${username}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      
-      const text = await res.text();
-      if (!res.ok) throw new Error(`Server error (${res.status})`);
-      if (!text) throw new Error('Empty response from server');
-      
-      const data = JSON.parse(text);
+      const res = await api.get(`/leetcode/fetch/${username}`);
+      const data = res.data;
       if (data.error) throw new Error(data.message || 'Failed to fetch');
       
       setForm(f => ({

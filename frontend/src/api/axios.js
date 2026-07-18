@@ -7,29 +7,25 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Send cookies with every request
 })
 
-// â”€â”€ Request interceptor: attach JWT Bearer token â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('placify_token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => Promise.reject(error)
-)
+// —— Response interceptor: handle errors with debounced 401 redirect ——————
+let isRedirecting = false
 
-// â”€â”€ Response interceptor: handle errors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Auto-logout on 401 Unauthorized or 403 Forbidden (token expired or invalid)
-    if ((error.response?.status === 401 || error.response?.status === 403) && window.location.pathname !== '/login') {
-      localStorage.removeItem('placify_token')
+    // Auto-logout on 401 Unauthorized (token expired, invalid, or user disabled)
+    if (error.response?.status === 401 && window.location.pathname !== '/login' && !isRedirecting) {
+      isRedirecting = true
       localStorage.removeItem('placify_user')
-      window.location.href = '/login'
+      // Debounce: wait briefly before redirecting so parallel 401s don't cause chaos
+      setTimeout(() => {
+        window.location.href = '/login'
+        // Reset flag after redirect starts
+        setTimeout(() => { isRedirecting = false }, 2000)
+      }, 100)
     }
 
     const message =

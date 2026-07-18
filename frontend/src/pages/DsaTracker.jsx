@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import api from '../api/axios'
 import { getDsaTopics, createDsaTopic, updateDsaTopic, deleteDsaTopic, getDsaStats } from '../api/dsaApi'
 import { getLeetCodeProfile } from '../api/leetcodeApi'
 import Modal from '../components/Modal'
@@ -132,13 +133,8 @@ function DsaTracker() {
     if (!leetcode?.username) return toast.error('Connect your LeetCode profile first (go to LeetCode page)')
     setSyncing(true)
     try {
-      const token = localStorage.getItem('placify_token')
-      const res = await fetch(`/api/leetcode/fetch/${leetcode.username}/skills`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      const text = await res.text()
-      if (!res.ok) throw new Error(`Server error (${res.status})`)
-      const data = JSON.parse(text)
+      const res = await api.get(`/leetcode/fetch/${leetcode.username}/skills`)
+      const data = res.data
       if (data.error) throw new Error(data.message)
 
       // Aggregate LeetCode tags into our topic buckets

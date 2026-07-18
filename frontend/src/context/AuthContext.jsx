@@ -7,15 +7,14 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // On mount: restore user from localStorage
+  // On mount: restore user profile from localStorage (for UI state only)
+  // The actual authentication is handled by the HttpOnly cookie
   useEffect(() => {
-    const token = localStorage.getItem('placify_token')
     const savedUser = localStorage.getItem('placify_user')
-    if (token && savedUser) {
+    if (savedUser) {
       try {
         setUser(JSON.parse(savedUser))
       } catch {
-        localStorage.removeItem('placify_token')
         localStorage.removeItem('placify_user')
       }
     }
@@ -24,9 +23,9 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (email, password) => {
     const res = await api.post('/auth/login', { email, password })
-    const { token, userId, username, role } = res.data
-    const userObj = { userId, username, email, role, token }
-    localStorage.setItem('placify_token', token)
+    // Server sets HttpOnly cookie automatically — we only store user data for UI
+    const { userId, username, role } = res.data
+    const userObj = { userId, username, email, role }
     localStorage.setItem('placify_user', JSON.stringify(userObj))
     setUser(userObj)
     return userObj
@@ -34,16 +33,22 @@ export function AuthProvider({ children }) {
 
   const register = useCallback(async (username, email, password) => {
     const res = await api.post('/auth/register', { username, email, password })
-    const { token, userId, role } = res.data
-    const userObj = { userId, username, email, role, token }
-    localStorage.setItem('placify_token', token)
+    // Server sets HttpOnly cookie automatically — we only store user data for UI
+    const { userId, role } = res.data
+    const userObj = { userId, username, email, role }
     localStorage.setItem('placify_user', JSON.stringify(userObj))
     setUser(userObj)
     return userObj
   }, [])
 
-  const logout = useCallback(() => {
-    localStorage.removeItem('placify_token')
+  const logout = useCallback(async () => {
+    try {
+      // Clear the HttpOnly cookie on the server
+      await api.post('/auth/logout')
+    } catch (e) {
+      // Even if the server call fails, clear local state
+      console.warn('Logout API call failed', e)
+    }
     localStorage.removeItem('placify_user')
     setUser(null)
   }, [])

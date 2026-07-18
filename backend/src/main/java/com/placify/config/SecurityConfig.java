@@ -1,6 +1,7 @@
 package com.placify.config;
 
 import com.placify.filter.JwtAuthFilter;
+import com.placify.filter.RateLimitFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,9 +23,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final RateLimitFilter rateLimitFilter;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, RateLimitFilter rateLimitFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
+        this.rateLimitFilter = rateLimitFilter;
     }
 
     @Bean
@@ -33,14 +36,14 @@ public class SecurityConfig {
             // Disable CSRF (REST API, stateless)
             .csrf(AbstractHttpConfigurer::disable)
 
-            // Stateless sessions â€” no HTTP session created
+            // Stateless sessions — no HTTP session created
             .sessionManagement(sm ->
                 sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             // Authorization rules
             .authorizeHttpRequests(auth -> auth
                 // Public auth endpoints
-                .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register", "/api/auth/logout").permitAll()
                 // Public health endpoint
                 .requestMatchers(HttpMethod.GET, "/api/health").permitAll()
                 // Extension API (Uses API Key verified in Controller)
@@ -51,6 +54,8 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
 
+            // Rate limit filter runs first (before JWT)
+            .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
             // Add JWT filter before the standard auth filter
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
