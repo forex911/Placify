@@ -72,20 +72,20 @@ function UserProfile() {
             <Calendar size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />Joined {formatDate(profile?.createdAt)}
           </div>
 
-          <div style={{ marginTop: '24px', padding: '16px', background: 'var(--bg-secondary)', borderRadius: '8px', textAlign: 'left' }}>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Extension API Key</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ marginTop: '32px', width: '100%', padding: '20px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)', textAlign: 'left', border: '1px solid var(--border-color)' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Extension API Key</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
               <input 
                 type="text" 
                 value={profile?.apiKey || ''} 
                 readOnly 
                 className="input" 
-                style={{ flex: 1, padding: '6px 8px', fontSize: '0.8rem', background: 'var(--card-bg)' }}
+                style={{ flex: 1, padding: '10px 12px', fontSize: '0.9rem', background: 'var(--card-bg)', fontFamily: 'monospace', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
               />
               <button 
                 onClick={() => navigator.clipboard.writeText(profile?.apiKey || '')}
-                className="btn btn-secondary" 
-                style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                className="btn btn-primary" 
+                style={{ padding: '10px 16px', fontSize: '0.9rem' }}
                 title="Copy to clipboard"
               >
                 Copy
@@ -103,7 +103,7 @@ function UserProfile() {
                 }
               }}
               className="btn btn-secondary" 
-              style={{ width: '100%', marginTop: '8px', padding: '6px', fontSize: '0.8rem', color: 'var(--accent-rose)', borderColor: 'var(--accent-rose)' }}
+              style={{ width: '100%', padding: '10px', fontSize: '0.85rem', color: 'var(--accent-rose)', borderColor: 'var(--border-color)', backgroundColor: 'transparent' }}
             >
               Regenerate Key
             </button>
