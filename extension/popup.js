@@ -17,12 +17,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   settingsBtn.addEventListener('click', openOptions);
   openSettingsBtn.addEventListener('click', openOptions);
 
-  // Load saved config
-  const config = await chrome.storage.sync.get(['apiKey', 'serverUrl']);
-  const apiKey = config.apiKey || '';
-  const serverUrl = config.serverUrl || '';
+  const SERVER_URL = 'https://placify-backend-latest.onrender.com';
 
-  if (!apiKey || !serverUrl) {
+  // Load saved config
+  const config = await chrome.storage.sync.get(['apiKey']);
+  const apiKey = config.apiKey || '';
+
+  if (!apiKey) {
     form.classList.add('hidden');
     noConfig.classList.remove('hidden');
     return;
@@ -70,8 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnLoader.classList.remove('hidden');
 
     try {
-      const url = serverUrl.replace(/\/+$/, '');
-      const res = await fetch(`${url}/api/extension/applications`, {
+      const res = await fetch(`${SERVER_URL}/api/extension/applications`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

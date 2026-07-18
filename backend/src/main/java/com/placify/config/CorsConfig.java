@@ -20,11 +20,12 @@ public class CorsConfig {
                 "http://localhost:5174",
                 "http://localhost:3000",
                 "https://place-flow.vercel.app/",
-                "https://*.vercel.app"
+                "https://*.vercel.app",
+                "chrome-extension://*"
         ));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        config.setExposedHeaders(List.of("Authorization"));
+        config.setExposedHeaders(List.of("Authorization", "X-API-KEY"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", config);
