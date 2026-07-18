@@ -80,7 +80,7 @@ function UserProfile() {
                 value={profile?.apiKey || ''} 
                 readOnly 
                 className="input" 
-                style={{ flex: 1, padding: '10px 12px', fontSize: '0.9rem', background: 'var(--card-bg)', fontFamily: 'monospace', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
+                style={{ flex: 1, minWidth: 0, padding: '10px 12px', fontSize: '0.9rem', background: 'var(--card-bg)', fontFamily: 'monospace', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
               />
               <button 
                 onClick={() => navigator.clipboard.writeText(profile?.apiKey || '')}
