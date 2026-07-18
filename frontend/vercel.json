@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://placify-0q2u.onrender.com/api/:path*"
+      "destination": "https://placify-backend-latest.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
