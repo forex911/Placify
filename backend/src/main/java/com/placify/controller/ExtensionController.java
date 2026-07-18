@@ -14,16 +14,23 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import com.placify.dto.HackathonDTO;
+import com.placify.dto.ExtensionHackathonRequest;
+import com.placify.entity.Hackathon.HackathonStatus;
+import com.placify.service.HackathonService;
+
 @RestController
 @RequestMapping("/api/extension")
 public class ExtensionController {
 
     private final UserRepository userRepository;
     private final ApplicationService applicationService;
+    private final HackathonService hackathonService;
 
-    public ExtensionController(UserRepository userRepository, ApplicationService applicationService) {
+    public ExtensionController(UserRepository userRepository, ApplicationService applicationService, HackathonService hackathonService) {
         this.userRepository = userRepository;
         this.applicationService = applicationService;
+        this.hackathonService = hackathonService;
     }
 
     /**
@@ -60,6 +67,43 @@ public class ExtensionController {
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving application: " + e.getMessage());
+        }
+    }
+
+    /**
+     * POST /api/extension/hackathons
+     * Saves a hackathon quickly via browser extension, using X-API-KEY header.
+     */
+    @PostMapping("/hackathons")
+    public ResponseEntity<?> saveHackathon(
+            @RequestHeader(value = "X-API-KEY", required = false) String apiKey,
+            @Valid @RequestBody ExtensionHackathonRequest request) {
+
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("API Key is required");
+        }
+
+        Optional<User> userOpt = userRepository.findByApiKey(apiKey);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid API Key");
+        }
+        User user = userOpt.get();
+
+        HackathonDTO hackathonDTO = new HackathonDTO();
+        hackathonDTO.setHackathonName(request.getHackathonName());
+        hackathonDTO.setProjectTitle(request.getProjectTitle());
+        hackathonDTO.setProjectLink(request.getProjectLink());
+        
+        // Auto-fill required fields for fast saving
+        hackathonDTO.setDate(LocalDate.now());
+        hackathonDTO.setStatus(HackathonStatus.Registered);
+        hackathonDTO.setTeamSize(1); // Default team size
+
+        try {
+            HackathonDTO created = hackathonService.create(user.getId(), hackathonDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving hackathon: " + e.getMessage());
         }
     }
 }

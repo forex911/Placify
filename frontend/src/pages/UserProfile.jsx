@@ -11,6 +11,7 @@ function UserProfile() {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -83,12 +84,16 @@ function UserProfile() {
                 style={{ flex: 1, minWidth: 0, padding: '10px 12px', fontSize: '0.9rem', background: 'var(--card-bg)', fontFamily: 'monospace', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
               />
               <button 
-                onClick={() => navigator.clipboard.writeText(profile?.apiKey || '')}
+                onClick={() => {
+                  navigator.clipboard.writeText(profile?.apiKey || '');
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
                 className="btn btn-primary" 
-                style={{ padding: '10px 16px', fontSize: '0.9rem' }}
+                style={{ padding: '10px 16px', fontSize: '0.9rem', width: '80px' }}
                 title="Copy to clipboard"
               >
-                Copy
+                {copied ? 'Copied!' : 'Copy'}
               </button>
             </div>
             <button 
