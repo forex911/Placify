@@ -21,7 +21,9 @@ public class CorsConfig {
                 "http://localhost:3000",
                 "https://place-flow.vercel.app/",
                 "https://*.vercel.app",
-                "chrome-extension://*"
+                "chrome-extension://*",
+                "http://placify.forex911.online",
+                "https://placify.forex911.online"
         ));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
