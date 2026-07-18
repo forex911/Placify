@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Placify Extension — Settings</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap');
+
+    :root {
+      --bg: #ffffff;
+      --bg-secondary: #f8f8f8;
+      --text: #0a0a0a;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --border: #e8e8e8;
+      --primary: #000000;
+      --radius: 10px;
+      --radius-sm: 6px;
+      --font-brand: 'Playfair Display', Georgia, serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-secondary);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .settings-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    .settings-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .settings-logo {
+      width: 48px; height: 48px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-brand);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .settings-title {
+      font-family: var(--font-brand);
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+
+    .settings-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 0.9rem;
+      font-family: var(--font-body);
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-group input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+    }
+
+    .form-group input::placeholder { color: var(--text-muted); }
+
+    .form-group .help-text {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      font-family: var(--font-body);
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #222;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .status-msg {
+      text-align: center;
+      padding: 10px;
+      margin-top: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .status-msg.success {
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="settings-card">
+    <div class="settings-header">
+      <div class="settings-logo">P</div>
+      <div>
+        <h1 class="settings-title">Extension Settings</h1>
+        <p class="settings-subtitle">Configure your Placify connection</p>
+      </div>
+    </div>
+
+    <form id="settings-form">
+      <div class="form-group">
+        <label for="server-url">Server URL</label>
+        <input type="url" id="server-url" placeholder="https://your-backend.onrender.com" required />
+        <p class="help-text">Your Placify backend URL (no trailing slash)</p>
+      </div>
+      <div class="form-group">
+        <label for="api-key">API Key</label>
+        <input type="text" id="api-key" placeholder="Paste your API Key from Profile page" required />
+        <p class="help-text">Found on your Placify Profile page → Extension API Key</p>
+      </div>
+      <button type="submit" class="btn btn-primary">Save Settings</button>
+    </form>
+
+    <div id="status" class="status-msg success" style="display: none;"></div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
