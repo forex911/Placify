@@ -1222,13 +1222,6 @@ body {
    Responsive
    ============================================= */
 @media (max-width: 768px) {
-  :root {
-    --sidebar-width: 0px;
-  }
-
-  .sidebar {
-    display: none;
-  }
 
   .main-content {
     margin-left: 0;
