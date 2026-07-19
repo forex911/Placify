@@ -35,8 +35,9 @@ public class AuthController {
             AuthResponse response = authService.register(request);
             addJwtCookie(httpResponse, response.getToken());
 
-            // Return user data WITHOUT the token in the body
+            // Return user data WITH the token (Vercel proxy doesn't forward cookies reliably)
             return ResponseEntity.ok(Map.of(
+                "token", response.getToken(),
                 "userId", response.getUserId(),
                 "username", response.getUsername(),
                 "email", response.getEmail(),
@@ -53,8 +54,9 @@ public class AuthController {
             AuthResponse response = authService.login(request);
             addJwtCookie(httpResponse, response.getToken());
 
-            // Return user data WITHOUT the token in the body
+            // Return user data WITH the token (Vercel proxy doesn't forward cookies reliably)
             return ResponseEntity.ok(Map.of(
+                "token", response.getToken(),
                 "userId", response.getUserId(),
                 "username", response.getUsername(),
                 "email", response.getEmail(),

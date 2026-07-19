@@ -174,7 +174,7 @@ function SubjectProgress() {
               <option value="ADVANCED">Advanced</option>
             </select>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="form-row">
             <div className="form-group">
               <label className="form-label">Topics Completed</label>
               <input className="form-input" type="number" min="0" max={form.totalTopics}

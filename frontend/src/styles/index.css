@@ -314,7 +314,7 @@ body {
    ============================================= */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
   gap: var(--space-md);
   margin-bottom: var(--space-xl);
 }
@@ -867,7 +867,7 @@ body {
    ============================================= */
 .dsa-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: var(--space-md);
 }
 
@@ -929,7 +929,7 @@ body {
    ============================================= */
 .notes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: var(--space-md);
 }
 
@@ -2257,7 +2257,7 @@ body {
 
 .profile-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 120px), 1fr));
   gap: var(--space-md);
 }
 
@@ -2463,12 +2463,16 @@ body {
 .badge-hr-round { background: #e8e8e8; color: #444444; border: 1px solid #d5d5d5; }
 
 /* =============================================
-   Mobile Responsive Additions
+   Mobile & Tablet Responsive Additions
    ============================================= */
-@media (max-width:768px) {
+@media (max-width:1024px) {
   .mobile-menu-btn { display:flex !important; }
   .sidebar { transform:translateX(-100%); transition:transform 0.3s ease; z-index:1000; }
   .main-content { margin-left:0 !important; padding-top:48px; }
+  .page-container { padding:24px; }
+}
+
+@media (max-width:768px) {
   .page-container { padding:16px; }
   .stats-grid { grid-template-columns:1fr 1fr; gap:10px; }
   .dashboard-grid { grid-template-columns:1fr; }

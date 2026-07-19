@@ -224,7 +224,7 @@ function DsaTracker() {
 
       {/* Stats row */}
       {stats && (
-        <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', marginBottom: 24 }}>
+        <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))', marginBottom: 24 }}>
           {[
             { icon: <Terminal size={28} />, label: 'Avg Progress', value: `${stats.averageProgress || avgProgress}%`, grad: 'linear-gradient(90deg,#6366f1,#8b5cf6)' },
             { icon: <CheckCircle size={28} />, label: 'Questions Solved', value: stats.totalQuestionsSolved ?? topics.reduce((a, t) => a + (t.solvedQuestions || 0), 0), grad: 'linear-gradient(90deg,#10b981,#34d399)' },
@@ -260,7 +260,7 @@ function DsaTracker() {
               View Profile <ExternalLink size={12} />
             </a>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 120px), 1fr))', gap: 12 }}>
             {[
               { label: 'Total Solved', value: leetcode.totalSolved || 0, color: '#6366f1' },
               { label: 'Easy', value: leetcode.easySolved || 0, color: '#10b981' },
@@ -442,7 +442,7 @@ function DsaTracker() {
                    onChange={e => setForm(f => ({ ...f, topicName: e.target.value }))} required />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="form-row">
             <div className="form-group">
               <label className="form-label">Solved Questions</label>
               <input className="form-input" type="number" min="0" value={form.solvedQuestions}

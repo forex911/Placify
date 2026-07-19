@@ -81,7 +81,7 @@ function Dashboard() {
       </div>
 
       {/* Bottom Panels */}
-      <div className="dashboard-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))' }}>
+      <div className="dashboard-grid">
         
         {/* Applied Jobs */}
         <div className="card">

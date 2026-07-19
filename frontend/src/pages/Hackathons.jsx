@@ -196,7 +196,7 @@ function Hackathons() {
             <input type="text" className="form-input" value={form.projectTitle} onChange={e => setForm({ ...form, projectTitle: e.target.value })} />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="form-row">
             <div className="form-group">
               <label className="form-label">Date</label>
               <input type="date" className="form-input" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} />
@@ -209,7 +209,7 @@ function Hackathons() {
             </div>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="form-row">
             <div className="form-group">
               <label className="form-label">Team Size</label>
               <input type="number" min="1" className="form-input" value={form.teamSize} onChange={e => setForm({ ...form, teamSize: e.target.value })} />

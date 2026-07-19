@@ -7,14 +7,15 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // On mount: restore user profile from localStorage (for UI state only)
-  // The actual authentication is handled by the HttpOnly cookie
+  // On mount: restore user from localStorage
   useEffect(() => {
+    const token = localStorage.getItem('placify_token')
     const savedUser = localStorage.getItem('placify_user')
-    if (savedUser) {
+    if (token && savedUser) {
       try {
         setUser(JSON.parse(savedUser))
       } catch {
+        localStorage.removeItem('placify_token')
         localStorage.removeItem('placify_user')
       }
     }
@@ -23,9 +24,9 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (email, password) => {
     const res = await api.post('/auth/login', { email, password })
-    // Server sets HttpOnly cookie automatically — we only store user data for UI
-    const { userId, username, role } = res.data
+    const { token, userId, username, role } = res.data
     const userObj = { userId, username, email, role }
+    localStorage.setItem('placify_token', token)
     localStorage.setItem('placify_user', JSON.stringify(userObj))
     setUser(userObj)
     return userObj
@@ -33,9 +34,9 @@ export function AuthProvider({ children }) {
 
   const register = useCallback(async (username, email, password) => {
     const res = await api.post('/auth/register', { username, email, password })
-    // Server sets HttpOnly cookie automatically — we only store user data for UI
-    const { userId, role } = res.data
+    const { token, userId, role } = res.data
     const userObj = { userId, username, email, role }
+    localStorage.setItem('placify_token', token)
     localStorage.setItem('placify_user', JSON.stringify(userObj))
     setUser(userObj)
     return userObj
@@ -46,9 +47,9 @@ export function AuthProvider({ children }) {
       // Clear the HttpOnly cookie on the server
       await api.post('/auth/logout')
     } catch (e) {
-      // Even if the server call fails, clear local state
       console.warn('Logout API call failed', e)
     }
+    localStorage.removeItem('placify_token')
     localStorage.removeItem('placify_user')
     setUser(null)
   }, [])

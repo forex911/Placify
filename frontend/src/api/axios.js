@@ -7,8 +7,20 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Send cookies with every request
+  withCredentials: true, // Send cookies as backup auth
 })
+
+// —— Request interceptor: attach JWT Bearer token ——————————————————————————
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('placify_token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => Promise.reject(error)
+)
 
 // —— Response interceptor: handle errors with debounced 401 redirect ——————
 let isRedirecting = false
@@ -19,11 +31,11 @@ api.interceptors.response.use(
     // Auto-logout on 401 Unauthorized (token expired, invalid, or user disabled)
     if (error.response?.status === 401 && window.location.pathname !== '/login' && !isRedirecting) {
       isRedirecting = true
+      localStorage.removeItem('placify_token')
       localStorage.removeItem('placify_user')
       // Debounce: wait briefly before redirecting so parallel 401s don't cause chaos
       setTimeout(() => {
         window.location.href = '/login'
-        // Reset flag after redirect starts
         setTimeout(() => { isRedirecting = false }, 2000)
       }, 100)
     }

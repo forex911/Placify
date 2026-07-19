@@ -221,7 +221,7 @@ function LeetCode() {
               </button>
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="form-row">
             <div className="form-group">
               <label className="form-label" style={{ color: '#10b981' }}>Easy Solved</label>
               <input className="form-input" type="number" min="0" value={form.easySolved}
