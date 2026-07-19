@@ -22,19 +22,11 @@ import Hackathons from './pages/Hackathons'
 import LeetCode from './pages/LeetCode'
 
 function AppLayout({ children }) {
-  const [mobileOpen, setMobileOpen] = useState(false)
-
   return (
     <div className="app-layout">
-      <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+      <Sidebar />
       <main className="main-content">
         <header className="top-header">
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setMobileOpen(o => !o)}
-          >
-            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             <NotificationBell />
             <DarkModeToggle />

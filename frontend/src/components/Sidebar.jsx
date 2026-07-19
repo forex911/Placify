@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { 
   Sparkles, LayoutDashboard, FileText, Zap, BookOpen, 
   CheckSquare, LineChart, Code2, PenTool, Settings, 
@@ -19,9 +19,10 @@ const defaultNavItems = [
   { to: '/notes',      icon: <PenTool size={18} />, label: 'Notes' },
 ]
 
-function Sidebar({ mobileOpen, setMobileOpen }) {
+function Sidebar() {
   const { user, logout, isAdmin } = useAuth()
   const navigate = useNavigate()
+  const [mobileOpen, setMobileOpen] = useState(false)
   const [items, setItems] = useState(() => {
     const saved = localStorage.getItem('sidebar-order')
     if (saved) {
@@ -58,6 +59,14 @@ function Sidebar({ mobileOpen, setMobileOpen }) {
 
   return (
     <>
+      {/* Mobile hamburger */}
+      <button
+        className="mobile-menu-btn"
+        onClick={() => setMobileOpen(o => !o)}
+      >
+        {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
       {/* Overlay for mobile */}
       {mobileOpen && (
         <div onClick={() => setMobileOpen(false)}

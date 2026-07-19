@@ -162,6 +162,9 @@ body {
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  position: fixed;
+  z-index: 1001;
+  top: 16px;
 }
 .mobile-menu-btn:hover {
   background: var(--bg-card-hover);
@@ -176,8 +179,8 @@ body {
   border-right: none;
   position: fixed;
   top: 0;
+  bottom: 0;
   left: 0;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   padding: var(--space-lg) 0;
@@ -2499,10 +2502,12 @@ body {
   .top-header {
     height: 64px;
     padding: 0 24px;
-    justify-content: space-between; /* Space out hamburger and icons */
+    justify-content: flex-end; 
   }
   .mobile-menu-btn {
     display: flex !important;
+    left: 24px;
+    top: 12px; /* (64 - 40) / 2 */
   }
   
   .main-content { margin-left:0 !important; }
@@ -2511,6 +2516,7 @@ body {
 
 @media (max-width:768px) {
   .top-header { padding: 0 16px; }
+  .mobile-menu-btn { left: 16px; }
   .page-container { padding:16px; }
   .stats-grid { grid-template-columns:1fr 1fr; gap:10px; }
   .dashboard-grid { grid-template-columns:1fr; }
