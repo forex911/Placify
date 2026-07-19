@@ -19,10 +19,9 @@ const defaultNavItems = [
   { to: '/notes',      icon: <PenTool size={18} />, label: 'Notes' },
 ]
 
-function Sidebar() {
+function Sidebar({ mobileOpen, setMobileOpen }) {
   const { user, logout, isAdmin } = useAuth()
   const navigate = useNavigate()
-  const [mobileOpen, setMobileOpen] = useState(false)
   const [items, setItems] = useState(() => {
     const saved = localStorage.getItem('sidebar-order')
     if (saved) {
@@ -59,20 +58,6 @@ function Sidebar() {
 
   return (
     <>
-      {/* Mobile hamburger */}
-      <button
-        className="mobile-menu-btn"
-        onClick={() => setMobileOpen(o => !o)}
-        style={{
-          display: 'none', // shown via CSS on mobile
-          position: 'fixed', top: 12, left: 12, zIndex: 1001,
-          background: 'var(--card-bg)', border: '1px solid var(--border)', color: 'var(--text-primary)',
-          borderRadius: 8, padding: '8px 10px', cursor: 'pointer', fontSize: '1.2rem',
-        }}
-      >
-        {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
-
       {/* Overlay for mobile */}
       {mobileOpen && (
         <div onClick={() => setMobileOpen(false)}

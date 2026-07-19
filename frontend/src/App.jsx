@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useState } from 'react'
+import { Menu, X } from 'lucide-react'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -20,14 +22,24 @@ import Hackathons from './pages/Hackathons'
 import LeetCode from './pages/LeetCode'
 
 function AppLayout({ children }) {
+  const [mobileOpen, setMobileOpen] = useState(false)
+
   return (
     <div className="app-layout">
-      <Sidebar />
+      <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
       <main className="main-content">
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, padding: '16px 0 0 0', position: 'sticky', top: 0, zIndex: 100, background: 'var(--bg-primary)' }}>
-          <NotificationBell />
-          <DarkModeToggle />
-        </div>
+        <header className="top-header">
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setMobileOpen(o => !o)}
+          >
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <NotificationBell />
+            <DarkModeToggle />
+          </div>
+        </header>
         {children}
       </main>
     </div>
