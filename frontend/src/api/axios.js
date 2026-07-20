@@ -28,12 +28,13 @@ let isRedirecting = false
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Auto-logout on 401 Unauthorized (token expired, invalid, or user disabled)
-    if (error.response?.status === 401 && window.location.pathname !== '/login' && !isRedirecting) {
+    // Auto-logout on 401 Unauthorized or 403 Forbidden (token expired, invalid, or user disabled)
+    const isAuthError = error.response?.status === 401 || error.response?.status === 403
+    if (isAuthError && window.location.pathname !== '/login' && !isRedirecting) {
       isRedirecting = true
       localStorage.removeItem('placify_token')
       localStorage.removeItem('placify_user')
-      // Debounce: wait briefly before redirecting so parallel 401s don't cause chaos
+      // Debounce: wait briefly before redirecting so parallel auth errors don't cause chaos
       setTimeout(() => {
         window.location.href = '/login'
         setTimeout(() => { isRedirecting = false }, 2000)
