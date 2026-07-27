@@ -81,7 +81,6 @@ function Sidebar({ collapsed, onToggleCollapse }) {
           {!collapsed && (
             <div>
               <div className="sidebar-logo-text">Placify</div>
-              <div className="sidebar-logo-sub">Placement Management</div>
             </div>
           )}
           {/* Collapse toggle button
