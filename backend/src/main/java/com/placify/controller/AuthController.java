@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -26,25 +27,25 @@ public class AuthController {
         this.authService = authService;
     }
 
+    private Map<String, Object> buildResponseMap(AuthResponse response) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("token", response.getToken());
+        map.put("userId", response.getUserId());
+        map.put("username", response.getUsername());
+        map.put("email", response.getEmail());
+        map.put("role", response.getRole());
+        map.put("profilePicture", response.getProfilePicture());
+        map.put("setupCompleted", response.isSetupCompleted());
+        return map;
+    }
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request, HttpServletResponse httpResponse) {
         try {
-            // Sanitize username
             request.setUsername(SanitizationUtil.stripHtml(request.getUsername()));
-
             AuthResponse response = authService.register(request);
             addJwtCookie(httpResponse, response.getToken());
-
-            // Return user data WITH the token (Vercel proxy doesn't forward cookies reliably)
-            return ResponseEntity.ok(Map.of(
-                "token", response.getToken(),
-                "userId", response.getUserId(),
-                "username", response.getUsername(),
-                "email", response.getEmail(),
-                "role", response.getRole(),
-                "profilePicture", response.getProfilePicture(),
-                "setupCompleted", response.isSetupCompleted()
-            ));
+            return ResponseEntity.ok(buildResponseMap(response));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
@@ -55,17 +56,7 @@ public class AuthController {
         try {
             AuthResponse response = authService.login(request);
             addJwtCookie(httpResponse, response.getToken());
-
-            // Return user data WITH the token (Vercel proxy doesn't forward cookies reliably)
-            return ResponseEntity.ok(Map.of(
-                "token", response.getToken(),
-                "userId", response.getUserId(),
-                "username", response.getUsername(),
-                "email", response.getEmail(),
-                "role", response.getRole(),
-                "profilePicture", response.getProfilePicture(),
-                "setupCompleted", response.isSetupCompleted()
-            ));
+            return ResponseEntity.ok(buildResponseMap(response));
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body(Map.of("message", e.getMessage()));
         }
@@ -78,19 +69,9 @@ public class AuthController {
             if (credential == null || credential.isEmpty()) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Missing Google credential"));
             }
-
             AuthResponse response = authService.googleLogin(credential);
             addJwtCookie(httpResponse, response.getToken());
-
-            return ResponseEntity.ok(Map.of(
-                "token", response.getToken(),
-                "userId", response.getUserId(),
-                "username", response.getUsername(),
-                "email", response.getEmail(),
-                "role", response.getRole(),
-                "profilePicture", response.getProfilePicture(),
-                "setupCompleted", response.isSetupCompleted()
-            ));
+            return ResponseEntity.ok(buildResponseMap(response));
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body(Map.of("message", e.getMessage()));
         }
@@ -100,22 +81,10 @@ public class AuthController {
     public ResponseEntity<?> completeSetup(@RequestBody com.placify.dto.AuthDTO.CompleteSetupRequest request, org.springframework.security.core.Authentication auth, HttpServletResponse httpResponse) {
         try {
             Long userId = (Long) auth.getCredentials();
-            
-            // Sanitize username
             request.setUsername(SanitizationUtil.stripHtml(request.getUsername()));
-
             AuthResponse response = authService.completeSetup(userId, request);
             addJwtCookie(httpResponse, response.getToken());
-
-            return ResponseEntity.ok(Map.of(
-                "token", response.getToken(),
-                "userId", response.getUserId(),
-                "username", response.getUsername(),
-                "email", response.getEmail(),
-                "role", response.getRole(),
-                "profilePicture", response.getProfilePicture(),
-                "setupCompleted", response.isSetupCompleted()
-            ));
+            return ResponseEntity.ok(buildResponseMap(response));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
@@ -123,7 +92,6 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse httpResponse) {
-        // Clear the cookie by setting max-age to 0
         Cookie cookie = new Cookie("placify_token", "");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
@@ -139,7 +107,7 @@ public class AuthController {
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/api");
-        cookie.setMaxAge((int) (expirationMs / 1000)); // Convert ms to seconds
+        cookie.setMaxAge((int) (expirationMs / 1000));
         cookie.setAttribute("SameSite", "None");
         httpResponse.addCookie(cookie);
     }
