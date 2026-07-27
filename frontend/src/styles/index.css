@@ -1350,17 +1350,8 @@ body {
 }
 
 /* =============================================
-   Loader
+   Legacy Loader Styles (Removed duplicate)
    ============================================= */
-.loader-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-2xl);
-  min-height: 60vh;
-  flex-direction: column;
-}
-
 .loader {
   width: 44px;
   height: 44px;
@@ -3326,7 +3317,7 @@ body {
   align-items: center;
   padding: 60px 40px;
   width: 100%;
-  min-height: 240px;
+  min-height: calc(100vh - 120px);
 }
 
 .loader-placify {
