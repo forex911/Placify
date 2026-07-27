@@ -2823,9 +2823,7 @@ body {
   transition: transform var(--transition-base);
 }
 
-.db-feature-card:hover .db-feature-card-icon {
-  transform: scale(1.1);
-}
+
 
 .db-feature-card-info {
   flex: 1;
