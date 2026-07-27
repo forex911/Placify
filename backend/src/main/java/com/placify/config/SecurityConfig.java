@@ -50,7 +50,7 @@ public class SecurityConfig {
             // Authorization rules
             .authorizeHttpRequests(auth -> auth
                 // Public auth endpoints
-                .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register", "/api/auth/logout").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register", "/api/auth/google", "/api/auth/logout").permitAll()
                 // Public health endpoint (Allow all methods for uptime monitors, e.g. HEAD)
                 .requestMatchers("/api/health", "/").permitAll()
                 // Extension API (Uses API Key verified in Controller)
