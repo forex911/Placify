@@ -20,7 +20,21 @@ public class AuthDTO {
         public void setPassword(String password) { this.password = password; }
     }
 
-    // â”€â”€ Login Request â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Complete Setup Request ────────────────────────────────────
+    public static class CompleteSetupRequest {
+        private String username;
+        private String password;
+
+        public CompleteSetupRequest() {}
+
+        public String getUsername() { return username; }
+        public void setUsername(String username) { this.username = username; }
+
+        public String getPassword() { return password; }
+        public void setPassword(String password) { this.password = password; }
+    }
+
+    // ── Login Request ─────────────────────────────────────────────
     public static class LoginRequest {
         private String email;
         private String password;
@@ -34,6 +48,7 @@ public class AuthDTO {
         public void setPassword(String password) { this.password = password; }
     }
 
+    // ── Auth Response ─────────────────────────────────────────────
     public static class AuthResponse {
         private String token;
         private Long userId;
@@ -41,16 +56,18 @@ public class AuthDTO {
         private String email;
         private String role;
         private String profilePicture;
+        private boolean setupCompleted;
 
         public AuthResponse() {}
 
-        public AuthResponse(String token, Long userId, String username, String email, String role, String profilePicture) {
+        public AuthResponse(String token, Long userId, String username, String email, String role, String profilePicture, boolean setupCompleted) {
             this.token = token;
             this.userId = userId;
             this.username = username;
             this.email = email;
             this.role = role;
             this.profilePicture = profilePicture;
+            this.setupCompleted = setupCompleted;
         }
 
         public String getToken() { return token; }
@@ -70,5 +87,8 @@ public class AuthDTO {
 
         public String getProfilePicture() { return profilePicture; }
         public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
+
+        public boolean isSetupCompleted() { return setupCompleted; }
+        public void setSetupCompleted(boolean setupCompleted) { this.setupCompleted = setupCompleted; }
     }
 }

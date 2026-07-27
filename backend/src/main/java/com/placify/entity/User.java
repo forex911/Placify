@@ -43,6 +43,9 @@ public class User {
     @Column(name = "profile_picture", length = 500)
     private String profilePicture;
 
+    @Column(name = "setup_completed", nullable = false)
+    private boolean setupCompleted = true;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -120,4 +123,7 @@ public class User {
 
     public String getProfilePicture() { return profilePicture; }
     public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
+
+    public boolean isSetupCompleted() { return setupCompleted; }
+    public void setSetupCompleted(boolean setupCompleted) { this.setupCompleted = setupCompleted; }
 }

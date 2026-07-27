@@ -51,7 +51,7 @@ public class AuthService {
         User saved = userRepository.save(user);
 
         String token = jwtUtil.generateToken(saved.getEmail(), saved.getId(), saved.getRole().name());
-        return new AuthResponse(token, saved.getId(), saved.getUsername(), saved.getEmail(), saved.getRole().name(), saved.getProfilePicture());
+        return new AuthResponse(token, saved.getId(), saved.getUsername(), saved.getEmail(), saved.getRole().name(), saved.getProfilePicture(), saved.isSetupCompleted());
     }
 
     /**
@@ -74,7 +74,7 @@ public class AuthService {
         userRepository.save(user);
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getId(), user.getRole().name());
-        return new AuthResponse(token, user.getId(), user.getUsername(), user.getEmail(), user.getRole().name(), user.getProfilePicture());
+        return new AuthResponse(token, user.getId(), user.getUsername(), user.getEmail(), user.getRole().name(), user.getProfilePicture(), user.isSetupCompleted());
     }
 
     /**
@@ -111,6 +111,7 @@ public class AuthService {
                             Role.USER
                     );
                     newUser.setFullName(name);
+                    newUser.setSetupCompleted(false);
                     return newUser;
                 });
                 
@@ -126,12 +127,36 @@ public class AuthService {
                 User saved = userRepository.save(user);
                 
                 String token = jwtUtil.generateToken(saved.getEmail(), saved.getId(), saved.getRole().name());
-                return new AuthResponse(token, saved.getId(), saved.getUsername(), saved.getEmail(), saved.getRole().name(), saved.getProfilePicture());
+                return new AuthResponse(token, saved.getId(), saved.getUsername(), saved.getEmail(), saved.getRole().name(), saved.getProfilePicture(), saved.isSetupCompleted());
             } else {
                 throw new RuntimeException("Invalid ID token.");
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to verify Google token: " + e.getMessage());
         }
+    }
+
+    /**
+     * Complete setup for a first-time Google user.
+     */
+    public AuthResponse completeSetup(Long userId, com.placify.dto.AuthDTO.CompleteSetupRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.isSetupCompleted()) {
+            throw new RuntimeException("Setup is already completed for this user.");
+        }
+
+        if (!user.getUsername().equals(request.getUsername()) && userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("Username is already taken");
+        }
+
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setSetupCompleted(true);
+        User saved = userRepository.save(user);
+
+        String token = jwtUtil.generateToken(saved.getEmail(), saved.getId(), saved.getRole().name());
+        return new AuthResponse(token, saved.getId(), saved.getUsername(), saved.getEmail(), saved.getRole().name(), saved.getProfilePicture(), saved.isSetupCompleted());
     }
 }

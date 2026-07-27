@@ -24,8 +24,8 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (email, password) => {
     const res = await api.post('/auth/login', { email, password })
-    const { token, userId, username, role, profilePicture } = res.data
-    const userObj = { userId, username, email, role, profilePicture }
+    const { token, userId, username, role, profilePicture, setupCompleted } = res.data
+    const userObj = { userId, username, email, role, profilePicture, setupCompleted }
     localStorage.setItem('placify_token', token)
     localStorage.setItem('placify_user', JSON.stringify(userObj))
     setUser(userObj)
@@ -34,8 +34,8 @@ export function AuthProvider({ children }) {
 
   const register = useCallback(async (username, email, password) => {
     const res = await api.post('/auth/register', { username, email, password })
-    const { token, userId, role, profilePicture } = res.data
-    const userObj = { userId, username, email, role, profilePicture }
+    const { token, userId, role, profilePicture, setupCompleted } = res.data
+    const userObj = { userId, username, email, role, profilePicture, setupCompleted }
     localStorage.setItem('placify_token', token)
     localStorage.setItem('placify_user', JSON.stringify(userObj))
     setUser(userObj)
@@ -56,18 +56,31 @@ export function AuthProvider({ children }) {
 
   const googleLogin = useCallback(async (credential) => {
     const res = await api.post('/auth/google', { credential })
-    const { token, userId, username, email, role, profilePicture } = res.data
-    const userObj = { userId, username, email, role, profilePicture }
+    const { token, userId, username, email, role, profilePicture, setupCompleted } = res.data
+    const userObj = { userId, username, email, role, profilePicture, setupCompleted }
     localStorage.setItem('placify_token', token)
     localStorage.setItem('placify_user', JSON.stringify(userObj))
     setUser(userObj)
     return userObj
   }, [])
 
+  const completeSetupContext = useCallback((updatedUserObj) => {
+    localStorage.setItem('placify_user', JSON.stringify(updatedUserObj))
+    setUser(updatedUserObj)
+  }, [])
+
+  const updateProfileContext = useCallback((newUsername) => {
+    setUser(prev => {
+      const updated = { ...prev, username: newUsername }
+      localStorage.setItem('placify_user', JSON.stringify(updated))
+      return updated
+    })
+  }, [])
+
   const isAdmin = useCallback(() => user?.role === 'ADMIN', [user])
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, googleLogin, register, logout, isAdmin }}>
+    <AuthContext.Provider value={{ user, loading, login, googleLogin, register, logout, isAdmin, completeSetupContext, updateProfileContext }}>
       {children}
     </AuthContext.Provider>
   )

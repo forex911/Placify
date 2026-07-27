@@ -96,4 +96,34 @@ public class UserProfileController {
 
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * PUT /api/profile
+     * Updates the current user's profile details (e.g., username).
+     */
+    @PutMapping
+    public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> request, Authentication auth) {
+        Long userId = (Long) auth.getCredentials();
+
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String newUsername = request.get("username");
+        if (newUsername != null && !newUsername.isBlank() && !newUsername.equals(user.getUsername())) {
+            newUsername = com.placify.config.SanitizationUtil.stripHtml(newUsername);
+            if (userRepository.existsByUsername(newUsername)) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Username is already taken"));
+            }
+            user.setUsername(newUsername);
+        }
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok(Map.of(
+            "username", user.getUsername(),
+            "message", "Profile updated successfully"
+        ));
+    }
 }

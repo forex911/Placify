@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 import Loader from '../components/Loader'
-import { User, AlertTriangle, Shield, Calendar, LogOut, BarChart3, FileText, Monitor, CheckSquare, PenTool, Code2 } from 'lucide-react'
+import { User, AlertTriangle, Shield, Calendar, LogOut, BarChart3, FileText, Monitor, CheckSquare, PenTool, Code2, Edit2, Check, X } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 function UserProfile() {
   const { user, logout } = useAuth()
@@ -12,6 +13,11 @@ function UserProfile() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [copied, setCopied] = useState(false)
+  
+  const [isEditingUsername, setIsEditingUsername] = useState(false)
+  const [editUsernameVal, setEditUsernameVal] = useState('')
+  const [savingUsername, setSavingUsername] = useState(false)
+  const { updateProfileContext } = useAuth()
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -35,6 +41,27 @@ function UserProfile() {
   const formatDate = (str) => {
     if (!str) return '—'
     return new Date(str).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })
+  }
+
+  const handleSaveUsername = async () => {
+    if (!editUsernameVal || editUsernameVal.trim() === '') return
+    if (editUsernameVal === profile.username) {
+      setIsEditingUsername(false)
+      return
+    }
+
+    setSavingUsername(true)
+    try {
+      const res = await api.put('/profile', { username: editUsernameVal })
+      setProfile(prev => ({ ...prev, username: res.data.username }))
+      updateProfileContext(res.data.username)
+      setIsEditingUsername(false)
+      toast.success(res.data.message || 'Username updated')
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update username')
+    } finally {
+      setSavingUsername(false)
+    }
   }
 
   const getInitials = (name) => name ? name.slice(0, 2).toUpperCase() : '??'
@@ -68,7 +95,41 @@ function UserProfile() {
               {getInitials(profile?.username)}
             </div>
           )}
-          <div className="profile-name">{profile?.username}</div>
+          
+          {isEditingUsername ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '4px' }}>
+              <input
+                autoFocus
+                type="text"
+                className="input"
+                value={editUsernameVal}
+                onChange={(e) => setEditUsernameVal(e.target.value)}
+                style={{ padding: '6px 12px', width: '150px', textAlign: 'center' }}
+                disabled={savingUsername}
+              />
+              <button className="btn btn-primary" onClick={handleSaveUsername} disabled={savingUsername} style={{ padding: '6px', borderRadius: '50%' }}>
+                <Check size={16} />
+              </button>
+              <button className="btn btn-secondary" onClick={() => setIsEditingUsername(false)} disabled={savingUsername} style={{ padding: '6px', borderRadius: '50%' }}>
+                <X size={16} />
+              </button>
+            </div>
+          ) : (
+            <div className="profile-name" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              {profile?.username}
+              <button 
+                onClick={() => {
+                  setEditUsernameVal(profile?.username || '')
+                  setIsEditingUsername(true)
+                }} 
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+                title="Edit Username"
+              >
+                <Edit2 size={16} />
+              </button>
+            </div>
+          )}
+
           <div className="profile-email">{profile?.email}</div>
           <div className={`sidebar-role-badge ${profile?.role === 'ADMIN' ? 'admin' : 'user'}`} style={{ marginTop: '12px', display: 'inline-block' }}>
             {profile?.role === 'ADMIN' ? <><Shield size={12} style={{marginRight: 4}} /> Admin</> : <><User size={12} style={{marginRight: 4}} /> User</>}

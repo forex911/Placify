@@ -41,7 +41,9 @@ public class AuthController {
                 "userId", response.getUserId(),
                 "username", response.getUsername(),
                 "email", response.getEmail(),
-                "role", response.getRole()
+                "role", response.getRole(),
+                "profilePicture", response.getProfilePicture(),
+                "setupCompleted", response.isSetupCompleted()
             ));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
@@ -60,7 +62,9 @@ public class AuthController {
                 "userId", response.getUserId(),
                 "username", response.getUsername(),
                 "email", response.getEmail(),
-                "role", response.getRole()
+                "role", response.getRole(),
+                "profilePicture", response.getProfilePicture(),
+                "setupCompleted", response.isSetupCompleted()
             ));
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body(Map.of("message", e.getMessage()));
@@ -83,10 +87,37 @@ public class AuthController {
                 "userId", response.getUserId(),
                 "username", response.getUsername(),
                 "email", response.getEmail(),
-                "role", response.getRole()
+                "role", response.getRole(),
+                "profilePicture", response.getProfilePicture(),
+                "setupCompleted", response.isSetupCompleted()
             ));
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/complete-setup")
+    public ResponseEntity<?> completeSetup(@RequestBody com.placify.dto.AuthDTO.CompleteSetupRequest request, org.springframework.security.core.Authentication auth, HttpServletResponse httpResponse) {
+        try {
+            Long userId = (Long) auth.getCredentials();
+            
+            // Sanitize username
+            request.setUsername(SanitizationUtil.stripHtml(request.getUsername()));
+
+            AuthResponse response = authService.completeSetup(userId, request);
+            addJwtCookie(httpResponse, response.getToken());
+
+            return ResponseEntity.ok(Map.of(
+                "token", response.getToken(),
+                "userId", response.getUserId(),
+                "username", response.getUsername(),
+                "email", response.getEmail(),
+                "role", response.getRole(),
+                "profilePicture", response.getProfilePicture(),
+                "setupCompleted", response.isSetupCompleted()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 
