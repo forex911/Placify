@@ -63,48 +63,54 @@ function AppLayout({ children }) {
   )
 }
 
+import { GoogleOAuthProvider } from '@react-oauth/google'
+
 function App() {
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
+  
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: {
-              background: 'var(--card-bg)',
-              color: 'var(--text-primary)',
-              border: '1px solid var(--border)',
-              borderRadius: '10px',
-            },
-            success: { iconTheme: { primary: '#10b981', secondary: '#fff' } },
-            error: { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
-          }}
-        />
-        <Routes>
-          {/* Public routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <BrowserRouter>
+        <AuthProvider>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: 'var(--card-bg)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border)',
+                borderRadius: '10px',
+              },
+              success: { iconTheme: { primary: '#10b981', secondary: '#fff' } },
+              error: { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
+            }}
+          />
+          <Routes>
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          {/* Protected user routes */}
-          <Route path="/dashboard" element={<ProtectedRoute><AppLayout><Dashboard /></AppLayout></ProtectedRoute>} />
-          <Route path="/applications" element={<ProtectedRoute><AppLayout><Applications /></AppLayout></ProtectedRoute>} />
-          <Route path="/dsa" element={<ProtectedRoute><AppLayout><DsaTracker /></AppLayout></ProtectedRoute>} />
-          <Route path="/subjects" element={<ProtectedRoute><AppLayout><SubjectProgress /></AppLayout></ProtectedRoute>} />
-          <Route path="/tasks" element={<ProtectedRoute><AppLayout><StudyTasks /></AppLayout></ProtectedRoute>} />
-          <Route path="/hackathons" element={<ProtectedRoute><AppLayout><Hackathons /></AppLayout></ProtectedRoute>} />
-          <Route path="/leetcode" element={<ProtectedRoute><AppLayout><LeetCode /></AppLayout></ProtectedRoute>} />
-          <Route path="/notes" element={<ProtectedRoute><AppLayout><Notes /></AppLayout></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><AppLayout><UserProfile /></AppLayout></ProtectedRoute>} />
+            {/* Protected user routes */}
+            <Route path="/dashboard" element={<ProtectedRoute><AppLayout><Dashboard /></AppLayout></ProtectedRoute>} />
+            <Route path="/applications" element={<ProtectedRoute><AppLayout><Applications /></AppLayout></ProtectedRoute>} />
+            <Route path="/dsa" element={<ProtectedRoute><AppLayout><DsaTracker /></AppLayout></ProtectedRoute>} />
+            <Route path="/subjects" element={<ProtectedRoute><AppLayout><SubjectProgress /></AppLayout></ProtectedRoute>} />
+            <Route path="/tasks" element={<ProtectedRoute><AppLayout><StudyTasks /></AppLayout></ProtectedRoute>} />
+            <Route path="/hackathons" element={<ProtectedRoute><AppLayout><Hackathons /></AppLayout></ProtectedRoute>} />
+            <Route path="/leetcode" element={<ProtectedRoute><AppLayout><LeetCode /></AppLayout></ProtectedRoute>} />
+            <Route path="/notes" element={<ProtectedRoute><AppLayout><Notes /></AppLayout></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><AppLayout><UserProfile /></AppLayout></ProtectedRoute>} />
 
-          {/* Admin-only route */}
-          <Route path="/admin" element={<AdminRoute><AppLayout><AdminDashboard /></AppLayout></AdminRoute>} />
+            {/* Admin-only route */}
+            <Route path="/admin" element={<AdminRoute><AppLayout><AdminDashboard /></AppLayout></AdminRoute>} />
 
-          {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   )
 }
 

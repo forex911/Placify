@@ -54,10 +54,20 @@ export function AuthProvider({ children }) {
     setUser(null)
   }, [])
 
+  const googleLogin = useCallback(async (credential) => {
+    const res = await api.post('/auth/google', { credential })
+    const { token, userId, username, email, role } = res.data
+    const userObj = { userId, username, email, role }
+    localStorage.setItem('placify_token', token)
+    localStorage.setItem('placify_user', JSON.stringify(userObj))
+    setUser(userObj)
+    return userObj
+  }, [])
+
   const isAdmin = useCallback(() => user?.role === 'ADMIN', [user])
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, isAdmin }}>
+    <AuthContext.Provider value={{ user, loading, login, googleLogin, register, logout, isAdmin }}>
       {children}
     </AuthContext.Provider>
   )

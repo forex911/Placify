@@ -34,6 +34,9 @@ public class User {
     @Column(name = "api_key", unique = true, length = 100)
     private String apiKey;
 
+    @Column(name = "google_id", unique = true, length = 100)
+    private String googleId;
+
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
@@ -53,6 +56,10 @@ public class User {
         this.updatedAt = LocalDateTime.now();
         if (!this.enabled) this.enabled = true;
         if (this.apiKey == null) this.apiKey = UUID.randomUUID().toString();
+        // Generate a random password for OAuth users to satisfy DB constraints
+        if (this.password == null) {
+            this.password = UUID.randomUUID().toString();
+        }
     }
 
     @PreUpdate
@@ -70,7 +77,7 @@ public class User {
         this.enabled = true;
     }
 
-    // â”€â”€ Getters & Setters â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Getters & Setters ──────────────────────────────────────────────
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -86,6 +93,9 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public String getGoogleId() { return googleId; }
+    public void setGoogleId(String googleId) { this.googleId = googleId; }
 
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }

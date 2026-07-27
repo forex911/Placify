@@ -67,6 +67,29 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/google")
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> request, HttpServletResponse httpResponse) {
+        try {
+            String credential = request.get("credential");
+            if (credential == null || credential.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Missing Google credential"));
+            }
+
+            AuthResponse response = authService.googleLogin(credential);
+            addJwtCookie(httpResponse, response.getToken());
+
+            return ResponseEntity.ok(Map.of(
+                "token", response.getToken(),
+                "userId", response.getUserId(),
+                "username", response.getUsername(),
+                "email", response.getEmail(),
+                "role", response.getRole()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body(Map.of("message", e.getMessage()));
+        }
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse httpResponse) {
         // Clear the cookie by setting max-age to 0

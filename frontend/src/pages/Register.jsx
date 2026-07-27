@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { GoogleLogin } from '@react-oauth/google'
 import { Sparkles, AlertCircle } from 'lucide-react'
 
 function Register() {
-  const { register } = useAuth()
+  const { register, googleLogin } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({ username: '', email: '', password: '', confirm: '' })
   const [error, setError] = useState(null)
@@ -29,6 +30,19 @@ function Register() {
       navigate('/dashboard', { replace: true })
     } catch (err) {
       setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError(null)
+    setLoading(true)
+    try {
+      const user = await googleLogin(credentialResponse.credential)
+      navigate(user.role === 'ADMIN' ? '/admin' : '/dashboard', { replace: true })
+    } catch (err) {
+      setError(err.message || 'Google Login failed')
     } finally {
       setLoading(false)
     }
@@ -121,7 +135,23 @@ function Register() {
             </button>
           </form>
 
-          <p className="auth-split-footer">
+          <div style={{ display: 'flex', alignItems: 'center', margin: '24px 0' }}>
+            <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }}></div>
+            <span style={{ padding: '0 12px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>OR</span>
+            <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }}></div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => setError('Google Signup Failed')}
+              theme="filled_black"
+              text="signup_with"
+              shape="pill"
+            />
+          </div>
+
+          <p className="auth-split-footer" style={{ marginTop: '24px' }}>
             Already have an account?{' '}
             <Link to="/login" className="auth-split-link">Sign in</Link>
           </p>
