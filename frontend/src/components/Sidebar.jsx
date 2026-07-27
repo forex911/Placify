@@ -84,14 +84,14 @@ function Sidebar({ collapsed, onToggleCollapse }) {
               <div className="sidebar-logo-sub">Placement Management</div>
             </div>
           )}
-          {/* Collapse toggle button */}
+          {/* Collapse toggle button
           <button
             className="sidebar-collapse-btn"
             onClick={onToggleCollapse}
             title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
-          </button>
+          </button> */}
         </div>
 
         <nav className="sidebar-nav">
