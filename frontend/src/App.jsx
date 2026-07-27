@@ -1,13 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
 import { Toaster } from 'react-hot-toast'
-import { AuthProvider } from './context/AuthContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
 import Sidebar from './components/Sidebar'
 import NotificationBell from './components/NotificationBell'
-import DarkModeToggle from './components/DarkModeToggle'
 import Dashboard from './pages/Dashboard'
 import Applications from './pages/Applications'
 import DsaTracker from './pages/DsaTracker'
@@ -21,15 +19,42 @@ import SubjectProgress from './pages/SubjectProgress'
 import Hackathons from './pages/Hackathons'
 import LeetCode from './pages/LeetCode'
 
-function AppLayout({ children }) {
+function HeaderProfileAvatar() {
+  const { user } = useAuth()
+  const navigate = useNavigate()
+  if (!user) return null
+  const initials = user.username ? user.username.slice(0, 2).toUpperCase() : '??'
   return (
-    <div className="app-layout">
-      <Sidebar />
+    <button
+      className="header-avatar"
+      onClick={() => navigate('/profile')}
+      title="Profile"
+    >
+      {initials}
+    </button>
+  )
+}
+
+function AppLayout({ children }) {
+  const [collapsed, setCollapsed] = useState(() => {
+    return localStorage.getItem('sidebar-collapsed') === 'true'
+  })
+
+  const toggleCollapse = () => {
+    setCollapsed(c => {
+      localStorage.setItem('sidebar-collapsed', String(!c))
+      return !c
+    })
+  }
+
+  return (
+    <div className={`app-layout ${collapsed ? 'sidebar-is-collapsed' : ''}`}>
+      <Sidebar collapsed={collapsed} onToggleCollapse={toggleCollapse} />
       <main className="main-content">
         <header className="top-header">
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             <NotificationBell />
-            <DarkModeToggle />
+            <HeaderProfileAvatar />
           </div>
         </header>
         {children}

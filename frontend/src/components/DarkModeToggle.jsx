@@ -1,48 +1,91 @@
-import { useEffect, useState } from 'react'
-import { Sun, Moon } from 'lucide-react'
+import { useEffect, useState, useRef } from 'react'
+import { Sun, Moon, Monitor, Palette, ChevronUp } from 'lucide-react'
 
-function DarkModeToggle() {
-  const [dark, setDark] = useState(() => {
-    return localStorage.getItem('placify_theme') === 'dark'
-  })
+const THEMES = [
+  { key: 'light', label: 'Light', icon: Sun },
+  { key: 'dark', label: 'Dark', icon: Moon },
+  { key: 'system', label: 'System', icon: Monitor },
+]
 
+function applyTheme(theme) {
+  if (theme === 'system') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light')
+  } else {
+    document.documentElement.setAttribute('data-theme', theme)
+  }
+}
+
+function DarkModeToggle({ collapsed }) {
+  const [theme, setTheme] = useState(() => localStorage.getItem('placify_theme') || 'dark')
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  // Apply on mount + listen for system changes
   useEffect(() => {
-    if (dark) {
-      document.documentElement.setAttribute('data-theme', 'dark')
-      localStorage.setItem('placify_theme', 'dark')
-    } else {
-      document.documentElement.setAttribute('data-theme', 'light')
-      localStorage.setItem('placify_theme', 'light')
-    }
-  }, [dark])
+    const saved = localStorage.getItem('placify_theme') || 'dark'
+    setTheme(saved)
+    applyTheme(saved)
 
-  // Apply on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('placify_theme')
-    if (saved) {
-      document.documentElement.setAttribute('data-theme', saved)
-      setDark(saved === 'dark')
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = () => {
+      if (localStorage.getItem('placify_theme') === 'system') {
+        applyTheme('system')
+      }
     }
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
   }, [])
 
+  // Apply when theme changes
+  useEffect(() => {
+    localStorage.setItem('placify_theme', theme)
+    applyTheme(theme)
+  }, [theme])
+
+  // Close popup on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const currentTheme = THEMES.find(t => t.key === theme) || THEMES[1]
+  const CurrentIcon = currentTheme.icon
+
   return (
-    <button
-      onClick={() => setDark(d => !d)}
-      title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-      aria-label="Toggle dark mode"
-      style={{
-        background: 'var(--surface)',
-        border: '1px solid var(--border)',
-        borderRadius: 10,
-        width: 38, height: 38,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        cursor: 'pointer', fontSize: '1.1rem',
-        transition: 'all 0.2s',
-        color: 'var(--text-primary)',
-      }}
-    >
-      {dark ? <Sun size={18} /> : <Moon size={18} />}
-    </button>
+    <div className="theme-picker" ref={ref}>
+      <button
+        className="theme-picker-trigger"
+        onClick={() => setOpen(o => !o)}
+        title="Theme"
+      >
+        <span className="nav-icon"><Palette size={18} /></span>
+        {!collapsed && <span className="nav-label">Theme</span>}
+        {!collapsed && <ChevronUp size={14} className={`theme-picker-chevron ${open ? 'open' : ''}`} />}
+      </button>
+
+      {open && (
+        <div className="theme-picker-popup">
+          {THEMES.map(t => {
+            const Icon = t.icon
+            return (
+              <button
+                key={t.key}
+                className={`theme-picker-option ${theme === t.key ? 'active' : ''}`}
+                onClick={() => { setTheme(t.key); setOpen(false) }}
+              >
+                {theme === t.key && <span className="theme-picker-dot" />}
+                <Icon size={14} />
+                <span>{t.label}</span>
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
   )
 }
 

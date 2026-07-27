@@ -1,25 +1,27 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import DarkModeToggle from './DarkModeToggle'
 
-import { useState, useRef } from 'react'
-import { 
-  Sparkles, LayoutDashboard, FileText, Zap, BookOpen, 
-  CheckSquare, LineChart, Code2, PenTool, Settings, 
-  Shield, User, LogOut, X, Menu, Trophy
+import { useState, useRef, useEffect } from 'react'
+import {
+  Sparkles, LayoutDashboard, FileText, Zap, BookOpen,
+  CheckSquare, Code2, PenTool, Settings,
+  Shield, User, LogOut, X, Menu, Trophy,
+  PanelLeftClose, PanelLeftOpen
 } from 'lucide-react'
 
 const defaultNavItems = [
-  { to: '/dashboard',  icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
-  { to: '/applications', icon: <FileText size={18} />, label: 'Applications' },
-  { to: '/dsa',        icon: <Zap size={18} />, label: 'DSA Tracker' },
-  { to: '/subjects',   icon: <BookOpen size={18} />, label: 'Core Subjects' },
-  { to: '/tasks',      icon: <CheckSquare size={18} />, label: 'Study Tasks' },
-  { to: '/hackathons', icon: <Trophy size={18} />, label: 'Hackathons' },
-  { to: '/leetcode',   icon: <Code2 size={18} />, label: 'LeetCode' },
-  { to: '/notes',      icon: <PenTool size={18} />, label: 'Notes' },
+  { to: '/dashboard',    icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
+  { to: '/applications', icon: <FileText size={18} />,        label: 'Applications' },
+  { to: '/dsa',          icon: <Zap size={18} />,             label: 'DSA Tracker' },
+  { to: '/subjects',     icon: <BookOpen size={18} />,        label: 'Core Subjects' },
+  { to: '/tasks',        icon: <CheckSquare size={18} />,     label: 'Study Tasks' },
+  { to: '/hackathons',   icon: <Trophy size={18} />,          label: 'Hackathons' },
+  { to: '/leetcode',     icon: <Code2 size={18} />,           label: 'LeetCode' },
+  { to: '/notes',        icon: <PenTool size={18} />,         label: 'Notes' },
 ]
 
-function Sidebar() {
+function Sidebar({ collapsed, onToggleCollapse }) {
   const { user, logout, isAdmin } = useAuth()
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -73,65 +75,85 @@ function Sidebar() {
              style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 999 }} />
       )}
 
-      <aside className={`sidebar ${mobileOpen ? 'mobile-open' : ''}`}>
+      <aside className={`sidebar ${mobileOpen ? 'mobile-open' : ''} ${collapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-logo">
-          <div className="sidebar-logo-icon"><Sparkles size={28} /></div>
-          <div>
-            <div className="sidebar-logo-text">Placify</div>
-            <div className="sidebar-logo-sub">Placement Management</div>
-          </div>
+          <div className="sidebar-logo-icon"><Sparkles size={collapsed ? 20 : 28} /></div>
+          {!collapsed && (
+            <div>
+              <div className="sidebar-logo-text">Placify</div>
+              <div className="sidebar-logo-sub">Placement Management</div>
+            </div>
+          )}
+          {/* Collapse toggle button */}
+          <button
+            className="sidebar-collapse-btn"
+            onClick={onToggleCollapse}
+            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+          </button>
         </div>
 
         <nav className="sidebar-nav">
-          <div className="sidebar-section-label">Navigation</div>
+          {!collapsed && <div className="sidebar-section-label">Navigation</div>}
           {items.map((item, index) => (
             <NavLink
               key={item.to}
               to={item.to}
-              draggable
+              draggable={!collapsed}
               onDragStart={(e) => { dragItem.current = index; e.dataTransfer.effectAllowed = 'move' }}
-              onDragEnter={(e) => { dragOverItem.current = index }}
+              onDragEnter={() => { dragOverItem.current = index }}
               onDragOver={(e) => { e.preventDefault() }}
               onDragEnd={handleSort}
               className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
               onClick={() => setMobileOpen(false)}
               style={{ cursor: 'default' }}
+              title={collapsed ? item.label : undefined}
             >
               <span className="nav-icon">{item.icon}</span>
-              <span className="nav-label">{item.label}</span>
+              {!collapsed && <span className="nav-label">{item.label}</span>}
             </NavLink>
           ))}
 
           {isAdmin && isAdmin() && (
             <>
-              <div className="sidebar-section-label" style={{ marginTop: 16 }}>Admin</div>
+              {!collapsed && <div className="sidebar-section-label" style={{ marginTop: 16 }}>Admin</div>}
               <NavLink to="/admin" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                       onClick={() => setMobileOpen(false)}>
+                       onClick={() => setMobileOpen(false)} title={collapsed ? 'Admin Dashboard' : undefined}>
                 <span className="nav-icon"><Settings size={18} /></span>
-                <span className="nav-label">Admin Dashboard</span>
+                {!collapsed && <span className="nav-label">Admin Dashboard</span>}
               </NavLink>
             </>
           )}
         </nav>
 
+        {/* Theme picker */}
+        <DarkModeToggle collapsed={collapsed} />
+
         {user && (
           <div className="sidebar-user">
             <NavLink to="/profile" className="sidebar-user-info" style={{ textDecoration: 'none' }}>
               <div className="sidebar-avatar">{getInitials(user.username)}</div>
-              <div className="sidebar-user-details">
-                <div className="sidebar-username">{user.username}</div>
-                <div className={`sidebar-role-badge ${user.role === 'ADMIN' ? 'admin' : 'user'}`}>
-                  {user.role === 'ADMIN' ? <><Shield size={12} style={{marginRight: 4}}/> Admin</> : <><User size={12} style={{marginRight: 4}}/> User</>}
+              {!collapsed && (
+                <div className="sidebar-user-details">
+                  <div className="sidebar-username">{user.username}</div>
+                  <div className={`sidebar-role-badge ${user.role === 'ADMIN' ? 'admin' : 'user'}`}>
+                    {user.role === 'ADMIN' ? <><Shield size={12} style={{marginRight: 4}}/> Admin</> : <><User size={12} style={{marginRight: 4}}/> User</>}
+                  </div>
                 </div>
-              </div>
+              )}
             </NavLink>
-            <button id="logout-btn" className="sidebar-logout-btn" onClick={handleLogout} title="Logout"><LogOut size={18} /></button>
+            {!collapsed && (
+              <button id="logout-btn" className="sidebar-logout-btn" onClick={handleLogout} title="Logout"><LogOut size={18} /></button>
+            )}
           </div>
         )}
 
-        <div className="sidebar-footer">
-          <div className="sidebar-footer-text">Placify v2.0.0 · Enterprise Edition</div>
-        </div>
+        {!collapsed && (
+          <div className="sidebar-footer">
+            <div className="sidebar-footer-text">Placify v2.0.0 · Enterprise Edition</div>
+          </div>
+        )}
       </aside>
     </>
   )
