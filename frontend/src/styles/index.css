@@ -3416,3 +3416,79 @@ body {
   0% { opacity: 0; transform: translateY(6px); }
   100% { opacity: 1; transform: translateY(0); }
 }
+
+/* =============================================
+   Icon Hover Animations
+   ============================================= */
+
+/* Wobble effect (good for briefcases, documents) */
+@keyframes icon-wobble {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Bounce effect (good for tasks, checkmarks) */
+@keyframes icon-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* Pulse scale (good for stars, hearts, awards) */
+@keyframes icon-pulse-scale {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* Tada effect (good for trophies) */
+@keyframes icon-tada {
+  0% { transform: scale(1); }
+  10%, 20% { transform: scale(0.95) rotate(-3deg); }
+  30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); }
+  40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* Float effect (good for cloud, rocket) */
+@keyframes icon-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+/* Apply default animation to specific icons on hover */
+.db-feature-card:hover .db-feature-card-icon svg,
+.db-stat-card:hover .db-stat-icon svg {
+  animation: icon-bounce 0.5s ease;
+}
+
+/* Targeted hover animations */
+.db-feature-applications:hover .db-feature-card-icon svg {
+  animation: icon-wobble 0.6s ease;
+}
+
+.db-feature-dsa:hover .db-feature-card-icon svg {
+  animation: icon-pulse-scale 0.5s ease-in-out;
+}
+
+.db-feature-hackathons:hover .db-feature-card-icon svg {
+  animation: icon-tada 0.8s ease;
+}
+
+.db-stat-card:hover .db-stat-icon-amber svg {
+  animation: icon-tada 0.8s ease;
+}
+
+.db-stat-card:hover .db-stat-icon-blue svg {
+  animation: icon-wobble 0.6s ease;
+}
+
+.db-stat-card:hover .db-stat-icon-green svg {
+  animation: icon-pulse-scale 0.5s ease-in-out;
+}
+
+.db-stat-card:hover .db-stat-icon-rose svg {
+  animation: icon-bounce 0.5s ease;
+}
