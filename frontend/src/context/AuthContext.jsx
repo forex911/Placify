@@ -24,8 +24,8 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (email, password) => {
     const res = await api.post('/auth/login', { email, password })
-    const { token, userId, username, role } = res.data
-    const userObj = { userId, username, email, role }
+    const { token, userId, username, role, profilePicture } = res.data
+    const userObj = { userId, username, email, role, profilePicture }
     localStorage.setItem('placify_token', token)
     localStorage.setItem('placify_user', JSON.stringify(userObj))
     setUser(userObj)
@@ -34,8 +34,8 @@ export function AuthProvider({ children }) {
 
   const register = useCallback(async (username, email, password) => {
     const res = await api.post('/auth/register', { username, email, password })
-    const { token, userId, role } = res.data
-    const userObj = { userId, username, email, role }
+    const { token, userId, role, profilePicture } = res.data
+    const userObj = { userId, username, email, role, profilePicture }
     localStorage.setItem('placify_token', token)
     localStorage.setItem('placify_user', JSON.stringify(userObj))
     setUser(userObj)
@@ -56,8 +56,8 @@ export function AuthProvider({ children }) {
 
   const googleLogin = useCallback(async (credential) => {
     const res = await api.post('/auth/google', { credential })
-    const { token, userId, username, email, role } = res.data
-    const userObj = { userId, username, email, role }
+    const { token, userId, username, email, role, profilePicture } = res.data
+    const userObj = { userId, username, email, role, profilePicture }
     localStorage.setItem('placify_token', token)
     localStorage.setItem('placify_user', JSON.stringify(userObj))
     setUser(userObj)

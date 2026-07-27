@@ -133,7 +133,11 @@ function Sidebar({ collapsed, onToggleCollapse }) {
         {user && (
           <div className="sidebar-user">
             <NavLink to="/profile" className="sidebar-user-info" style={{ textDecoration: 'none' }}>
-              <div className="sidebar-avatar">{getInitials(user.username)}</div>
+              {user.profilePicture ? (
+                <img src={user.profilePicture} alt="Profile" className="sidebar-avatar-img" />
+              ) : (
+                <div className="sidebar-avatar">{getInitials(user.username)}</div>
+              )}
               {!collapsed && (
                 <div className="sidebar-user-details">
                   <div className="sidebar-username">{user.username}</div>

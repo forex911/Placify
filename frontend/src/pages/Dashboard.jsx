@@ -238,7 +238,11 @@ function Dashboard() {
         <aside className="db-profile-panel">
           {/* User Card */}
           <div className="db-profile-card">
-            <div className="db-profile-avatar">{getInitials(user?.username)}</div>
+            {user?.profilePicture ? (
+              <img src={user.profilePicture} alt="Profile" className="db-profile-avatar-img" />
+            ) : (
+              <div className="db-profile-avatar">{getInitials(user?.username)}</div>
+            )}
             <div className="db-profile-name">{user?.username}</div>
             <div className="db-profile-role">
               {user?.role === 'ADMIN' ? 'Administrator' : 'Student'}

@@ -66,6 +66,7 @@ public class UserProfileController {
         profile.put("username", user.getUsername());
         profile.put("email", user.getEmail());
         profile.put("role", user.getRole().name());
+        profile.put("profilePicture", user.getProfilePicture());
         profile.put("createdAt", user.getCreatedAt() != null ? user.getCreatedAt().toString() : "");
         profile.put("apiKey", user.getApiKey());
         profile.put("stats", stats);

@@ -61,9 +61,13 @@ function UserProfile() {
       <div className="profile-grid">
         {/* Profile Card */}
         <div className="card profile-card">
-          <div className="profile-avatar-lg">
-            {getInitials(profile?.username)}
-          </div>
+          {profile?.profilePicture ? (
+            <img src={profile.profilePicture} alt="Profile" className="profile-avatar-lg-img" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', margin: '0 auto 16px', display: 'block', border: '3px solid var(--border)' }} />
+          ) : (
+            <div className="profile-avatar-lg">
+              {getInitials(profile?.username)}
+            </div>
+          )}
           <div className="profile-name">{profile?.username}</div>
           <div className="profile-email">{profile?.email}</div>
           <div className={`sidebar-role-badge ${profile?.role === 'ADMIN' ? 'admin' : 'user'}`} style={{ marginTop: '12px', display: 'inline-block' }}>

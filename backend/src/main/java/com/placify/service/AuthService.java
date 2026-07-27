@@ -51,7 +51,7 @@ public class AuthService {
         User saved = userRepository.save(user);
 
         String token = jwtUtil.generateToken(saved.getEmail(), saved.getId(), saved.getRole().name());
-        return new AuthResponse(token, saved.getId(), saved.getUsername(), saved.getEmail(), saved.getRole().name());
+        return new AuthResponse(token, saved.getId(), saved.getUsername(), saved.getEmail(), saved.getRole().name(), saved.getProfilePicture());
     }
 
     /**
@@ -74,7 +74,7 @@ public class AuthService {
         userRepository.save(user);
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getId(), user.getRole().name());
-        return new AuthResponse(token, user.getId(), user.getUsername(), user.getEmail(), user.getRole().name());
+        return new AuthResponse(token, user.getId(), user.getUsername(), user.getEmail(), user.getRole().name(), user.getProfilePicture());
     }
 
     /**
@@ -96,6 +96,7 @@ public class AuthService {
                 String email = payload.getEmail();
                 String subjectId = payload.getSubject(); // Google ID
                 String name = (String) payload.get("name");
+                String pictureUrl = (String) payload.get("picture");
 
                 // Find existing user by email or googleId
                 User user = userRepository.findByEmail(email).orElseGet(() -> {
@@ -118,11 +119,14 @@ public class AuthService {
                 }
 
                 user.setGoogleId(subjectId);
+                if (pictureUrl != null && !pictureUrl.isEmpty()) {
+                    user.setProfilePicture(pictureUrl);
+                }
                 user.setLastLogin(LocalDateTime.now());
                 User saved = userRepository.save(user);
                 
                 String token = jwtUtil.generateToken(saved.getEmail(), saved.getId(), saved.getRole().name());
-                return new AuthResponse(token, saved.getId(), saved.getUsername(), saved.getEmail(), saved.getRole().name());
+                return new AuthResponse(token, saved.getId(), saved.getUsername(), saved.getEmail(), saved.getRole().name(), saved.getProfilePicture());
             } else {
                 throw new RuntimeException("Invalid ID token.");
             }
