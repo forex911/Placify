@@ -4,9 +4,10 @@ import { getLeetCodeProfile, upsertLeetCodeProfile } from '../api/leetcodeApi'
 import Loader from '../components/Loader'
 import Modal from '../components/Modal'
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import ActivityCalendar from 'react-activity-calendar'
 import toast from 'react-hot-toast'
 import { format } from 'date-fns'
-import { Lightbulb, RefreshCw, Plus, Terminal, Trophy, BarChart3, PieChart as PieChartIcon } from 'lucide-react'
+import { Lightbulb, RefreshCw, Plus, Terminal, Trophy, BarChart3, PieChart as PieChartIcon, Info } from 'lucide-react'
 
 const DIFFICULTY_COLORS = { Easy: '#10b981', Medium: '#f59e0b', Hard: '#ef4444' }
 
@@ -26,6 +27,8 @@ function LeetCode() {
   const [form, setForm] = useState(EMPTY_FORM)
   const [saving, setSaving] = useState(false)
   const [fetching, setFetching] = useState(false)
+  const [calendarData, setCalendarData] = useState(null)
+  const [calendarLoading, setCalendarLoading] = useState(false)
 
   const load = async () => {
     try {
@@ -37,6 +40,54 @@ function LeetCode() {
   }
 
   useEffect(() => { load() }, [])
+
+  useEffect(() => {
+    if (profile?.username) {
+      fetchCalendar(profile.username)
+    } else {
+      setCalendarData(null)
+    }
+  }, [profile?.username])
+
+  const fetchCalendar = async (username) => {
+    try {
+      setCalendarLoading(true)
+      const res = await api.get(`/leetcode/fetch/${username}/calendar`)
+      if (!res.data.error) {
+        const rawObj = JSON.parse(res.data.submissionCalendar || '{}')
+        const days = []
+        const today = new Date()
+        for (let i = 364; i >= 0; i--) {
+          const d = new Date(today)
+          d.setDate(today.getDate() - i)
+          const dateStr = format(d, 'yyyy-MM-dd')
+          days.push({ date: dateStr, count: 0, level: 0 })
+        }
+        
+        for (const [unixSec, count] of Object.entries(rawObj)) {
+          const dateStr = format(new Date(unixSec * 1000), 'yyyy-MM-dd')
+          const day = days.find(d => d.date === dateStr)
+          if (day) {
+            day.count += count
+            if (day.count > 0 && day.count <= 2) day.level = 1
+            else if (day.count > 2 && day.count <= 5) day.level = 2
+            else if (day.count > 5 && day.count <= 8) day.level = 3
+            else if (day.count > 8) day.level = 4
+          }
+        }
+        setCalendarData({
+          streak: res.data.streak,
+          totalActiveDays: res.data.totalActiveDays,
+          data: days,
+          totalSubmissions: Object.values(rawObj).reduce((a, b) => a + b, 0)
+        })
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setCalendarLoading(false)
+    }
+  }
 
   const openEdit = () => {
     if (profile) {
@@ -204,6 +255,45 @@ function LeetCode() {
                 <div className="empty-state"><div className="empty-state-text">No solved problems yet</div></div>
               )}
             </div>
+          </div>
+
+          {/* Submission Heatmap */}
+          <div className="card" style={{ marginTop: 24, padding: '24px', background: '#232323', border: 'none', color: '#fff' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <div style={{ fontSize: '1.2rem' }}>
+                <span style={{ fontWeight: 700 }}>{calendarData?.totalSubmissions || 0}</span> submissions in the past one year <Info size={14} style={{ color: '#888' }} />
+              </div>
+              <div style={{ fontSize: '0.9rem', color: '#aaa', display: 'flex', gap: 16 }}>
+                <span>Total active days: <span style={{ color: '#fff', fontWeight: 600 }}>{calendarData?.totalActiveDays || 0}</span></span>
+                <span>Max streak: <span style={{ color: '#fff', fontWeight: 600 }}>{calendarData?.streak || 0}</span></span>
+              </div>
+            </div>
+            {calendarLoading ? (
+              <Loader message="Loading calendar..." />
+            ) : calendarData ? (
+              <div style={{ overflowX: 'auto', paddingBottom: 8 }}>
+                <ActivityCalendar
+                  data={calendarData.data}
+                  theme={{
+                    light: ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39'],
+                    dark: ['#383838', '#10b98144', '#10b98188', '#10b981cc', '#10b981'],
+                  }}
+                  colorScheme="dark"
+                  labels={{
+                    months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                    totalCount: '{{count}} submissions in the past one year',
+                    legend: { less: 'Less', more: 'More' }
+                  }}
+                  hideColorLegend
+                  blockSize={12}
+                  blockMargin={4}
+                  blockRadius={2}
+                />
+              </div>
+            ) : (
+              <div style={{ color: '#888', textAlign: 'center', padding: '20px 0' }}>No calendar data available</div>
+            )}
           </div>
         </>
       )}

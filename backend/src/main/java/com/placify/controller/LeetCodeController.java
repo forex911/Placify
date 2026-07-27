@@ -130,5 +130,44 @@ public class LeetCodeController {
         } catch (Exception e) {
             return ResponseEntity.ok(Map.of("error", true, "message", "Failed to fetch skills: " + e.getMessage()));
         }
+        }
+
+    @GetMapping("/fetch/{username}/calendar")
+    public ResponseEntity<?> fetchCalendarFromLeetCode(@PathVariable String username) {
+        try {
+            String query = "{\"query\":\"query userProfileCalendar($username: String!, $year: Int) { matchedUser(username: $username) { userCalendar(year: $year) { activeYears streak totalActiveDays dccBadges { timestamp badge { name icon } } submissionCalendar } } }\",\"variables\":{\"username\":\"" + username + "\"}}";
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://leetcode.com/graphql"))
+                    .header("Content-Type", "application/json")
+                    .header("Referer", "https://leetcode.com")
+                    .POST(HttpRequest.BodyPublishers.ofString(query))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            JsonNode root = objectMapper.readTree(response.body());
+            JsonNode user = root.path("data").path("matchedUser");
+
+            if (user.isMissingNode() || user.isNull()) {
+                return ResponseEntity.ok(Map.of("error", true, "message", "User not found"));
+            }
+
+            JsonNode calendarNode = user.path("userCalendar");
+            if (calendarNode.isMissingNode() || calendarNode.isNull()) {
+                return ResponseEntity.ok(Map.of("error", true, "message", "Calendar not found"));
+            }
+
+            int streak = calendarNode.path("streak").asInt(0);
+            int totalActiveDays = calendarNode.path("totalActiveDays").asInt(0);
+            String submissionCalendar = calendarNode.path("submissionCalendar").asText("{}");
+
+            return ResponseEntity.ok(Map.of(
+                    "streak", streak,
+                    "totalActiveDays", totalActiveDays,
+                    "submissionCalendar", submissionCalendar
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok(Map.of("error", true, "message", "Failed to fetch calendar: " + e.getMessage()));
+        }
     }
 }
