@@ -2898,10 +2898,11 @@ body {
   text-align: center;
 }
 
-.db-profile-avatar {
+.db-profile-avatar,
+.db-profile-avatar-img {
   width: 64px;
   height: 64px;
-  border-radius: var(--radius-lg);
+  border-radius: 50%;
   background: #000000;
   color: #ffffff;
   display: flex;
@@ -2912,6 +2913,7 @@ body {
   font-family: var(--font-body);
   margin: 0 auto 12px;
   letter-spacing: 1px;
+  object-fit: cover;
 }
 
 .db-profile-name {

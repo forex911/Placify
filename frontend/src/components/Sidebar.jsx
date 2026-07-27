@@ -130,28 +130,7 @@ function Sidebar({ collapsed, onToggleCollapse }) {
         {/* Theme picker */}
         <DarkModeToggle collapsed={collapsed} />
 
-        {user && (
-          <div className="sidebar-user">
-            <NavLink to="/profile" className="sidebar-user-info" style={{ textDecoration: 'none' }}>
-              {user.profilePicture ? (
-                <img src={user.profilePicture} alt="Profile" className="sidebar-avatar-img" />
-              ) : (
-                <div className="sidebar-avatar">{getInitials(user.username)}</div>
-              )}
-              {!collapsed && (
-                <div className="sidebar-user-details">
-                  <div className="sidebar-username">{user.username}</div>
-                  <div className={`sidebar-role-badge ${user.role === 'ADMIN' ? 'admin' : 'user'}`}>
-                    {user.role === 'ADMIN' ? <><Shield size={12} style={{marginRight: 4}}/> Admin</> : <><User size={12} style={{marginRight: 4}}/> User</>}
-                  </div>
-                </div>
-              )}
-            </NavLink>
-            {!collapsed && (
-              <button id="logout-btn" className="sidebar-logout-btn" onClick={handleLogout} title="Logout"><LogOut size={18} /></button>
-            )}
-          </div>
-        )}
+
 
         {!collapsed && (
           <div className="sidebar-footer">
