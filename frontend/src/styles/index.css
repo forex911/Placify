@@ -2678,6 +2678,25 @@ body {
   transform: translateX(0);
 }
 
+/* ── Recent Activity Grid ── */
+.db-activity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+.db-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: var(--space-xl) var(--space-md);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-family: var(--font-body);
+}
+
 /* ── Right Profile Panel ── */
 .db-profile-panel {
   display: flex;
@@ -2836,6 +2855,9 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
   .db-feature-cards {
+    grid-template-columns: 1fr;
+  }
+  .db-activity-grid {
     grid-template-columns: 1fr;
   }
   .db-welcome-banner {
@@ -3101,27 +3123,112 @@ body {
   --status-selected: #dddddd;
 }
 
-/* Loader Styles */
+/* =============================================
+   Loader — Orbiting Dots Animation
+   ============================================= */
 .loader-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 40px;
+  padding: 60px 40px;
   width: 100%;
+  min-height: 240px;
 }
 
-.loader {
-  width: 48px;
-  height: 48px;
-  border: 4px solid var(--border-color);
-  border-bottom-color: var(--primary);
+.loader-placify {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+/* Center icon with pulse */
+.loader-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text-primary);
+  opacity: 0.7;
+  animation: loader-pulse 2s ease-in-out infinite;
+}
+
+@keyframes loader-pulse {
+  0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.9); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* Orbiting rings */
+.loader-orbit {
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
-  display: inline-block;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
+  border: 1.5px solid transparent;
 }
 
-@keyframes rotation {
+.loader-orbit-1 {
+  border-top-color: var(--text-primary);
+  animation: loader-spin 1.4s linear infinite;
+}
+
+.loader-orbit-2 {
+  inset: 8px;
+  border-right-color: var(--text-muted);
+  animation: loader-spin 1.8s linear infinite reverse;
+}
+
+.loader-orbit-3 {
+  inset: 16px;
+  border-bottom-color: var(--text-secondary);
+  animation: loader-spin 2.4s linear infinite;
+}
+
+/* Dots on each orbit */
+.loader-dot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-primary);
+}
+
+.loader-orbit-1 .loader-dot {
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text-primary);
+}
+
+.loader-orbit-2 .loader-dot {
+  right: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--text-muted);
+}
+
+.loader-orbit-3 .loader-dot {
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text-secondary);
+}
+
+@keyframes loader-spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Message text */
+.loader-message {
+  margin-top: 20px;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-family: var(--font-body);
+  letter-spacing: 0.5px;
+  animation: loader-fade-in 0.6s ease forwards;
+}
+
+@keyframes loader-fade-in {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
 }

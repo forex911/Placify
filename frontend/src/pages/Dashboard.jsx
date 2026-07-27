@@ -3,14 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { getDashboardStats } from '../api/dashboardApi'
 import { getApplications } from '../api/applicationsApi'
 import { getHackathons } from '../api/hackathonsApi'
-import { getDsaStats } from '../api/dsaApi'
 import { generateNotifications } from '../api/notificationsApi'
 import Loader from '../components/Loader'
 import { useAuth } from '../context/AuthContext'
 import {
   AlertTriangle, FileText, Zap, Trophy, CheckSquare,
-  Briefcase, Code2, Flame, Target, Award, Star,
-  TrendingUp, Calendar, ArrowRight
+  Briefcase, Code2, Award, Star,
+  TrendingUp, ArrowRight
 } from 'lucide-react'
 import OnboardingGuide from '../components/OnboardingGuide'
 
@@ -18,9 +17,8 @@ function Dashboard() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [stats, setStats] = useState(null)
-  const [dsaStats, setDsaStats] = useState(null)
-  const [applicationCount, setApplicationCount] = useState(0)
-  const [hackathonCount, setHackathonCount] = useState(0)
+  const [recentApplied, setRecentApplied] = useState([])
+  const [ongoingHackathons, setOngoingHackathons] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -29,16 +27,28 @@ function Dashboard() {
       try {
         setLoading(true)
         generateNotifications().catch(() => {})
-        const [statsData, apps, hackathons, dsaData] = await Promise.all([
+        const [statsData, apps, hackathons] = await Promise.all([
           getDashboardStats(),
           getApplications().catch(() => []),
-          getHackathons().catch(() => []),
-          getDsaStats().catch(() => null)
+          getHackathons().catch(() => [])
         ])
         setStats(statsData)
-        setApplicationCount(apps.length)
-        setHackathonCount(hackathons.length)
-        setDsaStats(dsaData)
+
+        // Recent applied jobs (last 5)
+        setRecentApplied(
+          apps
+            .filter(a => a.status === 'Applied')
+            .sort((a, b) => new Date(b.appliedDate) - new Date(a.appliedDate))
+            .slice(0, 5)
+        )
+
+        // Ongoing hackathons (registered, upcoming first)
+        setOngoingHackathons(
+          hackathons
+            .filter(h => h.status === 'Registered')
+            .sort((a, b) => new Date(a.date || 0) - new Date(b.date || 0))
+            .slice(0, 5)
+        )
       } catch (err) { setError(err.message) }
       finally { setLoading(false) }
     }
@@ -49,9 +59,12 @@ function Dashboard() {
   if (error) return <div className="page-container"><div className="alert alert-error"><AlertTriangle size={16} /> {error}</div></div>
 
   const getInitials = (name) => name ? name.slice(0, 2).toUpperCase() : '??'
+  const formatDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) : '—'
 
-  const totalDsa = dsaStats?.totalProblems ?? 0
-  const solvedDsa = dsaStats?.solvedProblems ?? 0
+  // Use real fields from DashboardStatsDTO
+  const totalDsaSolved = stats?.totalDsaQuestionsSolved ?? 0
+  const dsaTopicsSolved = stats?.dsaTopicsSolved ?? 0
+  const avgDsaProgress = stats?.averageDsaProgress ?? 0
 
   return (
     <div className="page-container">
@@ -73,8 +86,8 @@ function Dashboard() {
               <div className="db-welcome-badge">
                 <Award size={14} />
                 <span>
-                  {applicationCount > 0
-                    ? `${applicationCount} applications tracked so far`
+                  {(stats?.totalApplications ?? 0) > 0
+                    ? `${stats.totalApplications} applications tracked so far`
                     : 'Start tracking your first application'}
                 </span>
               </div>
@@ -103,9 +116,9 @@ function Dashboard() {
                 <Code2 size={20} />
               </div>
               <div className="db-stat-value">
-                {solvedDsa}<span className="db-stat-total"> / {totalDsa}</span>
+                {totalDsaSolved}
               </div>
-              <div className="db-stat-label">DSA Problems</div>
+              <div className="db-stat-label">DSA Solved</div>
             </div>
 
             <div className="db-stat-card" onClick={() => navigate('/hackathons')}>
@@ -168,6 +181,57 @@ function Dashboard() {
 
             </div>
           </div>
+
+          {/* Recent Activity Lists */}
+          <div className="db-activity-grid">
+            {/* Applied Jobs */}
+            <div className="card">
+              <div className="card-header">
+                <h2 className="card-title"><Briefcase size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />Applied Jobs</h2>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Recent</span>
+              </div>
+              {recentApplied.length === 0 ? (
+                <div className="db-empty-state">
+                  <FileText size={28} strokeWidth={1.5} />
+                  <span>No applied jobs yet</span>
+                </div>
+              ) : (
+                recentApplied.map(app => (
+                  <div key={app.id} className="deadline-item">
+                    <div>
+                      <div className="deadline-company">{app.companyName}</div>
+                      <div className="deadline-role">{app.role}</div>
+                    </div>
+                    <div className="deadline-date">{formatDate(app.appliedDate)}</div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Ongoing Hackathons */}
+            <div className="card">
+              <div className="card-header">
+                <h2 className="card-title"><Trophy size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} />Ongoing Hackathons</h2>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Registered</span>
+              </div>
+              {ongoingHackathons.length === 0 ? (
+                <div className="db-empty-state">
+                  <Trophy size={28} strokeWidth={1.5} />
+                  <span>No ongoing hackathons</span>
+                </div>
+              ) : (
+                ongoingHackathons.map(h => (
+                  <div key={h.id} className="deadline-item">
+                    <div>
+                      <div className="deadline-company">{h.hackathonName}</div>
+                      <div className="deadline-role">{h.projectTitle || 'No project'}</div>
+                    </div>
+                    <div className="deadline-date">{formatDate(h.date)}</div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
 
         {/* ── Right Profile Panel ── */}
@@ -191,7 +255,7 @@ function Dashboard() {
             <div className="db-profile-stat-row">
               <span className="db-profile-stat-icon"><Code2 size={14} /></span>
               <span className="db-profile-stat-label">DSA Solved</span>
-              <span className="db-profile-stat-val">{solvedDsa}</span>
+              <span className="db-profile-stat-val">{totalDsaSolved}</span>
             </div>
             <div className="db-profile-stat-row">
               <span className="db-profile-stat-icon"><Trophy size={14} /></span>
@@ -218,17 +282,19 @@ function Dashboard() {
             <div className="db-streak-item">
               <div className="db-streak-title">DSA Progress</div>
               <div className="db-streak-value">
-                {totalDsa > 0 ? Math.round((solvedDsa / totalDsa) * 100) : 0}%
+                {Math.round(avgDsaProgress)}%
               </div>
               <div className="db-streak-sub">
-                {solvedDsa} of {totalDsa} problems solved
+                {dsaTopicsSolved} topics completed · {totalDsaSolved} questions solved
               </div>
             </div>
 
             <div className="db-streak-item">
-              <div className="db-streak-title">Study Tasks</div>
-              <div className="db-streak-value">{stats?.pendingStudyTasks ?? 0} pending</div>
-              <div className="db-streak-sub">Stay on top of your schedule</div>
+              <div className="db-streak-title">Interview Pipeline</div>
+              <div className="db-streak-value">{stats?.interviewApplications ?? 0} scheduled</div>
+              <div className="db-streak-sub">
+                {stats?.selectedApplications ?? 0} selected · {stats?.rejectedApplications ?? 0} rejected
+              </div>
             </div>
           </div>
         </aside>
