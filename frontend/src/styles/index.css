@@ -3489,6 +3489,30 @@ body {
   animation: icon-pulse-scale 0.5s ease-in-out;
 }
 
-.db-stat-card:hover .db-stat-icon-rose svg {
-  animation: icon-bounce 0.5s ease;
-}
+/* =============================================
+   Global Icon Animation Utility Classes
+   (Add these classes directly to your icons)
+   ============================================= */
+
+/* Animate the icon when you hover directly over it */
+.hover-animate-tada:hover { animation: icon-tada 0.8s ease; }
+.hover-animate-wobble:hover { animation: icon-wobble 0.6s ease; }
+.hover-animate-bounce:hover { animation: icon-bounce 0.5s ease; }
+.hover-animate-pulse:hover { animation: icon-pulse-scale 0.5s ease; }
+
+/* Animate the icon infinitely */
+.animate-tada-infinite { animation: icon-tada 2s ease infinite; }
+.animate-bounce-infinite { animation: icon-bounce 2s ease infinite; }
+.animate-pulse-infinite { animation: icon-pulse-scale 2s ease infinite; }
+
+/* 
+  GROUP HOVER ANIMATIONS
+  Add 'group' class to a parent button/div, 
+  and 'group-hover-animate-X' to the icon inside it. 
+  The icon will animate when the parent is hovered!
+*/
+.group:hover .group-hover-animate-tada { animation: icon-tada 0.8s ease; }
+.group:hover .group-hover-animate-wobble { animation: icon-wobble 0.6s ease; }
+.group:hover .group-hover-animate-bounce { animation: icon-bounce 0.5s ease; }
+.group:hover .group-hover-animate-pulse { animation: icon-pulse-scale 0.5s ease; }
+
