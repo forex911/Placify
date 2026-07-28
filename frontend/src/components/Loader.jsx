@@ -1,5 +1,8 @@
 
 function Loader({ message = 'Loading...' }) {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+  const logoSrc = isDark ? '/favicon-32x32.png' : '/faviconblacked-32x32.png'
+
   return (
     <div className="loader-container">
       <div className="loader-placify">
@@ -15,7 +18,7 @@ function Loader({ message = 'Loading...' }) {
         </div>
         {/* Center icon */}
         <div className="loader-center">
-          <img src="/favicon-32x32.png" alt="Loading" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+          <img src={logoSrc} alt="Loading" style={{ width: 24, height: 24, objectFit: 'contain' }} />
         </div>
       </div>
       <p className="loader-message">{message}</p>
