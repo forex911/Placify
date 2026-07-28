@@ -1,4 +1,4 @@
-import { Download, Chrome, Puzzle, Zap, Globe, Shield, Settings, CheckCircle, ArrowRight, Copy } from 'lucide-react'
+import { Download, Globe2, Puzzle, Zap, Globe, Shield, Settings, CheckCircle, ArrowRight, Copy } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useState } from 'react'
 
@@ -29,7 +29,7 @@ const features = [
     desc: 'Configure your own backend URL in the extension settings for self-hosted setups.'
   },
   {
-    icon: <Chrome size={22} />,
+    icon: <Globe2 size={22} />,
     title: 'Lightweight & Fast',
     desc: 'Minimal permissions, no background scripts — just a clean, fast popup interface.'
   },
@@ -61,7 +61,7 @@ function Extension() {
       {/* Hero Section */}
       <section className="ext-hero">
         <div className="ext-hero-badge">
-          <Chrome size={14} /> Chrome Extension
+          <Globe2 size={14} /> Chrome Extension
         </div>
         <h1 className="ext-hero-title">Placify Browser Extension</h1>
         <p className="ext-hero-subtitle">

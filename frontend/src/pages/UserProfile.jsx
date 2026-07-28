@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import api from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 import Loader from '../components/Loader'
-import { User, AlertTriangle, Shield, Calendar, LogOut, BarChart3, FileText, Monitor, CheckSquare, PenTool, Code2, Edit2, Check, X, Download, Chrome, ArrowRight } from 'lucide-react'
+import { User, AlertTriangle, Shield, Calendar, LogOut, BarChart3, FileText, Monitor, CheckSquare, PenTool, Code2, Edit2, Check, X, Download, Globe, ArrowRight } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 function UserProfile() {
