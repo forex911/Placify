@@ -189,7 +189,7 @@ function UserProfile() {
               className="btn btn-primary"
               style={{ width: '100%', padding: '12px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}
             >
-              <Chrome size={16} /> Get Extension <ArrowRight size={14} />
+              <Globe size={16} /> Get Extension <ArrowRight size={14} />
             </Link>
           </div>
 
