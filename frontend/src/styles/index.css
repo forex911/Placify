@@ -2948,17 +2948,17 @@ body {
 }
 
 .db-feature-applications {
-  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #3b7ab8 100%);
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url('https://res.cloudinary.com/dfnzagl9p/image/upload/v1785241729/stairway_uzioc3.png') center/cover no-repeat;
   color: #ffffff;
 }
 
 .db-feature-dsa {
-  background: linear-gradient(135deg, #1a4731 0%, #276749 50%, #38a169 100%);
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url('https://res.cloudinary.com/dfnzagl9p/image/upload/v1785241979/dsa_suisog.png') center/cover no-repeat;
   color: #ffffff;
 }
 
 .db-feature-hackathons {
-  background: linear-gradient(135deg, #553c2e 0%, #7c5a3e 50%, #b87333 100%);
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url('https://res.cloudinary.com/dfnzagl9p/image/upload/v1785242036/hackathon_tiufcp.png') center/cover no-repeat;
   color: #ffffff;
 }
 
