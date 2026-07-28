@@ -2730,7 +2730,7 @@ body {
 
 /* ── Welcome Banner ── */
 .db-welcome-banner {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background: #000000 url('https://banner.forex911.online/api/banner') no-repeat right center / cover;
   border-radius: var(--radius-xl);
   padding: var(--space-xl) var(--space-2xl);
   display: flex;
@@ -3318,7 +3318,7 @@ body {
 [data-theme="dark"] .db-streak-item { background: #000000; border: 1px solid var(--border-color); }
 [data-theme="dark"] .sidebar { border: 1px solid var(--border-color); }
 [data-theme="dark"] .top-header { border-bottom: 1px solid var(--border-color); }
-[data-theme="dark"] .db-welcome-banner { background: #000000; border: 1px solid var(--border-color); }
+[data-theme="dark"] .db-welcome-banner { background: #000000 url('https://banner.forex911.online/api/banner') no-repeat right center / cover; border: 1px solid var(--border-color); }
 [data-theme="dark"] .db-welcome-orb { display: none; }
 [data-theme="dark"] .db-stat-icon-blue { background: rgba(59, 130, 246, 0.15); }
 [data-theme="dark"] .db-stat-icon-green { background: rgba(34, 197, 94, 0.15); }
