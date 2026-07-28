@@ -92,13 +92,7 @@ function Dashboard() {
                 </span>
               </div>
             </div>
-            <div className="db-welcome-art">
-              <div className="db-welcome-orb db-welcome-orb-1"></div>
-              <div className="db-welcome-orb db-welcome-orb-2"></div>
-              <div className="db-welcome-icon-float">
-                <TrendingUp size={48} strokeWidth={1.5} />
-              </div>
-            </div>
+
           </div>
 
           {/* Stats Row */}
