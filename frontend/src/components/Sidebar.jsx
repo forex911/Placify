@@ -108,6 +108,7 @@ function Sidebar({ collapsed, onToggleCollapse }) {
               onClick={() => setMobileOpen(false)}
               style={{ cursor: 'default' }}
               title={collapsed ? item.label : undefined}
+              data-nav={item.to.replace('/', '')}
             >
               <span className="nav-icon">{item.icon}</span>
               {!collapsed && <span className="nav-label">{item.label}</span>}
@@ -118,7 +119,8 @@ function Sidebar({ collapsed, onToggleCollapse }) {
             <>
               {!collapsed && <div className="sidebar-section-label" style={{ marginTop: 16 }}>Admin</div>}
               <NavLink to="/admin" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                       onClick={() => setMobileOpen(false)} title={collapsed ? 'Admin Dashboard' : undefined}>
+                       onClick={() => setMobileOpen(false)} title={collapsed ? 'Admin Dashboard' : undefined}
+                       data-nav="admin">
                 <span className="nav-icon"><Settings size={18} /></span>
                 {!collapsed && <span className="nav-label">Admin Dashboard</span>}
               </NavLink>
