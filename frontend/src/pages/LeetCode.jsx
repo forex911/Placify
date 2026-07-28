@@ -259,11 +259,11 @@ function LeetCode() {
 
           {/* Submission Heatmap */}
           <div className="card" style={{ marginTop: 24, padding: '24px', background: '#232323', border: 'none', color: '#fff' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <div style={{ fontSize: '1.2rem' }}>
-                <span style={{ fontWeight: 700 }}>{calendarData?.totalSubmissions || 0}</span> submissions in the past one year <Info size={14} style={{ color: '#888' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <div style={{ fontSize: '1rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}>
+                {calendarData?.totalSubmissions || 0} submissions in the past one year <Info size={14} style={{ color: '#888' }} />
               </div>
-              <div style={{ fontSize: '0.9rem', color: '#aaa', display: 'flex', gap: 16 }}>
+              <div style={{ fontSize: '0.85rem', color: '#999', display: 'flex', gap: 16 }}>
                 <span>Total active days: <span style={{ color: '#fff', fontWeight: 600 }}>{calendarData?.totalActiveDays || 0}</span></span>
                 <span>Max streak: <span style={{ color: '#fff', fontWeight: 600 }}>{calendarData?.streak || 0}</span></span>
               </div>
@@ -282,10 +282,9 @@ function LeetCode() {
                   labels={{
                     months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                     weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-                    totalCount: '{{count}} submissions in the past one year',
                     legend: { less: 'Less', more: 'More' }
                   }}
-                  hideColorLegend
+                  showTotalCount={false}
                   blockSize={12}
                   blockMargin={4}
                   blockRadius={2}
