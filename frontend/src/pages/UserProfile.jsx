@@ -185,7 +185,7 @@ function UserProfile() {
               Save job applications directly from any job board with our Chrome extension.
             </p>
             <a
-              href="https://github.com/forex911/Placify/raw/main/extension.zip"
+              href="https://github.com/forex911/Placify/releases/download/v1.0.0/Placify-v1.0.0.zip"
               download
               className="btn btn-primary"
               style={{ width: '100%', padding: '12px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}
