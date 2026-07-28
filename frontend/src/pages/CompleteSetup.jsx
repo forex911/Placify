@@ -56,7 +56,7 @@ export default function CompleteSetup() {
       <div className="auth-split-left">
         <div className="auth-split-form">
           <div className="auth-split-logo">
-            <div className="auth-split-logo-icon"><Sparkles size={22} /></div>
+            <div className="auth-split-logo-icon"><img src="/faviconblacked-32x32.png" alt="Placify" style={{ width: 28, height: 28, objectFit: 'contain' }} /></div>
             <span className="auth-split-logo-text">Placify</span>
           </div>
 
