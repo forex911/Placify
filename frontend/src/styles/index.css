@@ -388,6 +388,18 @@ body {
   justify-content: center;
 }
 
+@keyframes iconWiggle {
+  0% { transform: rotate(0deg) scale(1); }
+  20% { transform: rotate(-15deg) scale(1.15); }
+  50% { transform: rotate(10deg) scale(1.15); }
+  80% { transform: rotate(-10deg) scale(1.15); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+.nav-item:hover .nav-icon svg {
+  animation: iconWiggle 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
 .nav-item .nav-label {
   position: relative;
   z-index: 1;
