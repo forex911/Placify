@@ -179,7 +179,7 @@ function UserProfile() {
             </button>
           </div>
 
-          <div style={{ marginTop: '20px', width: '100%', padding: '20px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)', textAlign: 'left', border: '1px solid var(--border-color)' }}>
+          {/* <div style={{ marginTop: '20px', width: '100%', padding: '20px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)', textAlign: 'left', border: '1px solid var(--border-color)' }}>
             <div style={{ fontSize: '0.75rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Browser Extension</div>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.5' }}>
               Save job applications directly from any job board with our Chrome extension.
@@ -191,7 +191,7 @@ function UserProfile() {
             >
               <Globe size={16} /> Get Extension <ArrowRight size={14} />
             </Link>
-          </div>
+          </div> */}
 
           <button
             id="profile-logout-btn"
