@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 import Loader from '../components/Loader'
-import { User, AlertTriangle, Shield, Calendar, LogOut, BarChart3, FileText, Monitor, CheckSquare, PenTool, Code2, Edit2, Check, X } from 'lucide-react'
+import { User, AlertTriangle, Shield, Calendar, LogOut, BarChart3, FileText, Monitor, CheckSquare, PenTool, Code2, Edit2, Check, X, Download, Chrome } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 function UserProfile() {
@@ -177,6 +177,21 @@ function UserProfile() {
             >
               Regenerate Key
             </button>
+          </div>
+
+          <div style={{ marginTop: '20px', width: '100%', padding: '20px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)', textAlign: 'left', border: '1px solid var(--border-color)' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Browser Extension</div>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.5' }}>
+              Save job applications directly from any job board with our Chrome extension.
+            </p>
+            <a
+              href="https://github.com/forex911/Placify/raw/main/extension.zip"
+              download
+              className="btn btn-primary"
+              style={{ width: '100%', padding: '12px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}
+            >
+              <Download size={16} /> Download Extension
+            </a>
           </div>
 
           <button
