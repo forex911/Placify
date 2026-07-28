@@ -289,7 +289,6 @@ body {
 .sidebar-logo-icon {
   width: 32px;
   height: 32px;
-  background: #ffffff;
   color: #000000;
   border-radius: var(--radius-sm);
   display: flex;
@@ -3303,7 +3302,7 @@ body {
 [data-theme="dark"] .auth-logo-icon { background: #ffffff; color: #000000; }
 [data-theme="dark"] .auth-link { color: #ffffff; border-bottom-color: #ffffff; }
 [data-theme="dark"] .auth-hint-badge { background: #ffffff; color: #000000; }
-[data-theme="dark"] .sidebar-logo-icon { background: #ffffff; color: #000000; }
+[data-theme="dark"] .sidebar-logo-icon { color: #000000; }
 [data-theme="dark"] .sidebar-avatar { background: #ffffff; color: #000000; }
 [data-theme="dark"] .admin-avatar { background: #ffffff; color: #000000; }
 [data-theme="dark"] .profile-avatar-lg { background: #ffffff; color: #000000; }
