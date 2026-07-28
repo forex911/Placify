@@ -4,7 +4,7 @@ import DarkModeToggle from './DarkModeToggle'
 
 import { useState, useRef, useEffect } from 'react'
 import {
-  Sparkles, LayoutDashboard, FileText, Zap, BookOpen,
+  LayoutDashboard, FileText, Zap, BookOpen,
   CheckSquare, Code2, PenTool, Settings,
   Shield, User, LogOut, X, Menu, Trophy,
   PanelLeftClose, PanelLeftOpen
@@ -77,7 +77,7 @@ function Sidebar({ collapsed, onToggleCollapse }) {
 
       <aside className={`sidebar ${mobileOpen ? 'mobile-open' : ''} ${collapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-logo">
-          <div className="sidebar-logo-icon"><Sparkles size={collapsed ? 20 : 28} /></div>
+          <div className="sidebar-logo-icon"><img src="/favicon-32x32.png" alt="Placify" style={{ width: collapsed ? 20 : 28, height: collapsed ? 20 : 28, objectFit: 'contain' }} /></div>
           {!collapsed && (
             <div>
               <div className="sidebar-logo-text">Placify</div>

@@ -1,4 +1,3 @@
-import { Sparkles } from 'lucide-react'
 
 function Loader({ message = 'Loading...' }) {
   return (
@@ -16,7 +15,7 @@ function Loader({ message = 'Loading...' }) {
         </div>
         {/* Center icon */}
         <div className="loader-center">
-          <Sparkles size={20} />
+          <img src="/favicon-32x32.png" alt="Loading" style={{ width: 24, height: 24, objectFit: 'contain' }} />
         </div>
       </div>
       <p className="loader-message">{message}</p>

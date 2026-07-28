@@ -59,18 +59,10 @@ body {
 }
 
 .popup-logo {
-  width: 40px;
-  height: 40px;
-  background: var(--primary);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-brand);
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
 }
 
 .popup-title {
