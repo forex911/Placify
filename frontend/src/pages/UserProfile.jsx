@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import api from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 import Loader from '../components/Loader'
-import { User, AlertTriangle, Shield, Calendar, LogOut, BarChart3, FileText, Monitor, CheckSquare, PenTool, Code2, Edit2, Check, X, Download, Chrome } from 'lucide-react'
+import { User, AlertTriangle, Shield, Calendar, LogOut, BarChart3, FileText, Monitor, CheckSquare, PenTool, Code2, Edit2, Check, X, Download, Chrome, ArrowRight } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 function UserProfile() {
@@ -184,14 +184,13 @@ function UserProfile() {
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.5' }}>
               Save job applications directly from any job board with our Chrome extension.
             </p>
-            <a
-              href="https://github.com/forex911/Placify/releases/download/v1.0.0/Placify-v1.0.0.zip"
-              download
+            <Link
+              to="/extension"
               className="btn btn-primary"
               style={{ width: '100%', padding: '12px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}
             >
-              <Download size={16} /> Download Extension
-            </a>
+              <Chrome size={16} /> Get Extension <ArrowRight size={14} />
+            </Link>
           </div>
 
           <button

@@ -3683,3 +3683,258 @@ body {
 .group:hover .group-hover-animate-bounce { animation: icon-bounce 0.5s ease; }
 .group:hover .group-hover-animate-pulse { animation: icon-pulse-scale 0.5s ease; }
 
+/* =============================================
+   Extension Page
+   ============================================= */
+.ext-page {
+  padding: 0 var(--space-lg) var(--space-xl);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Hero */
+.ext-hero {
+  text-align: center;
+  padding: 60px 20px 48px;
+}
+.ext-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 100px;
+  margin-bottom: 20px;
+}
+.ext-hero-title {
+  font-family: var(--font-brand);
+  font-size: 2.4rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+.ext-hero-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
+}
+.ext-hero-note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 12px;
+}
+
+/* Download Button */
+.ext-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 32px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #ffffff;
+  background: #000000;
+  border: none;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.ext-download-btn:hover {
+  background: #222222;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+}
+
+/* Section */
+.ext-section {
+  margin-top: 48px;
+}
+.ext-section-title {
+  font-family: var(--font-brand);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 28px;
+  text-align: center;
+  letter-spacing: -0.3px;
+}
+
+/* Features Grid */
+.ext-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+.ext-feature-card {
+  padding: 24px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition);
+}
+.ext-feature-card:hover {
+  border-color: var(--text-muted);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.ext-feature-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+}
+.ext-feature-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.ext-feature-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* Installation Steps */
+.ext-steps {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.ext-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  position: relative;
+  padding-bottom: 28px;
+}
+.ext-step:last-child { padding-bottom: 0; }
+.ext-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 44px;
+  bottom: 0;
+  width: 1px;
+  background: var(--border-color);
+}
+.ext-step-num {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+}
+.ext-step-content {
+  padding-top: 6px;
+}
+.ext-step-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.ext-step-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.ext-step-connector { display: none; }
+
+/* API Key Box */
+.ext-apikey-box {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+.ext-apikey-hint {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+.ext-apikey-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ext-apikey-code {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ext-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #ffffff;
+  background: #000000;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.ext-copy-btn:hover {
+  background: #222222;
+}
+
+/* Bottom CTA */
+.ext-bottom-cta {
+  text-align: center;
+  padding: 48px 0 24px;
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] .ext-download-btn { background: #ffffff; color: #000000; }
+[data-theme="dark"] .ext-download-btn:hover { background: #e0e0e0; }
+[data-theme="dark"] .ext-copy-btn { background: #ffffff; color: #000000; }
+[data-theme="dark"] .ext-copy-btn:hover { background: #e0e0e0; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .ext-hero-title { font-size: 1.8rem; }
+  .ext-features-grid { grid-template-columns: 1fr; }
+}
+

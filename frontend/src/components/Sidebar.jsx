@@ -7,7 +7,7 @@ import {
   LayoutDashboard, FileText, Zap, BookOpen,
   CheckSquare, Code2, PenTool, Settings,
   Shield, User, LogOut, X, Menu, Trophy,
-  PanelLeftClose, PanelLeftOpen
+  PanelLeftClose, PanelLeftOpen, Download
 } from 'lucide-react'
 
 const defaultNavItems = [
@@ -19,6 +19,7 @@ const defaultNavItems = [
   { to: '/hackathons',   icon: <Trophy size={18} />,          label: 'Hackathons' },
   { to: '/leetcode',     icon: <Code2 size={18} />,           label: 'LeetCode' },
   { to: '/notes',        icon: <PenTool size={18} />,         label: 'Notes' },
+  { to: '/extension',    icon: <Download size={18} />,        label: 'Extension' },
 ]
 
 function Sidebar({ collapsed, onToggleCollapse }) {

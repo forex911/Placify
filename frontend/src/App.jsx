@@ -18,6 +18,7 @@ import UserProfile from './pages/UserProfile'
 import SubjectProgress from './pages/SubjectProgress'
 import Hackathons from './pages/Hackathons'
 import LeetCode from './pages/LeetCode'
+import Extension from './pages/Extension'
 
 function HeaderProfileAvatar() {
   const { user } = useAuth()
@@ -124,6 +125,7 @@ function App() {
             <Route path="/leetcode" element={<FullySetupRoute><AppLayout><LeetCode /></AppLayout></FullySetupRoute>} />
             <Route path="/notes" element={<FullySetupRoute><AppLayout><Notes /></AppLayout></FullySetupRoute>} />
             <Route path="/profile" element={<FullySetupRoute><AppLayout><UserProfile /></AppLayout></FullySetupRoute>} />
+            <Route path="/extension" element={<FullySetupRoute><AppLayout><Extension /></AppLayout></FullySetupRoute>} />
 
             {/* Admin-only route */}
             <Route path="/admin" element={<AdminRoute><AppLayout><AdminDashboard /></AppLayout></AdminRoute>} />
