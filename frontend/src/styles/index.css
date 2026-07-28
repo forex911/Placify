@@ -388,105 +388,161 @@ body {
   justify-content: center;
 }
 
-/* ── Unique icon hover animations ── */
+/* ── Unique SVG-level icon hover animations ── */
 
-/* Dashboard (LayoutDashboard) — pulse glow */
-@keyframes iconPulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.25); opacity: 0.8; }
-  100% { transform: scale(1); opacity: 1; }
-}
-.nav-item[data-nav="dashboard"]:hover .nav-icon svg {
-  animation: iconPulse 0.5s ease-in-out;
+/* Shared: smooth transition base for all nav icon SVGs */
+.nav-item .nav-icon svg {
+  transition: filter 0.3s ease, color 0.3s ease;
 }
 
-/* Applications (FileText) — flip horizontally */
-@keyframes iconFlip {
-  0% { transform: perspective(400px) rotateY(0); }
-  50% { transform: perspective(400px) rotateY(180deg); }
-  100% { transform: perspective(400px) rotateY(360deg); }
+/* 1. Dashboard (LayoutDashboard) — staggered grid pop-in */
+@keyframes dashPop {
+  0% { opacity: 0.3; transform: scale(0.5); }
+  60% { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.nav-item[data-nav="dashboard"]:hover .nav-icon svg rect,
+.nav-item[data-nav="dashboard"]:hover .nav-icon svg path {
+  animation: dashPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.nav-item[data-nav="dashboard"]:hover .nav-icon svg *:nth-child(1) { animation-delay: 0s; }
+.nav-item[data-nav="dashboard"]:hover .nav-icon svg *:nth-child(2) { animation-delay: 0.06s; }
+.nav-item[data-nav="dashboard"]:hover .nav-icon svg *:nth-child(3) { animation-delay: 0.12s; }
+.nav-item[data-nav="dashboard"]:hover .nav-icon svg *:nth-child(4) { animation-delay: 0.18s; }
+
+/* 2. Applications (FileText) — stroke draw-in */
+@keyframes strokeDraw {
+  0% { stroke-dashoffset: 60; }
+  100% { stroke-dashoffset: 0; }
 }
 .nav-item[data-nav="applications"]:hover .nav-icon svg {
-  animation: iconFlip 0.6s ease-in-out;
+  filter: drop-shadow(0 0 3px rgba(255,255,255,0.3));
+}
+.nav-item[data-nav="applications"]:hover .nav-icon svg path,
+.nav-item[data-nav="applications"]:hover .nav-icon svg line {
+  stroke-dasharray: 60;
+  animation: strokeDraw 0.7s ease-out forwards;
 }
 
-/* DSA Tracker (Zap) — lightning strike */
-@keyframes iconZap {
-  0% { transform: translateY(0) scale(1); opacity: 1; }
-  20% { transform: translateY(-4px) scale(1.3); opacity: 1; }
-  40% { transform: translateY(0px) scale(0.9); opacity: 0.6; }
-  60% { transform: translateY(-2px) scale(1.15); opacity: 1; }
-  100% { transform: translateY(0) scale(1); opacity: 1; }
+/* 3. DSA Tracker (Zap) — electric flash + shake */
+@keyframes zapFlash {
+  0% { filter: drop-shadow(0 0 0px #facc15) brightness(1); transform: translate(0,0); }
+  15% { filter: drop-shadow(0 0 8px #facc15) brightness(1.8); transform: translate(-2px, -1px); }
+  30% { filter: drop-shadow(0 0 2px #facc15) brightness(1); transform: translate(2px, 1px); }
+  45% { filter: drop-shadow(0 0 10px #facc15) brightness(2); transform: translate(-1px, 0); }
+  60% { filter: drop-shadow(0 0 4px #facc15) brightness(1.2); transform: translate(1px, -1px); }
+  100% { filter: drop-shadow(0 0 0px #facc15) brightness(1); transform: translate(0,0); }
 }
 .nav-item[data-nav="dsa"]:hover .nav-icon svg {
-  animation: iconZap 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: zapFlash 0.55s ease-out;
+  color: #facc15;
 }
 
-/* Core Subjects (BookOpen) — page flip */
-@keyframes iconPageFlip {
-  0% { transform: rotateY(0) scale(1); }
-  30% { transform: rotateY(-20deg) scale(1.1); }
-  60% { transform: rotateY(15deg) scale(1.1); }
-  100% { transform: rotateY(0) scale(1); }
+/* 4. Core Subjects (BookOpen) — 3D book open */
+@keyframes bookOpen {
+  0% { transform: perspective(200px) rotateY(0deg) scale(1); }
+  40% { transform: perspective(200px) rotateY(-30deg) scale(1.05); }
+  70% { transform: perspective(200px) rotateY(15deg) scale(1.05); }
+  100% { transform: perspective(200px) rotateY(0deg) scale(1); }
 }
 .nav-item[data-nav="subjects"]:hover .nav-icon svg {
-  animation: iconPageFlip 0.6s ease-in-out;
+  animation: bookOpen 0.65s ease-in-out;
+  filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.5));
+  color: #60a5fa;
 }
 
-/* Study Tasks (CheckSquare) — checkmark bounce */
-@keyframes iconCheck {
-  0% { transform: scale(1); }
-  30% { transform: scale(0.8) rotate(-10deg); }
-  60% { transform: scale(1.2) rotate(5deg); }
-  100% { transform: scale(1) rotate(0); }
+/* 5. Study Tasks (CheckSquare) — stamp down with check emphasis */
+@keyframes stampCheck {
+  0% { transform: scale(1) translateY(0); }
+  20% { transform: scale(0.7) translateY(3px); }
+  45% { transform: scale(1.25) translateY(-3px); }
+  70% { transform: scale(0.95) translateY(0); }
+  100% { transform: scale(1) translateY(0); }
 }
 .nav-item[data-nav="tasks"]:hover .nav-icon svg {
-  animation: iconCheck 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: stampCheck 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.nav-item[data-nav="tasks"]:hover .nav-icon svg polyline,
+.nav-item[data-nav="tasks"]:hover .nav-icon svg path:last-child {
+  color: #4ade80;
+  filter: drop-shadow(0 0 3px rgba(74, 222, 128, 0.6));
 }
 
-/* Hackathons (Trophy) — trophy bounce-up */
-@keyframes iconTrophy {
-  0% { transform: translateY(0) rotate(0); }
-  25% { transform: translateY(-6px) rotate(-8deg); }
-  50% { transform: translateY(-2px) rotate(8deg); }
-  75% { transform: translateY(-4px) rotate(-4deg); }
-  100% { transform: translateY(0) rotate(0); }
+/* 6. Hackathons (Trophy) — jump with squash & stretch */
+@keyframes trophyJump {
+  0% { transform: translateY(0) scaleX(1) scaleY(1); }
+  20% { transform: translateY(2px) scaleX(1.1) scaleY(0.85); }
+  40% { transform: translateY(-8px) scaleX(0.9) scaleY(1.15); }
+  60% { transform: translateY(-3px) scaleX(1) scaleY(1); }
+  80% { transform: translateY(1px) scaleX(1.03) scaleY(0.97); }
+  100% { transform: translateY(0) scaleX(1) scaleY(1); }
 }
 .nav-item[data-nav="hackathons"]:hover .nav-icon svg {
-  animation: iconTrophy 0.6s ease-out;
+  animation: trophyJump 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  color: #fbbf24;
+  filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));
 }
 
-/* LeetCode (Code2) — typing brackets */
-@keyframes iconCode {
-  0% { transform: scaleX(1); }
-  25% { transform: scaleX(0.8) translateX(-2px); }
-  50% { transform: scaleX(1.15) translateX(2px); }
-  75% { transform: scaleX(0.95) translateX(-1px); }
-  100% { transform: scaleX(1) translateX(0); }
+/* 7. LeetCode (Code2) — brackets expand outward */
+@keyframes codeExpand {
+  0% { letter-spacing: 0; transform: scaleX(1); }
+  40% { transform: scaleX(1.35); }
+  100% { transform: scaleX(1); }
 }
 .nav-item[data-nav="leetcode"]:hover .nav-icon svg {
-  animation: iconCode 0.5s ease-in-out;
+  animation: codeExpand 0.5s ease-out;
+  color: #f97316;
+  filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.5));
+}
+/* Animate individual bracket paths outward */
+.nav-item[data-nav="leetcode"]:hover .nav-icon svg path:first-child,
+.nav-item[data-nav="leetcode"]:hover .nav-icon svg polyline:first-child {
+  animation: bracketLeft 0.5s ease-out;
+}
+.nav-item[data-nav="leetcode"]:hover .nav-icon svg path:last-child,
+.nav-item[data-nav="leetcode"]:hover .nav-icon svg polyline:last-child {
+  animation: bracketRight 0.5s ease-out;
+}
+@keyframes bracketLeft {
+  0% { transform: translateX(0); }
+  40% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+@keyframes bracketRight {
+  0% { transform: translateX(0); }
+  40% { transform: translateX(3px); }
+  100% { transform: translateX(0); }
 }
 
-/* Notes (PenTool) — writing motion */
-@keyframes iconWrite {
-  0% { transform: rotate(0) translate(0, 0); }
-  25% { transform: rotate(-12deg) translate(-1px, -2px); }
-  50% { transform: rotate(8deg) translate(2px, -1px); }
-  75% { transform: rotate(-5deg) translate(-1px, 1px); }
-  100% { transform: rotate(0) translate(0, 0); }
+/* 8. Notes (PenTool) — tilt + stroke trail */
+@keyframes penWrite {
+  0% { transform: rotate(0deg) translate(0, 0); }
+  15% { transform: rotate(-20deg) translate(-1px, -3px); }
+  30% { transform: rotate(-15deg) translate(1px, -2px); }
+  50% { transform: rotate(-18deg) translate(2px, -1px); }
+  70% { transform: rotate(-10deg) translate(0px, -1px); }
+  100% { transform: rotate(0deg) translate(0, 0); }
 }
 .nav-item[data-nav="notes"]:hover .nav-icon svg {
-  animation: iconWrite 0.6s ease-in-out;
+  animation: penWrite 0.65s ease-in-out;
+  color: #a78bfa;
+  filter: drop-shadow(0 0 4px rgba(167, 139, 250, 0.5));
+}
+/* Draw the pen stroke */
+.nav-item[data-nav="notes"]:hover .nav-icon svg line {
+  stroke-dasharray: 20;
+  animation: strokeDraw 0.5s ease-out forwards;
 }
 
-/* Admin (Settings) — spinning gear */
-@keyframes iconSpin {
+/* 9. Admin (Settings) — continuous gear spin with glow */
+@keyframes gearSpin {
   0% { transform: rotate(0deg); }
-  100% { transform: rotate(180deg); }
+  100% { transform: rotate(360deg); }
 }
 .nav-item[data-nav="admin"]:hover .nav-icon svg {
-  animation: iconSpin 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: gearSpin 0.8s linear;
+  color: #f43f5e;
+  filter: drop-shadow(0 0 4px rgba(244, 63, 94, 0.5));
 }
 
 .nav-item .nav-label {
