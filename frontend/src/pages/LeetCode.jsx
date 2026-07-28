@@ -285,9 +285,9 @@ function LeetCode() {
                     legend: { less: 'Less', more: 'More' }
                   }}
                   showTotalCount={false}
-                  blockSize={12}
-                  blockMargin={4}
-                  blockRadius={2}
+                  blockSize={15}
+                  blockMargin={5}
+                  blockRadius={3}
                 />
               </div>
             ) : (
