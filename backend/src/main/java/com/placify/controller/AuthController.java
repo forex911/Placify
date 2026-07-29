@@ -97,7 +97,7 @@ public class AuthController {
         cookie.setSecure(true);
         cookie.setPath("/api");
         cookie.setMaxAge(0);
-        cookie.setAttribute("SameSite", "None");
+        cookie.setAttribute("SameSite", "Lax");
         httpResponse.addCookie(cookie);
         return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
     }
@@ -108,7 +108,7 @@ public class AuthController {
         cookie.setSecure(true);
         cookie.setPath("/api");
         cookie.setMaxAge((int) (expirationMs / 1000));
-        cookie.setAttribute("SameSite", "None");
+        cookie.setAttribute("SameSite", "Lax");
         httpResponse.addCookie(cookie);
     }
 }
