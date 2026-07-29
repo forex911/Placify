@@ -27,6 +27,9 @@ public class Application {
     @Column(name = "company_link")
     private String companyLink;
 
+    @Column(name = "lpa")
+    private Double lpa;
+
     @Column(name = "applied_date", nullable = false)
     private LocalDate appliedDate;
 
@@ -90,6 +93,9 @@ public class Application {
 
     public String getCompanyLink() { return companyLink; }
     public void setCompanyLink(String companyLink) { this.companyLink = companyLink; }
+
+    public Double getLpa() { return lpa; }
+    public void setLpa(Double lpa) { this.lpa = lpa; }
 
     public LocalDate getAppliedDate() { return appliedDate; }
     public void setAppliedDate(LocalDate appliedDate) { this.appliedDate = appliedDate; }

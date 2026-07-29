@@ -20,6 +20,8 @@ public class ApplicationDTO {
 
     private String companyLink;
 
+    private Double lpa;
+
     @NotNull(message = "Applied date is required")
     private LocalDate appliedDate;
 
@@ -49,6 +51,9 @@ public class ApplicationDTO {
 
     public String getCompanyLink() { return companyLink; }
     public void setCompanyLink(String companyLink) { this.companyLink = companyLink; }
+
+    public Double getLpa() { return lpa; }
+    public void setLpa(Double lpa) { this.lpa = lpa; }
 
     public LocalDate getAppliedDate() { return appliedDate; }
     public void setAppliedDate(LocalDate appliedDate) { this.appliedDate = appliedDate; }

@@ -56,6 +56,7 @@ public class ApplicationService {
         existing.setStatus(dto.getStatus());
         existing.setLocation(dto.getLocation());
         existing.setCompanyLink(dto.getCompanyLink());
+        existing.setLpa(dto.getLpa());
         existing.setUpdatedBy(userId);
 
         return toDTO(applicationRepository.save(existing));
@@ -95,6 +96,7 @@ public class ApplicationService {
         dto.setStatus(app.getStatus());
         dto.setLocation(app.getLocation());
         dto.setCompanyLink(app.getCompanyLink());
+        dto.setLpa(app.getLpa());
         dto.setCreatedBy(app.getCreatedBy());
         dto.setUpdatedBy(app.getUpdatedBy());
         dto.setCreatedAt(app.getCreatedAt());
@@ -111,6 +113,7 @@ public class ApplicationService {
         app.setStatus(dto.getStatus());
         app.setLocation(dto.getLocation());
         app.setCompanyLink(dto.getCompanyLink());
+        app.setLpa(dto.getLpa());
         return app;
     }
 }

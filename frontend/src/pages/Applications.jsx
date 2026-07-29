@@ -37,6 +37,7 @@ const EMPTY_FORM = {
   status: 'Applied',
   location: '',
   companyLink: '',
+  lpa: '',
 }
 
 function Applications() {
@@ -83,6 +84,7 @@ function Applications() {
       status: app.status,
       location: app.location || '',
       companyLink: app.companyLink || '',
+      lpa: app.lpa != null ? app.lpa : '',
     })
     setFormError(null)
     setModalOpen(true)
@@ -106,6 +108,7 @@ function Applications() {
       const payload = {
         ...form,
         deadline: form.deadline || null,
+        lpa: form.lpa !== '' ? parseFloat(form.lpa) : null,
       }
       if (editingApp) {
         await updateApplication(editingApp.id, payload)
@@ -173,6 +176,7 @@ function Applications() {
                 <th>Deadline</th>
                 <th>Status</th>
                 <th>Location</th>
+                <th>LPA</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -199,6 +203,7 @@ function Applications() {
                     </span>
                   </td>
                   <td>{app.location || '—'}</td>
+                  <td>{app.lpa != null ? `₹${app.lpa} LPA` : '—'}</td>
                   <td>
                     <div style={{ display: 'flex', gap: '4px' }}>
                       <button
@@ -319,6 +324,20 @@ function Applications() {
               placeholder="e.g. https://careers.google.com/jobs/..."
               value={form.companyLink}
               onChange={e => setForm(f => ({ ...f, companyLink: e.target.value }))}
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="lpa">Package (LPA)</label>
+            <input
+              id="lpa"
+              className="form-input"
+              type="number"
+              step="0.1"
+              min="0"
+              placeholder="e.g. 12.5"
+              value={form.lpa}
+              onChange={e => setForm(f => ({ ...f, lpa: e.target.value }))}
             />
           </div>
 
