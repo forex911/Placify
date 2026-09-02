@@ -22,4 +22,4 @@ dist/
 .env.local
 .env.*.local
 .DS_Store
-
+LANDING_PAGE_CONTENT.md
