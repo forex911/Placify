@@ -6,7 +6,7 @@ const features = [
   {
     icon: <Zap size={22} />,
     title: 'One-Click Save',
-    desc: 'Save job applications and hackathons directly from any webpage with a single click.'
+    desc: 'Save job applications, hackathons, and calendar events directly from any webpage with a single click.'
   },
   {
     icon: <Globe size={22} />,
@@ -15,8 +15,8 @@ const features = [
   },
   {
     icon: <Puzzle size={22} />,
-    title: 'Job & Hackathon Tabs',
-    desc: 'Switch between saving job applications and hackathon entries with built-in tabs.'
+    title: 'Job, Hackathon & Calendar Tabs',
+    desc: 'Switch between saving job applications, hackathon entries, and calendar reminders with built-in tabs.'
   },
   {
     icon: <Shield size={22} />,
@@ -65,14 +65,14 @@ function Extension() {
         </div>
         <h1 className="ext-hero-title">Placify Browser Extension</h1>
         <p className="ext-hero-subtitle">
-          Save job applications and hackathon entries directly from any webpage — right into your Placify dashboard.
+          Save job applications, hackathon entries, and calendar events directly from any webpage — right into your Placify dashboard.
         </p>
         <a
-          href="https://github.com/forex911/Placify/releases/download/v1.0.0/Placify-v1.0.0.zip"
+          href="https://github.com/forex911/Placify/releases/download/v1.1.0/Placify-v1.1.0.zip"
           download
           className="ext-download-btn"
         >
-          <Download size={18} /> Download Extension v1.0
+          <Download size={18} /> Download Extension v1.1
         </a>
         <p className="ext-hero-note">Works with Chrome, Edge, Brave, and other Chromium browsers</p>
       </section>
@@ -129,7 +129,7 @@ function Extension() {
       {/* Bottom CTA */}
       <section className="ext-bottom-cta">
         <a
-          href="https://github.com/forex911/Placify/releases/download/v1.0.0/Placify-v1.0.0.zip"
+          href="https://github.com/forex911/Placify/releases/download/v1.1.0/Placify-v1.1.0.zip"
           download
           className="ext-download-btn"
         >
