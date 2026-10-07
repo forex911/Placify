@@ -31,6 +31,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   settingsBtn.addEventListener('click', openOptions);
   openSettingsBtn.addEventListener('click', openOptions);
 
+  const openPlacifyBtn = document.getElementById('open-placify');
+  if (openPlacifyBtn) {
+    openPlacifyBtn.addEventListener('click', () => {
+      // In a real app, this might be dynamically fetched from storage if the frontend URL is configurable,
+      // but assuming the standard dashboard URL here.
+      chrome.tabs.create({ url: 'http://localhost:5173' }); 
+    });
+  }
+
   const SERVER_URL = 'https://placify-backend-latest.onrender.com';
 
   // Load saved config
