@@ -4342,3 +4342,4 @@ body {
 /* Dark theme */
 [data-theme="dark"] .cal-cell-empty { background: rgba(255,255,255,0.03); }
 [data-theme="dark"] .cal-day-panel  { background: rgba(255,255,255,0.03); }
+[data-theme="dark"] .cal-cell-today .cal-day-num { color: #000000; }

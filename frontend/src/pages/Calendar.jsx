@@ -250,6 +250,10 @@ export default function CalendarPage() {
                     key={cell.dateStr}
                     className={`cal-cell ${isToday ? 'cal-cell-today' : ''} ${isSelected ? 'cal-cell-selected' : ''}`}
                     onClick={() => setSelectedDate(prev => prev === cell.dateStr ? null : cell.dateStr)}
+                    onDoubleClick={(e) => {
+                      e.stopPropagation()
+                      openCreate(cell.dateStr)
+                    }}
                   >
                     <span className="cal-day-num">{cell.dayNum}</span>
                     <div className="cal-event-dots">
