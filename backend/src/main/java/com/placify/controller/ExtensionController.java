@@ -22,6 +22,8 @@ import com.placify.entity.CalendarEvent.EventType;
 import com.placify.entity.Hackathon.HackathonStatus;
 import com.placify.service.HackathonService;
 import com.placify.service.CalendarEventService;
+import com.placify.service.NotificationService;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/extension")
@@ -31,14 +33,17 @@ public class ExtensionController {
     private final ApplicationService applicationService;
     private final HackathonService hackathonService;
     private final CalendarEventService calendarEventService;
+    private final NotificationService notificationService;
 
     public ExtensionController(UserRepository userRepository, ApplicationService applicationService,
                                HackathonService hackathonService,
-                               CalendarEventService calendarEventService) {
+                               CalendarEventService calendarEventService,
+                               NotificationService notificationService) {
         this.userRepository = userRepository;
         this.applicationService = applicationService;
         this.hackathonService = hackathonService;
         this.calendarEventService = calendarEventService;
+        this.notificationService = notificationService;
     }
 
     /**
@@ -155,6 +160,34 @@ public class ExtensionController {
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving calendar event: " + e.getMessage());
+        }
+    }
+
+    /**
+     * POST /api/extension/notifications/check
+     * Generates due notifications and returns the total unread count for the extension badge.
+     */
+    @PostMapping("/notifications/check")
+    public ResponseEntity<?> checkNotifications(@RequestHeader(value = "X-API-KEY", required = false) String apiKey) {
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("API Key is required");
+        }
+
+        Optional<User> userOpt = userRepository.findByApiKey(apiKey);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid API Key");
+        }
+        User user = userOpt.get();
+
+        try {
+            // Generate any new notifications (like calendar reminders)
+            notificationService.generateNotifications(user.getId());
+            // Get unread count
+            long count = notificationService.getUnreadCount(user.getId());
+            
+            return ResponseEntity.ok(Map.of("unreadCount", count));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error checking notifications: " + e.getMessage());
         }
     }
 }
