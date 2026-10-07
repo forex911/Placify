@@ -46,6 +46,7 @@
     <div class="tabs-container hidden" id="tabs-container">
       <div class="tab active" data-tab="job">Job</div>
       <div class="tab" data-tab="hackathon">Hackathon</div>
+      <div class="tab" data-tab="calendar">Calendar</div>
     </div>
 
     <!-- Forms Container -->
@@ -95,11 +96,44 @@
           <span id="btn-hackathon-loader" class="loader hidden"></span>
         </button>
       </form>
+
+      <!-- Calendar Form -->
+      <form id="save-calendar-form" class="popup-form hidden">
+        <div class="form-group">
+          <label for="cal-title">Event Title <span class="required">*</span></label>
+          <input type="text" id="cal-title" placeholder="e.g. Google Interview" required autocomplete="off" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cal-date">Date <span class="required">*</span></label>
+            <input type="date" id="cal-date" required />
+          </div>
+          <div class="form-group">
+            <label for="cal-type">Type</label>
+            <select id="cal-type">
+              <option value="REMINDER">Reminder</option>
+              <option value="INTERVIEW">Interview</option>
+              <option value="DEADLINE">Deadline</option>
+              <option value="EXAM">Exam</option>
+              <option value="HACKATHON">Hackathon</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="cal-notify">Notify days before</label>
+          <input type="number" id="cal-notify" min="0" max="30" value="1" />
+        </div>
+        <button type="submit" id="save-calendar-btn" class="btn btn-primary">
+          <span id="btn-calendar-text">Add to Calendar</span>
+          <span id="btn-calendar-loader" class="loader hidden"></span>
+        </button>
+      </form>
     </div>
 
     <!-- Footer -->
     <footer class="popup-footer">
-      <span>Placify Extension v1.0</span>
+      <span>Placify Extension v1.1</span>
     </footer>
   </div>
 

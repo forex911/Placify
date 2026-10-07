@@ -14,6 +14,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnHackathonText = document.getElementById('btn-hackathon-text');
   const btnHackathonLoader = document.getElementById('btn-hackathon-loader');
 
+  const calendarForm = document.getElementById('save-calendar-form');
+  const saveCalendarBtn = document.getElementById('save-calendar-btn');
+  const btnCalendarText = document.getElementById('btn-calendar-text');
+  const btnCalendarLoader = document.getElementById('btn-calendar-loader');
+
   const statusBanner = document.getElementById('status-banner');
   const statusIcon = document.getElementById('status-icon');
   const statusText = document.getElementById('status-text');
@@ -71,12 +76,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       
+      jobForm.classList.add('hidden');
+      hackathonForm.classList.add('hidden');
+      calendarForm.classList.add('hidden');
+
       if (tab.dataset.tab === 'job') {
         jobForm.classList.remove('hidden');
-        hackathonForm.classList.add('hidden');
-      } else {
-        jobForm.classList.add('hidden');
+      } else if (tab.dataset.tab === 'hackathon') {
         hackathonForm.classList.remove('hidden');
+      } else {
+        calendarForm.classList.remove('hidden');
       }
     });
   });
@@ -177,6 +186,61 @@ document.addEventListener('DOMContentLoaded', async () => {
       saveHackathonBtn.disabled = false;
       btnHackathonText.textContent = 'Save Hackathon';
       btnHackathonLoader.classList.add('hidden');
+    }
+  });
+
+  // Handle Calendar form submit
+  calendarForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const title = document.getElementById('cal-title').value.trim();
+    const date  = document.getElementById('cal-date').value;
+    const type  = document.getElementById('cal-type').value;
+    const notify = parseInt(document.getElementById('cal-notify').value, 10) || 1;
+
+    if (!title) {
+      showStatus('error', 'Event title is required.');
+      return;
+    }
+    if (!date) {
+      showStatus('error', 'Event date is required.');
+      return;
+    }
+
+    saveCalendarBtn.disabled = true;
+    btnCalendarText.textContent = 'Saving…';
+    btnCalendarLoader.classList.remove('hidden');
+
+    try {
+      const res = await fetch(`${SERVER_URL}/api/extension/calendar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-KEY': apiKey,
+        },
+        body: JSON.stringify({
+          title,
+          eventDate: date,
+          type,
+          notifyDaysBefore: notify,
+        }),
+      });
+
+      if (res.ok) {
+        showStatus('success', 'Event added to Placify Calendar!');
+        document.getElementById('cal-title').value = '';
+        document.getElementById('cal-date').value = '';
+        document.getElementById('cal-notify').value = '1';
+      } else {
+        const err = await res.text();
+        showStatus('error', `Failed: ${err || res.statusText}`);
+      }
+    } catch (err) {
+      showStatus('error', `Network error: ${err.message}`);
+    } finally {
+      saveCalendarBtn.disabled = false;
+      btnCalendarText.textContent = 'Add to Calendar';
+      btnCalendarLoader.classList.add('hidden');
     }
   });
 });

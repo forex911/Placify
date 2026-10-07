@@ -1,9 +1,11 @@
 package com.placify.service;
 
 import com.placify.dto.NotificationDTO;
+import com.placify.entity.CalendarEvent;
 import com.placify.entity.Notification;
 import com.placify.entity.Notification.NotificationType;
 import com.placify.repository.ApplicationRepository;
+import com.placify.repository.CalendarEventRepository;
 import com.placify.repository.NotificationRepository;
 import com.placify.repository.StudyTaskRepository;
 import org.springframework.stereotype.Service;
@@ -19,13 +21,16 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final ApplicationRepository applicationRepository;
     private final StudyTaskRepository studyTaskRepository;
+    private final CalendarEventRepository calendarEventRepository;
 
     public NotificationService(NotificationRepository notificationRepository,
                                 ApplicationRepository applicationRepository,
-                                StudyTaskRepository studyTaskRepository) {
+                                StudyTaskRepository studyTaskRepository,
+                                CalendarEventRepository calendarEventRepository) {
         this.notificationRepository = notificationRepository;
         this.applicationRepository = applicationRepository;
         this.studyTaskRepository = studyTaskRepository;
+        this.calendarEventRepository = calendarEventRepository;
     }
 
     public List<NotificationDTO> getUnreadForUser(Long userId) {
@@ -85,6 +90,24 @@ public class NotificationService {
                     NotificationType.PENDING_TASK);
             notificationRepository.save(n);
             generated++;
+        }
+
+        // 4. Upcoming calendar event reminders
+        var allCalendarEvents = calendarEventRepository.findByUserIdOrderByEventDateAsc(userId);
+        for (CalendarEvent event : allCalendarEvents) {
+            LocalDate notifyStart = event.getEventDate().minusDays(event.getNotifyDaysBefore());
+            // Notify if today is on or after the notify start, and the event is in the future or today
+            if (!LocalDate.now().isBefore(notifyStart) && !LocalDate.now().isAfter(event.getEventDate())) {
+                String msg = "\uD83D\uDCC5 Upcoming: " + event.getTitle()
+                        + " (" + event.getType().name().toLowerCase().replace("_", " ") + ")"
+                        + " — " + event.getEventDate();
+                if (event.getDescription() != null && !event.getDescription().isBlank()) {
+                    msg += ". " + event.getDescription();
+                }
+                Notification n = new Notification(userId, msg, NotificationType.DEADLINE);
+                notificationRepository.save(n);
+                generated++;
+            }
         }
 
         return generated;

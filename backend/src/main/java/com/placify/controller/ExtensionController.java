@@ -17,8 +17,11 @@ import java.util.Optional;
 
 import com.placify.dto.HackathonDTO;
 import com.placify.dto.ExtensionHackathonRequest;
+import com.placify.dto.CalendarEventDTO;
+import com.placify.entity.CalendarEvent.EventType;
 import com.placify.entity.Hackathon.HackathonStatus;
 import com.placify.service.HackathonService;
+import com.placify.service.CalendarEventService;
 
 @RestController
 @RequestMapping("/api/extension")
@@ -27,11 +30,15 @@ public class ExtensionController {
     private final UserRepository userRepository;
     private final ApplicationService applicationService;
     private final HackathonService hackathonService;
+    private final CalendarEventService calendarEventService;
 
-    public ExtensionController(UserRepository userRepository, ApplicationService applicationService, HackathonService hackathonService) {
+    public ExtensionController(UserRepository userRepository, ApplicationService applicationService,
+                               HackathonService hackathonService,
+                               CalendarEventService calendarEventService) {
         this.userRepository = userRepository;
         this.applicationService = applicationService;
         this.hackathonService = hackathonService;
+        this.calendarEventService = calendarEventService;
     }
 
     /**
@@ -105,6 +112,49 @@ public class ExtensionController {
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving hackathon: " + e.getMessage());
+        }
+    }
+
+    /**
+     * POST /api/extension/calendar
+     * Saves a calendar event quickly via browser extension, using X-API-KEY header.
+     */
+    @PostMapping("/calendar")
+    public ResponseEntity<?> saveCalendarEvent(
+            @RequestHeader(value = "X-API-KEY", required = false) String apiKey,
+            @RequestBody CalendarEventDTO request) {
+
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("API Key is required");
+        }
+
+        Optional<User> userOpt = userRepository.findByApiKey(apiKey);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid API Key");
+        }
+        User user = userOpt.get();
+
+        // Validate required fields
+        if (request.getTitle() == null || request.getTitle().trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Title is required");
+        }
+        if (request.getEventDate() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Event date is required");
+        }
+        if (request.getType() == null) {
+            request.setType(EventType.REMINDER);
+        }
+
+        request.setTitle(SanitizationUtil.stripHtml(request.getTitle()));
+        if (request.getDescription() != null) {
+            request.setDescription(SanitizationUtil.stripHtml(request.getDescription()));
+        }
+
+        try {
+            CalendarEventDTO created = calendarEventService.createEvent(request, user.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving calendar event: " + e.getMessage());
         }
     }
 }
