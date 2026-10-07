@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     openPlacifyBtn.addEventListener('click', () => {
       // In a real app, this might be dynamically fetched from storage if the frontend URL is configurable,
       // but assuming the standard dashboard URL here.
-      chrome.tabs.create({ url: 'http://localhost:5173' }); 
+      chrome.tabs.create({ url: 'https://placify.forex911.online/' }); 
     });
   }
 

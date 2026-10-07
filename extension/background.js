@@ -1,4 +1,4 @@
-const DEFAULT_SERVER_URL = 'http://localhost:8081';
+const DEFAULT_SERVER_URL = 'https://placify-backend-latest.onrender.com';
 const CHECK_INTERVAL_MINUTES = 360; // Every 6 hours
 const RATE_LIMIT_MS = 1000 * 60 * 60 * 4; // Minimum 4 hours between startup checks
 
