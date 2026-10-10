@@ -1,6 +1,6 @@
 const DEFAULT_SERVER_URL = 'https://placify-backend-latest.onrender.com';
-const CHECK_INTERVAL_MINUTES = 360; // Every 6 hours
-const RATE_LIMIT_MS = 1000 * 60 * 60 * 4; // Minimum 4 hours between startup checks
+const CHECK_INTERVAL_MINUTES = 1440; // Every 24 hours
+const RATE_LIMIT_MS = 1000 * 60 * 60 * 12; // Minimum 12 hours between startup checks
 
 async function checkNotifications() {
   chrome.storage.local.get(['apiKey', 'serverUrl', 'lastCheckTime'], async (result) => {
@@ -32,7 +32,7 @@ async function checkNotifications() {
         const count = data.unreadCount || 0;
 
         if (count > 0) {
-          chrome.action.setBadgeText({ text: count > 9 ? '9+' : count.toString() });
+          chrome.action.setBadgeText({ text: ' ' });
           chrome.action.setBadgeBackgroundColor({ color: '#ff0000' });
         } else {
           chrome.action.setBadgeText({ text: '' });
@@ -58,8 +58,7 @@ chrome.runtime.onStartup.addListener(() => {
 // Check on install/update
 chrome.runtime.onInstalled.addListener(() => {
   checkNotifications();
-  // Set up a conservative alarm (every 6 hours)
-  // Calendar reminders are daily, so high-frequency polling is unnecessary
+  // Set up a conservative alarm (every 24 hours)
   chrome.alarms.create('checkNotificationsAlarm', { periodInMinutes: CHECK_INTERVAL_MINUTES });
 });
 

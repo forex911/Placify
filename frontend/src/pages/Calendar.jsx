@@ -245,30 +245,28 @@ export default function CalendarPage() {
                 const isToday = cell.dateStr === today
                 const isSelected = cell.dateStr === selectedDate
                 const dayEvents = eventsByDate[cell.dateStr] || []
+                const mainEvent = dayEvents[0];
+                const cellStyle = mainEvent 
+                  ? { backgroundColor: TYPE_META[mainEvent.type]?.color || '#555', color: '#fff' } 
+                  : {};
+
                 return (
                   <div
                     key={cell.dateStr}
                     className={`cal-cell ${isToday ? 'cal-cell-today' : ''} ${isSelected ? 'cal-cell-selected' : ''}`}
+                    style={cellStyle}
                     onClick={() => setSelectedDate(prev => prev === cell.dateStr ? null : cell.dateStr)}
                     onDoubleClick={(e) => {
                       e.stopPropagation()
                       openCreate(cell.dateStr)
                     }}
                   >
-                    <span className="cal-day-num">{cell.dayNum}</span>
-                    <div className="cal-event-dots">
-                      {dayEvents.slice(0, 3).map(ev => (
-                        <span
-                          key={ev.id}
-                          className="cal-event-dot"
-                          style={{ background: TYPE_META[ev.type]?.color || '#555' }}
-                          title={ev.title}
-                        />
-                      ))}
-                      {dayEvents.length > 3 && (
-                        <span className="cal-event-dot-more">+{dayEvents.length - 3}</span>
-                      )}
-                    </div>
+                    <span className="cal-day-num" style={mainEvent ? { color: '#fff' } : {}}>{cell.dayNum}</span>
+                    {dayEvents.length > 1 && (
+                      <div className="cal-event-dots" style={{ marginTop: 'auto', marginBottom: 8, textAlign: 'center', width: '100%' }}>
+                        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)' }}>+{dayEvents.length - 1} more</span>
+                      </div>
+                    )}
                     {/* Quick-add on hover */}
                     <button
                       className="cal-quick-add"
