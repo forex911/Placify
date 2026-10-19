@@ -92,12 +92,16 @@ public class NotificationService {
             generated++;
         }
 
-        // 4. Upcoming calendar event reminders
+        // 4. Upcoming calendar event reminders (with deduplication)
         var allCalendarEvents = calendarEventRepository.findByUserIdOrderByEventDateAsc(userId);
         for (CalendarEvent event : allCalendarEvents) {
             LocalDate notifyStart = event.getEventDate().minusDays(event.getNotifyDaysBefore());
             // Notify if today is on or after the notify start, and the event is in the future or today
             if (!LocalDate.now().isBefore(notifyStart) && !LocalDate.now().isAfter(event.getEventDate())) {
+                // Dedup: skip if a notification already exists for this event
+                if (notificationRepository.existsByUserIdAndSourceEventId(userId, event.getId())) {
+                    continue;
+                }
                 String msg = "\uD83D\uDCC5 Upcoming: " + event.getTitle()
                         + " (" + event.getType().name().toLowerCase().replace("_", " ") + ")"
                         + " — " + event.getEventDate();
@@ -105,6 +109,7 @@ public class NotificationService {
                     msg += ". " + event.getDescription();
                 }
                 Notification n = new Notification(userId, msg, NotificationType.DEADLINE);
+                n.setSourceEventId(event.getId());
                 notificationRepository.save(n);
                 generated++;
             }

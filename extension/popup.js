@@ -26,6 +26,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const settingsBtn = document.getElementById('settings-btn');
   const openSettingsBtn = document.getElementById('open-settings');
 
+  // Notification elements
+  const notifBellBtn = document.getElementById('notif-bell-btn');
+  const notifBadge = document.getElementById('notif-badge');
+  const notifPanel = document.getElementById('notif-panel');
+  const notifList = document.getElementById('notif-list');
+  const notifEmpty = document.getElementById('notif-empty');
+  const notifDismissAll = document.getElementById('notif-dismiss-all');
+
   // Open settings
   const openOptions = () => chrome.runtime.openOptionsPage();
   settingsBtn.addEventListener('click', openOptions);
@@ -34,8 +42,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const openPlacifyBtn = document.getElementById('open-placify');
   if (openPlacifyBtn) {
     openPlacifyBtn.addEventListener('click', () => {
-      // In a real app, this might be dynamically fetched from storage if the frontend URL is configurable,
-      // but assuming the standard dashboard URL here.
       chrome.tabs.create({ url: 'https://placify.forex911.online/' }); 
     });
   }
@@ -67,6 +73,185 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.warn('Could not get current tab URL', e);
   }
 
+  // ═══════════════════════════════════════════════════════════════════════
+  // NOTIFICATIONS
+  // ═══════════════════════════════════════════════════════════════════════
+
+  let notifications = [];
+  let notifPanelOpen = false;
+
+  // Relative time formatter
+  function formatRelativeTime(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+  }
+
+  // Get notification icon based on type/message
+  function getNotifIcon(notif) {
+    const msg = (notif.message || '').toLowerCase();
+    if (msg.includes('📅') || msg.includes('upcoming')) return '📅';
+    if (msg.includes('deadline')) return '⏰';
+    if (msg.includes('pending') || msg.includes('task')) return '📝';
+    return '🔔';
+  }
+
+  // Fetch notifications from server
+  async function fetchNotifications() {
+    try {
+      const res = await fetch(`${SERVER_URL}/api/extension/notifications`, {
+        method: 'GET',
+        headers: { 'X-API-KEY': apiKey }
+      });
+
+      if (res.ok) {
+        notifications = await res.json();
+        updateNotifUI();
+        // Update badge via background
+        chrome.runtime.sendMessage({ type: 'updateBadge', count: notifications.length });
+      }
+    } catch (err) {
+      console.error('Failed to fetch notifications:', err);
+    }
+  }
+
+  // Render notification UI
+  function updateNotifUI() {
+    // Update bell badge
+    if (notifications.length > 0) {
+      notifBadge.classList.remove('hidden');
+    } else {
+      notifBadge.classList.add('hidden');
+    }
+
+    // Update panel content
+    notifList.innerHTML = '';
+
+    if (notifications.length === 0) {
+      notifEmpty.classList.remove('hidden');
+      notifDismissAll.classList.add('hidden');
+      return;
+    }
+
+    notifEmpty.classList.add('hidden');
+    notifDismissAll.classList.remove('hidden');
+
+    notifications.forEach(notif => {
+      const card = document.createElement('div');
+      card.className = 'notif-card';
+      card.innerHTML = `
+        <div class="notif-card-icon">${getNotifIcon(notif)}</div>
+        <div class="notif-card-body">
+          <div class="notif-card-message">${escapeHtml(notif.message)}</div>
+          <div class="notif-card-time">${formatRelativeTime(notif.createdAt)}</div>
+        </div>
+        <button class="notif-card-dismiss" data-id="${notif.id}" title="Dismiss">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      `;
+
+      // Dismiss single notification
+      card.querySelector('.notif-card-dismiss').addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const id = e.currentTarget.dataset.id;
+        await dismissNotification(id);
+        // Animate removal
+        card.style.transition = 'opacity 0.2s, transform 0.2s';
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(20px)';
+        setTimeout(() => {
+          card.remove();
+          notifications = notifications.filter(n => String(n.id) !== String(id));
+          if (notifications.length === 0) {
+            notifEmpty.classList.remove('hidden');
+            notifDismissAll.classList.add('hidden');
+          }
+          // Update badge
+          chrome.runtime.sendMessage({ type: 'updateBadge', count: notifications.length });
+          // Update bell badge
+          if (notifications.length === 0) {
+            notifBadge.classList.add('hidden');
+          }
+        }, 200);
+      });
+
+      notifList.appendChild(card);
+    });
+  }
+
+  // Dismiss a single notification
+  async function dismissNotification(id) {
+    try {
+      await fetch(`${SERVER_URL}/api/extension/notifications/${id}/read`, {
+        method: 'PUT',
+        headers: { 'X-API-KEY': apiKey }
+      });
+    } catch (err) {
+      console.error('Failed to dismiss notification:', err);
+    }
+  }
+
+  // Dismiss all notifications
+  async function dismissAllNotifications() {
+    try {
+      await fetch(`${SERVER_URL}/api/extension/notifications/read-all`, {
+        method: 'PUT',
+        headers: { 'X-API-KEY': apiKey }
+      });
+      notifications = [];
+      updateNotifUI();
+      chrome.runtime.sendMessage({ type: 'updateBadge', count: 0 });
+    } catch (err) {
+      console.error('Failed to dismiss all notifications:', err);
+    }
+  }
+
+  // Escape HTML to prevent XSS
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Toggle notification panel
+  notifBellBtn.addEventListener('click', () => {
+    notifPanelOpen = !notifPanelOpen;
+    if (notifPanelOpen) {
+      notifPanel.classList.remove('hidden');
+      fetchNotifications(); // Refresh on open
+    } else {
+      notifPanel.classList.add('hidden');
+    }
+  });
+
+  // Dismiss all button
+  notifDismissAll.addEventListener('click', () => {
+    dismissAllNotifications();
+  });
+
+  // Fetch notifications on popup open (for badge)
+  fetchNotifications();
+
+  // Also trigger background badge refresh
+  chrome.runtime.sendMessage({ type: 'refreshBadge' });
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // STATUS BANNER
+  // ═══════════════════════════════════════════════════════════════════════
+
   // Show status banner
   function showStatus(type, message) {
     statusBanner.className = `status-banner ${type}`;
@@ -78,6 +263,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       statusBanner.classList.add('hidden');
     }, 4000);
   }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // TABS
+  // ═══════════════════════════════════════════════════════════════════════
 
   // Handle Tabs
   tabs.forEach(tab => {
@@ -98,6 +287,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   });
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // JOB FORM
+  // ═══════════════════════════════════════════════════════════════════════
 
   // Handle Job form submit
   jobForm.addEventListener('submit', async (e) => {
@@ -150,6 +343,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // ═══════════════════════════════════════════════════════════════════════
+  // HACKATHON FORM
+  // ═══════════════════════════════════════════════════════════════════════
+
   // Handle Hackathon form submit
   hackathonForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -197,6 +394,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       btnHackathonLoader.classList.add('hidden');
     }
   });
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // CALENDAR FORM
+  // ═══════════════════════════════════════════════════════════════════════
 
   // Handle Calendar form submit
   calendarForm.addEventListener('submit', async (e) => {

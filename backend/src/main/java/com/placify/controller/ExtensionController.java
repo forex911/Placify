@@ -190,4 +190,80 @@ public class ExtensionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error checking notifications: " + e.getMessage());
         }
     }
+
+    /**
+     * GET /api/extension/notifications
+     * Returns unread notifications for the extension popup, using X-API-KEY header.
+     */
+    @GetMapping("/notifications")
+    public ResponseEntity<?> getNotifications(@RequestHeader(value = "X-API-KEY", required = false) String apiKey) {
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("API Key is required");
+        }
+
+        Optional<User> userOpt = userRepository.findByApiKey(apiKey);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid API Key");
+        }
+        User user = userOpt.get();
+
+        try {
+            var notifications = notificationService.getUnreadForUser(user.getId());
+            return ResponseEntity.ok(notifications);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching notifications: " + e.getMessage());
+        }
+    }
+
+    /**
+     * PUT /api/extension/notifications/{id}/read
+     * Marks a single notification as read, using X-API-KEY header.
+     */
+    @PutMapping("/notifications/{id}/read")
+    public ResponseEntity<?> markNotificationAsRead(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-API-KEY", required = false) String apiKey) {
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("API Key is required");
+        }
+
+        Optional<User> userOpt = userRepository.findByApiKey(apiKey);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid API Key");
+        }
+        User user = userOpt.get();
+
+        try {
+            notificationService.markAsRead(id, user.getId());
+            long count = notificationService.getUnreadCount(user.getId());
+            return ResponseEntity.ok(Map.of("success", true, "unreadCount", count));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error marking notification: " + e.getMessage());
+        }
+    }
+
+    /**
+     * PUT /api/extension/notifications/read-all
+     * Marks all notifications as read, using X-API-KEY header.
+     */
+    @PutMapping("/notifications/read-all")
+    public ResponseEntity<?> markAllNotificationsAsRead(
+            @RequestHeader(value = "X-API-KEY", required = false) String apiKey) {
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("API Key is required");
+        }
+
+        Optional<User> userOpt = userRepository.findByApiKey(apiKey);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid API Key");
+        }
+        User user = userOpt.get();
+
+        try {
+            notificationService.markAllAsRead(user.getId());
+            return ResponseEntity.ok(Map.of("success", true, "unreadCount", 0));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error marking notifications: " + e.getMessage());
+        }
+    }
 }

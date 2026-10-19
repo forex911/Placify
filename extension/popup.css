@@ -18,6 +18,8 @@
   --font-brand: 'Playfair Display', Georgia, serif;
   --font-body: 'Inter', -apple-system, sans-serif;
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
 }
 
 * {
@@ -81,6 +83,12 @@ body {
   letter-spacing: 0.2px;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .icon-btn {
   width: 36px;
   height: 36px;
@@ -93,12 +101,186 @@ body {
   align-items: center;
   justify-content: center;
   transition: all var(--transition);
+  position: relative;
 }
 
 .icon-btn:hover {
   background: var(--bg-secondary);
   color: var(--text);
   border-color: var(--text-muted);
+}
+
+/* ---- Notification Badge (red dot on bell) ---- */
+.notif-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 9px;
+  height: 9px;
+  background: var(--danger);
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+/* ---- Notification Panel ---- */
+.notif-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  overflow: hidden;
+  animation: panelSlideIn 0.25s ease-out;
+}
+
+@keyframes panelSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.notif-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.notif-panel-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.notif-dismiss-all-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all var(--transition);
+}
+
+.notif-dismiss-all-btn:hover {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.notif-list {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.notif-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.notif-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+/* ---- Notification Card ---- */
+.notif-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+  animation: notifFadeIn 0.3s ease-out;
+}
+
+@keyframes notifFadeIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.notif-card:last-child {
+  border-bottom: none;
+}
+
+.notif-card:hover {
+  background: var(--bg-secondary);
+}
+
+.notif-card-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 13px;
+  background: #f0f0f0;
+}
+
+.notif-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.notif-card-message {
+  font-size: 0.78rem;
+  color: var(--text);
+  line-height: 1.45;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.notif-card-time {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.notif-card-dismiss {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notif-card-dismiss:hover {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* ---- Notification Empty State ---- */
+.notif-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.notif-empty p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
 
 /* ---- Status Banner ---- */
