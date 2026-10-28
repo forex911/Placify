@@ -10,13 +10,13 @@ const features = [
   },
   {
     icon: <Globe size={22} />,
-    title: 'Auto-Detect',
-    desc: 'Automatically detects the current page URL and fills it into the form for you.'
+    title: 'Context-Aware Auto-Fill',
+    desc: 'Intelligently detects company name, role, location, and URLs from LinkedIn, Indeed, Glassdoor, Google Forms, and more.'
   },
   {
     icon: <Puzzle size={22} />,
-    title: 'Job, Hackathon & Calendar Tabs',
-    desc: 'Switch between saving job applications, hackathon entries, and calendar reminders with built-in tabs.'
+    title: 'Interactive Calendar & Reminders',
+    desc: 'Browse month calendar, view scheduled reminders, and double-tap any date to add a new event directly in the extension.'
   },
   {
     icon: <Shield size={22} />,
@@ -68,11 +68,11 @@ function Extension() {
           Save job applications, hackathon entries, and calendar events directly from any webpage — right into your Placify dashboard.
         </p>
         <a
-          href="https://github.com/forex911/Placify/releases/download/v1.1.0/Placify-v1.1.0.zip"
+          href="https://github.com/forex911/Placify/releases/download/v1.3.0/Placify-v1.3.0.zip"
           download
           className="ext-download-btn"
         >
-          <Download size={18} /> Download Extension v1.1
+          <Download size={18} /> Download Extension v1.3
         </a>
         <p className="ext-hero-note">Works with Chrome, Edge, Brave, and other Chromium browsers</p>
       </section>
@@ -129,11 +129,11 @@ function Extension() {
       {/* Bottom CTA */}
       <section className="ext-bottom-cta">
         <a
-          href="https://github.com/forex911/Placify/releases/download/v1.1.0/Placify-v1.1.0.zip"
+          href="https://github.com/forex911/Placify/releases/download/v1.3.0/Placify-v1.3.0.zip"
           download
           className="ext-download-btn"
         >
-          <Download size={18} /> Download Extension
+          <Download size={18} /> Download Extension v1.3
         </a>
       </section>
     </div>

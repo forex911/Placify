@@ -1,29 +1,16 @@
+import React from 'react';
+import { Diamond } from './ui/diamond';
 
-function Loader({ message = 'Loading...' }) {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
-  const logoSrc = isDark ? '/favicon-32x32.png' : '/faviconblacked-32x32.png'
-
+function Loader({ message = 'Loading...', size = 40, className = '' }) {
   return (
-    <div className="loader-container">
+    <div className={`loader-container ${className}`}>
       <div className="loader-placify">
-        {/* Orbiting rings */}
-        <div className="loader-orbit loader-orbit-1">
-          <div className="loader-dot" />
-        </div>
-        <div className="loader-orbit loader-orbit-2">
-          <div className="loader-dot" />
-        </div>
-        <div className="loader-orbit loader-orbit-3">
-          <div className="loader-dot" />
-        </div>
-        {/* Center icon */}
-        <div className="loader-center">
-          <img src={logoSrc} alt="Loading" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-        </div>
+        <Diamond size={size} className="loader-diamond-svg size-10" />
       </div>
-      <p className="loader-message">{message}</p>
+      {message && <p className="loader-message">{message}</p>}
     </div>
-  )
+  );
 }
 
-export default Loader
+export { Diamond };
+export default Loader;

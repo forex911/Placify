@@ -3486,96 +3486,37 @@ body {
 
 .loader-placify {
   position: relative;
-  width: 80px;
-  height: 80px;
-}
-
-/* Center icon with pulse */
-.loader-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: var(--text-primary);
-  opacity: 0.7;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: loader-pulse 2s ease-in-out infinite;
+  width: 64px;
+  height: 64px;
+  color: var(--text-primary);
 }
 
-@keyframes loader-pulse {
-  0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.9); }
-  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+.loader-diamond-svg {
+  display: block;
+  color: var(--text-primary);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08));
+  transition: color 0.2s ease;
 }
 
-/* Orbiting rings */
-.loader-orbit {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1.5px solid transparent;
+[data-theme='dark'] .loader-diamond-svg {
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.22));
 }
 
-.loader-orbit-1 {
-  border-top-color: var(--text-primary);
-  animation: loader-spin 1.4s linear infinite;
-}
-
-.loader-orbit-2 {
-  inset: 8px;
-  border-right-color: var(--text-muted);
-  animation: loader-spin 1.8s linear infinite reverse;
-}
-
-.loader-orbit-3 {
-  inset: 16px;
-  border-bottom-color: var(--text-secondary);
-  animation: loader-spin 2.4s linear infinite;
-}
-
-/* Dots on each orbit */
-.loader-dot {
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--text-primary);
-}
-
-.loader-orbit-1 .loader-dot {
-  top: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--text-primary);
-}
-
-.loader-orbit-2 .loader-dot {
-  right: -2px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--text-muted);
-}
-
-.loader-orbit-3 .loader-dot {
-  bottom: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--text-secondary);
-}
-
-@keyframes loader-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.size-10 {
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 /* Message text */
 .loader-message {
   margin-top: 20px;
   color: var(--text-muted);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-family: var(--font-body);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   animation: loader-fade-in 0.6s ease forwards;
 }
 

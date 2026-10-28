@@ -28,7 +28,7 @@
         <button id="settings-btn" class="icon-btn" title="Settings">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
           </svg>
         </button>
       </div>
@@ -80,19 +80,39 @@
 
     <!-- Forms Container -->
     <div id="forms-container">
+
+      <!-- Duplicate Alert Banner -->
+      <div id="duplicate-banner" class="duplicate-banner hidden">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span id="duplicate-banner-text">Application already saved previously.</span>
+      </div>
+
       <!-- Job Form -->
       <form id="save-job-form" class="popup-form">
         <div class="form-group">
-          <label for="company">Company Name <span class="required">*</span></label>
+          <div class="label-row">
+            <label for="company">Company Name <span class="required">*</span></label>
+            <span id="company-confidence" class="confidence-tag hidden"></span>
+          </div>
           <input type="text" id="company" placeholder="e.g. Google" required autocomplete="off" />
         </div>
         <div class="form-group">
-          <label for="role">Role <span class="required">*</span></label>
+          <div class="label-row">
+            <label for="role">Role <span class="required">*</span></label>
+            <span id="role-confidence" class="confidence-tag hidden"></span>
+          </div>
           <input type="text" id="role" placeholder="e.g. Software Engineer Intern" required autocomplete="off" />
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label for="location">Location</label>
+            <div class="label-row">
+              <label for="location">Location</label>
+              <span id="location-confidence" class="confidence-tag hidden"></span>
+            </div>
             <input type="text" id="location" placeholder="e.g. Bangalore" autocomplete="off" />
           </div>
         </div>
@@ -126,46 +146,117 @@
         </button>
       </form>
 
-      <!-- Calendar Form -->
-      <form id="save-calendar-form" class="popup-form hidden">
-        <div class="form-group">
-          <label for="cal-title">Event Title <span class="required">*</span></label>
-          <input type="text" id="cal-title" placeholder="e.g. Google Interview" required autocomplete="off" />
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="cal-date">Date <span class="required">*</span></label>
-            <input type="date" id="cal-date" required />
+      <!-- Calendar Tab Content -->
+      <div id="calendar-tab-content" class="calendar-tab-content hidden">
+        <!-- Calendar View Container -->
+        <div id="cal-view-container" class="cal-view-container">
+          <!-- Calendar Month Navigation -->
+          <div class="cal-nav-bar">
+            <button type="button" id="cal-prev-month" class="cal-nav-btn" title="Previous Month">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 18l-6-6 6-6"></path>
+              </svg>
+            </button>
+            <div class="cal-month-title" id="cal-month-title">October 2026</div>
+            <button type="button" id="cal-next-month" class="cal-nav-btn" title="Next Month">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6"></path>
+              </svg>
+            </button>
+            <button type="button" id="cal-today-btn" class="cal-today-pill" title="Jump to today">Today</button>
           </div>
-          <div class="form-group">
-            <label for="cal-type">Type</label>
-            <select id="cal-type">
-              <option value="REMINDER">Reminder</option>
-              <option value="INTERVIEW">Interview</option>
-              <option value="DEADLINE">Deadline</option>
-              <option value="EXAM">Exam</option>
-              <option value="HACKATHON">Hackathon</option>
-              <option value="OTHER">Other</option>
-            </select>
+
+          <!-- Quick Action Hint Bar -->
+          <div class="cal-hint-bar">
+            <span class="cal-hint-text">Double-tap date to add reminder</span>
+            <button type="button" id="cal-quick-add-btn" class="cal-add-pill">+ Add</button>
+          </div>
+
+          <!-- Weekdays Row -->
+          <div class="cal-weekdays-grid">
+            <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+          </div>
+
+          <!-- Days Grid (rendered dynamically) -->
+          <div id="cal-days-grid" class="cal-days-grid">
+            <!-- 35-42 days rendered dynamically -->
+          </div>
+
+          <!-- Selected Day Reminders Section -->
+          <div class="cal-day-reminders">
+            <div class="cal-day-reminders-header">
+              <span id="cal-selected-day-label" class="cal-day-label">Selected Day Reminders</span>
+              <span id="cal-day-count-badge" class="cal-count-badge">0</span>
+            </div>
+            <div id="cal-reminders-list" class="cal-reminders-list">
+              <!-- Dynamically populated reminder cards -->
+            </div>
           </div>
         </div>
-        <div class="form-group">
-          <label for="cal-notify">Notify days before</label>
-          <input type="number" id="cal-notify" min="0" max="30" value="1" />
+
+        <!-- Add Reminder Modal -->
+        <div id="cal-add-modal" class="cal-add-modal hidden">
+          <div class="cal-modal-backdrop" id="cal-modal-backdrop"></div>
+          <div class="cal-modal-card">
+            <div class="cal-modal-header">
+              <div class="cal-modal-title-group">
+                <h3 id="cal-modal-title">New Reminder</h3>
+                <p id="cal-modal-subtitle" class="cal-modal-subtitle">Add event for selected date</p>
+              </div>
+              <button type="button" id="cal-modal-close" class="cal-close-btn" title="Close">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            <form id="save-calendar-form" class="popup-form">
+              <div class="form-group">
+                <label for="cal-title">Event Title <span class="required">*</span></label>
+                <input type="text" id="cal-title" placeholder="e.g. Google Interview" required autocomplete="off" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="cal-date">Date <span class="required">*</span></label>
+                  <input type="date" id="cal-date" required />
+                </div>
+                <div class="form-group">
+                  <label for="cal-type">Type</label>
+                  <select id="cal-type">
+                    <option value="REMINDER">Reminder</option>
+                    <option value="INTERVIEW">Interview</option>
+                    <option value="DEADLINE">Deadline</option>
+                    <option value="EXAM">Exam</option>
+                    <option value="HACKATHON">Hackathon</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="cal-notify">Notify days before</label>
+                <input type="number" id="cal-notify" min="0" max="30" value="1" />
+              </div>
+              <div class="cal-modal-actions">
+                <button type="button" id="cal-modal-cancel" class="btn btn-secondary btn-sm">Cancel</button>
+                <button type="submit" id="save-calendar-btn" class="btn btn-primary btn-sm">
+                  <span id="btn-calendar-text">Save Reminder</span>
+                  <span id="btn-calendar-loader" class="loader hidden"></span>
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-        <button type="submit" id="save-calendar-btn" class="btn btn-primary">
-          <span id="btn-calendar-text">Add to Calendar</span>
-          <span id="btn-calendar-loader" class="loader hidden"></span>
-        </button>
-      </form>
+      </div>
     </div>
 
     <!-- Footer -->
     <footer class="popup-footer">
-      <span>Placify Extension v1.2</span>
+      <span>Placify Extension v1.3</span>
     </footer>
   </div>
 
+  <script src="extractor/normalizer.js"></script>
+  <script src="extractor/storageHelper.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

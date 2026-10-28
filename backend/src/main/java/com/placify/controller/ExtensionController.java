@@ -164,6 +164,56 @@ public class ExtensionController {
     }
 
     /**
+     * GET /api/extension/calendar
+     * Returns all calendar events for the user via extension, using X-API-KEY header.
+     */
+    @GetMapping("/calendar")
+    public ResponseEntity<?> getCalendarEvents(@RequestHeader(value = "X-API-KEY", required = false) String apiKey) {
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("API Key is required");
+        }
+
+        Optional<User> userOpt = userRepository.findByApiKey(apiKey);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid API Key");
+        }
+        User user = userOpt.get();
+
+        try {
+            var events = calendarEventService.getAllEvents(user.getId());
+            return ResponseEntity.ok(events);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching calendar events: " + e.getMessage());
+        }
+    }
+
+    /**
+     * DELETE /api/extension/calendar/{id}
+     * Deletes a calendar event via extension, using X-API-KEY header.
+     */
+    @DeleteMapping("/calendar/{id}")
+    public ResponseEntity<?> deleteCalendarEvent(
+            @PathVariable Long id,
+            @RequestHeader(value = "X-API-KEY", required = false) String apiKey) {
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("API Key is required");
+        }
+
+        Optional<User> userOpt = userRepository.findByApiKey(apiKey);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid API Key");
+        }
+        User user = userOpt.get();
+
+        try {
+            calendarEventService.deleteEvent(id, user.getId());
+            return ResponseEntity.ok(Map.of("success", true, "message", "Event deleted"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting calendar event: " + e.getMessage());
+        }
+    }
+
+    /**
      * POST /api/extension/notifications/check
      * Generates due notifications and returns the total unread count for the extension badge.
      */
