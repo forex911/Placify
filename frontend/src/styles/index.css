@@ -940,7 +940,8 @@ body {
   background: #ffffff;
 }
 
-.form-input::placeholder {
+.form-input::placeholder,
+.form-textarea::placeholder {
   color: var(--text-muted);
 }
 
@@ -3268,9 +3269,11 @@ body {
 [data-theme="dark"] .modal-overlay { background: rgba(0, 0, 0, 0.85); }
 [data-theme="dark"] .modal-box { background: #000000; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6); border: 1px solid var(--border-color); }
 [data-theme="dark"] .form-input,
-[data-theme="dark"] .form-select { background: #1a1a1a; border-color: rgba(255, 255, 255, 0.1); color: #e8e8e8; }
+[data-theme="dark"] .form-select,
+[data-theme="dark"] .form-textarea { background: #1a1a1a; border-color: rgba(255, 255, 255, 0.1); color: #e8e8e8; }
 [data-theme="dark"] .form-input:focus,
-[data-theme="dark"] .form-select:focus { border-color: #ffffff; background: #111111; }
+[data-theme="dark"] .form-select:focus,
+[data-theme="dark"] .form-textarea:focus { border-color: #ffffff; background: #111111; color: #e8e8e8; }
 [data-theme="dark"] .btn-secondary { background: transparent; color: #e8e8e8; border-color: rgba(255, 255, 255, 0.12); }
 [data-theme="dark"] .btn-primary { background: #ffffff; color: #000000; border-color: #ffffff; }
 [data-theme="dark"] .btn-primary:hover { background: #e0e0e0; border-color: #e0e0e0; }
@@ -3348,7 +3351,11 @@ body {
 [data-theme="light"] .main-content { background: #ffffff; }
 [data-theme="light"] .modal-box { background: #ffffff; box-shadow: 0 8px 40px rgba(0,0,0,0.1); }
 [data-theme="light"] .form-input,
-[data-theme="light"] .form-select { background: #f5f5f5; border-color: rgba(0,0,0,0.1); color: #0a0a0a; }
+[data-theme="light"] .form-select,
+[data-theme="light"] .form-textarea { background: #f5f5f5; border-color: rgba(0,0,0,0.1); color: #0a0a0a; }
+[data-theme="light"] .form-input:focus,
+[data-theme="light"] .form-select:focus,
+[data-theme="light"] .form-textarea:focus { border-color: #000000; background: #ffffff; color: #0a0a0a; }
 [data-theme="light"] .btn-secondary { background: transparent; color: #0a0a0a; border-color: rgba(0,0,0,0.1); }
 [data-theme="light"] .dsa-card, [data-theme="light"] .card { background: #ffffff; }
 [data-theme="light"] .dsa-ring-bg { stroke: #f0f0f0; }

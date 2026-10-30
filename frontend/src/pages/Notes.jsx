@@ -240,7 +240,7 @@ function Notes() {
             <label className="form-label" htmlFor="noteContent">Content</label>
             <textarea
               id="noteContent"
-              className="form-textarea"
+              className="form-input form-textarea"
               placeholder="Write your note here..."
               value={form.content}
               onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
